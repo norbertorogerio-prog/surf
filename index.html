@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>Gestão de Células - Liderança TI</title>
+    <title>Líder Estratégico - Gestão de Pessoas e Clima</title>
     <style>
         * {
             margin: 0;
@@ -14,554 +14,753 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f0f2f5;
-            padding: 16px;
-            padding-bottom: 100px;
+            background: #f5f7fb;
+            padding: 0;
+            padding-bottom: 80px;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1e3a2f 0%, #2d6a4f 100%);
+        /* Timeline e IA */
+        .timeline-bar {
+            background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
             color: white;
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .current-time {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .greeting {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .ia-card {
+            background: linear-gradient(135deg, #2d5a4c 0%, #1e3a2f 100%);
+            margin: 16px;
+            border-radius: 28px;
             padding: 20px;
-            border-radius: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        .header h1 {
-            font-size: 1.5rem;
-            margin-bottom: 4px;
+        .ia-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
-        .header p {
-            font-size: 0.85rem;
+        .ia-icon {
+            font-size: 2rem;
+        }
+
+        .ia-title {
+            font-weight: 600;
+            font-size: 1rem;
             opacity: 0.9;
         }
 
-        .date {
-            font-size: 0.8rem;
-            margin-top: 8px;
-            opacity: 0.8;
-        }
-
-        .stats {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-
-        .stat-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .card-header {
-            background: #f8f9fa;
-            padding: 16px 20px;
-            border-left: 4px solid #2d6a4f;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .cell-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #1e3a2f;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .member-count {
-            font-size: 0.75rem;
-            background: #e9ecef;
-            padding: 4px 10px;
-            border-radius: 20px;
-            color: #495057;
-        }
-
-        .member-item {
-            padding: 16px 20px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .member-item:last-child {
-            border-bottom: none;
-        }
-
-        .member-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .member-name {
-            font-weight: 600;
+        .ia-message {
             font-size: 1rem;
-            color: #212529;
+            line-height: 1.4;
+            margin-bottom: 16px;
         }
 
-        .member-funcao {
-            font-size: 0.7rem;
-            background: #e8f5e9;
-            color: #2d6a4f;
-            padding: 4px 10px;
+        .ia-suggestion {
+            background: rgba(255,255,255,0.15);
+            padding: 12px;
             border-radius: 20px;
-            font-weight: 500;
+            font-size: 0.85rem;
+            margin-top: 12px;
+        }
+
+        /* Métricas de Clima */
+        .climate-section {
+            background: white;
+            margin: 16px;
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .section-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
             font-weight: 600;
-            color: #6c757d;
-            margin: 12px 0 8px 0;
-            letter-spacing: 0.5px;
-        }
-
-        .task-item {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            padding: 6px 0;
+            gap: 8px;
+            color: #1e3a2f;
         }
 
-        .task-check {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #2d6a4f;
+        .climate-metrics {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
 
-        .task-text {
+        .metric-card {
             flex: 1;
-            font-size: 0.85rem;
-            color: #212529;
+            background: #f8f9fc;
+            padding: 16px;
+            border-radius: 20px;
+            text-align: center;
         }
 
-        .task-text.completed {
-            text-decoration: line-through;
-            color: #adb5bd;
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d6a4f;
         }
 
-        .task-period {
-            font-size: 0.7rem;
-            color: #e67e22;
-            background: #fff3e0;
-            padding: 2px 8px;
-            border-radius: 12px;
-            white-space: nowrap;
+        .metric-label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 4px;
         }
 
-        .note-area {
+        .action-suggestion {
+            background: #e8f5e9;
+            padding: 16px;
+            border-radius: 20px;
             margin-top: 12px;
+            border-left: 4px solid #2d6a4f;
         }
 
-        .note-input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #dee2e6;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 0.85rem;
-            resize: vertical;
-            background: #f8f9fa;
-        }
-
-        .note-input:focus {
-            outline: none;
-            border-color: #2d6a4f;
+        /* Daily Agenda */
+        .daily-agenda {
             background: white;
+            margin: 16px;
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        .add-btn {
-            background: #6c757d;
+        .agenda-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .agenda-time {
+            font-weight: 600;
+            color: #2d6a4f;
+            min-width: 70px;
+        }
+
+        .agenda-desc {
+            flex: 1;
+        }
+
+        .agenda-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
+            background: #ffc107;
+        }
+
+        .agenda-status.done {
+            background: #28a745;
+        }
+
+        /* One-on-One */
+        .oneonone-section {
+            background: white;
+            margin: 16px;
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .person-card {
+            background: #f8f9fc;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .person-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .person-name {
+            font-weight: 600;
+        }
+
+        .person-last-1x1 {
+            font-size: 0.7rem;
+            color: #6c757d;
+        }
+
+        .schedule-btn {
+            background: #2d6a4f;
             color: white;
             border: none;
             padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 500;
-            cursor: pointer;
+            border-radius: 40px;
             font-size: 0.75rem;
-            margin-top: 8px;
+            cursor: pointer;
         }
 
-        .fab {
+        /* Sugestões de Rituais */
+        .rituals-section {
+            background: white;
+            margin: 16px;
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .ritual-card {
+            background: #fff8e7;
+            padding: 16px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border-left: 4px solid #f4a261;
+        }
+
+        .ritual-time {
+            font-size: 0.7rem;
+            color: #e67e22;
+            font-weight: 600;
+        }
+
+        /* Botões de ação rápida */
+        .quick-actions {
             position: fixed;
             bottom: 20px;
-            right: 20px;
-            background: #2d6a4f;
-            width: 56px;
-            height: 56px;
-            border-radius: 28px;
+            left: 16px;
+            right: 16px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            font-size: 28px;
-            cursor: pointer;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .quick-btn {
+            flex: 1;
+            background: #2d6a4f;
             color: white;
             border: none;
-            z-index: 1000;
-        }
-
-        .fab:active {
-            transform: scale(0.95);
-        }
-
-        .reset-btn {
-            background: #dc3545;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            padding: 12px;
+            padding: 14px;
             border-radius: 40px;
-            text-align: center;
-            color: white;
             font-weight: 500;
+            font-size: 0.85rem;
+            text-align: center;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .quick-btn.secondary {
+            background: #f4a261;
+        }
+
+        /* Check-in Diário */
+        .checkin-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 16px;
+            border-radius: 28px;
+            padding: 20px;
+        }
+
+        .checkin-question {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .mood-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: space-around;
+        }
+
+        .mood-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 10px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
         @media (max-width: 600px) {
-            body {
-                padding: 12px;
-            }
-            .member-header {
+            .climate-metrics {
                 flex-direction: column;
-                align-items: flex-start;
+            }
+            .quick-actions {
+                flex-direction: column;
+                bottom: 16px;
+                left: 16px;
+                right: 16px;
+            }
+            body {
+                padding-bottom: 140px;
             }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>📋 Gestão de Células</h1>
-        <p>Liderança de Suporte e Infraestrutura TI</p>
-        <div class="date" id="currentDate"></div>
-        <div class="stats" id="stats"></div>
+    <div class="timeline-bar">
+        <div class="current-time" id="currentTime">--:--</div>
+        <div class="greeting" id="greeting">Carregando...</div>
     </div>
 
-    <div id="cellsContainer"></div>
-    
-    <div class="reset-btn" onclick="resetTodayProgress()">🔄 Resetar Progresso do Dia</div>
-</div>
+    <div id="app">
+        <!-- IA Assistente -->
+        <div class="ia-card" id="iaCard">
+            <div class="ia-header">
+                <div class="ia-icon">🧠✨</div>
+                <div class="ia-title">IA Assistente de Liderança</div>
+            </div>
+            <div class="ia-message" id="iaMessage">Analisando o dia...</div>
+            <div class="ia-suggestion" id="iaSuggestion"></div>
+        </div>
 
-<button class="fab" onclick="showQuickNote()">✏️</button>
+        <!-- Check-in Diário de Clima -->
+        <div class="checkin-card">
+            <div class="checkin-question">🌡️ Como você está se sentindo hoje para liderar?</div>
+            <div class="mood-buttons">
+                <button class="mood-btn" onclick="registerMood('😊')">😊</button>
+                <button class="mood-btn" onclick="registerMood('😐')">😐</button>
+                <button class="mood-btn" onclick="registerMood('😔')">😔</button>
+                <button class="mood-btn" onclick="registerMood('⚡')">⚡</button>
+                <button class="mood-btn" onclick="registerMood('🤔')">🤔</button>
+            </div>
+        </div>
 
-<script>
-    // ================= CONFIGURAÇÃO COMPLETA DAS CÉLULAS =================
-    const config = {
-        cells: [
-            { id: 1, nome: "📰 Suporte a Assuntos Executivos" },
-            { id: 2, nome: "📊 Governança de Produtos MS / Power BI" },
-            { id: 3, nome: "🏪 Suporte à Infraestrutura (Lojas, ADM, Call Center)" },
-            { id: 4, nome: "🎥 Suporte Áudio e Vídeo" },
-            { id: 5, nome: "💻 Gestão de Ativos, Softwares e Licenciamento" }
-        ],
-        
-        members: [
-            // Célula 1 - Suporte Executivo
-            { id: 1, nome: "Amanda Furquim dos Santos", funcao: "Suporte Executivo", cell_id: 1 },
-            { id: 2, nome: "Vitoria Maria Nogueira", funcao: "Suporte Executivo", cell_id: 1 },
-            
-            // Célula 2 - Governança MS / Power BI
-            { id: 3, nome: "Mauro Eliseo Artioli", funcao: "Governança MS / Power BI", cell_id: 2 },
-            
-            // Célula 3 - Infraestrutura
-            { id: 4, nome: "Eduardo Felipe da Silva", funcao: "Infraestrutura", cell_id: 3 },
-            { id: 5, nome: "Anderson Oliveira Santos", funcao: "Infraestrutura", cell_id: 3 },
-            
-            // Célula 4 - Áudio e Vídeo
-            { id: 6, nome: "Marcel Douglas Bertulino da Silva", funcao: "Áudio e Vídeo", cell_id: 4 },
-            { id: 7, nome: "Fernando Fernandes da Silva", funcao: "Áudio e Vídeo", cell_id: 4 },
-            
-            // Célula 5 - Gestão de Ativos
-            { id: 8, nome: "Ivanete Alves de Oliveira Sousa", funcao: "Gestão de Ativos e Licenças", cell_id: 5 }
-        ],
-        
-        tasks: {
-            // Célula 1 - Suporte Executivo
-            1: [ // Amanda
-                { id: 101, descricao: "Criação do Jornal da Área", period: "Diária", completed: false },
-                { id: 102, descricao: "Criação do Diário Executivo", period: "Diária", completed: false }
-            ],
-            2: [ // Vitoria
-                { id: 201, descricao: "Criação do Jornal da Área", period: "Diária", completed: false },
-                { id: 202, descricao: "Criação do Diário Executivo", period: "Diária", completed: false }
-            ],
-            
-            // Célula 2 - Mauro
-            3: [ // Mauro
-                { id: 301, descricao: "Suporte Power Platform", period: "Diária", completed: false },
-                { id: 302, descricao: "Suporte Copilot", period: "Diária", completed: false },
-                { id: 303, descricao: "Desenvolvimento de chatbot de suporte", period: "Diária", completed: false },
-                { id: 304, descricao: "Integração MS / Interface", period: "1º Semestre", completed: false },
-                { id: 305, descricao: "Integração Teams – Command Center", period: "1º Semestre", completed: false },
-                { id: 306, descricao: "Integração Salesforce com Outlook", period: "1º Semestre", completed: false },
-                { id: 307, descricao: "Criação de dashboards", period: "Mensal", completed: false },
-                { id: 308, descricao: "Criação do dashboard Copilot (POC)", period: "1º Semestre", completed: false },
-                { id: 309, descricao: "Construção de Painéis para licenciamento", period: "Mensal", completed: false }
-            ],
-            
-            // Célula 3 - Eduardo e Anderson
-            4: [ // Eduardo
-                { id: 401, descricao: "Reforma de loja", period: "Mensal", completed: false },
-                { id: 402, descricao: "Internalização de loja", period: "Mensal", completed: false },
-                { id: 403, descricao: "Facelift de lojas", period: "Mensal", completed: false },
-                { id: 404, descricao: "Black Friday e Natal (lojas principais)", period: "2º Semestre", completed: false },
-                { id: 405, descricao: "Atualização sistêmica dos tablets MaaS360", period: "1º Semestre", completed: false }
-            ],
-            5: [ // Anderson
-                { id: 501, descricao: "Reforma de loja", period: "Mensal", completed: false },
-                { id: 502, descricao: "Internalização de loja", period: "Mensal", completed: false },
-                { id: 503, descricao: "Facelift de lojas", period: "Mensal", completed: false },
-                { id: 504, descricao: "Black Friday e Natal (lojas principais)", period: "2º Semestre", completed: false },
-                { id: 505, descricao: "Atualização sistêmica dos tablets MaaS360", period: "1º Semestre", completed: false }
-            ],
-            
-            // Célula 4 - Marcel e Fernando
-            6: [ // Marcel
-                { id: 601, descricao: "Suporte e atendimento VIP", period: "Diária", completed: false },
-                { id: 602, descricao: "Retrofit do 19º andar", period: "1º Semestre", completed: false },
-                { id: 603, descricao: "Instalação de 110 MeetUps", period: "1º Semestre", completed: false },
-                { id: 604, descricao: "Reforma e atualização do Auditório ECO", period: "2º Semestre", completed: false }
-            ],
-            7: [ // Fernando
-                { id: 701, descricao: "Suporte e atendimento VIP", period: "Diária", completed: false },
-                { id: 702, descricao: "Retrofit do 19º andar", period: "1º Semestre", completed: false },
-                { id: 703, descricao: "Instalação de 110 MeetUps", period: "1º Semestre", completed: false },
-                { id: 704, descricao: "Reforma e atualização do Auditório ECO", period: "2º Semestre", completed: false }
-            ],
-            
-            // Célula 5 - Ivanete
-            8: [ // Ivanete
-                { id: 801, descricao: "Automação do portal de gestão de software", period: "1º Semestre", completed: false },
-                { id: 802, descricao: "Dashboard de Licenças", period: "1º Semestre", completed: false },
-                { id: 803, descricao: "Migração SailPoint × Licenciamento", period: "1º Semestre", completed: false },
-                { id: 804, descricao: "Implantação do SSO nas ferramentas SAS", period: "1º Semestre", completed: false },
-                { id: 805, descricao: "Sanitização dos softwares homologados", period: "1º Semestre", completed: false },
-                { id: 806, descricao: "Inventário dos softwares no ServiceNow", period: "2º Semestre", completed: false },
-                { id: 807, descricao: "Controle de estoque de licenças no CMDB", period: "2º Semestre", completed: false },
-                { id: 808, descricao: "Radar 365", period: "2º Semestre", completed: false },
-                { id: 809, descricao: "Internalização FIBRASIL", period: "1º Semestre", completed: false }
-            ]
-        },
-        
-        notes: {} // Anotações por membro
-    };
+        <!-- Métricas de Clima -->
+        <div class="climate-section">
+            <div class="section-title">📊 Clima e Engajamento</div>
+            <div class="climate-metrics">
+                <div class="metric-card">
+                    <div class="metric-value" id="climateScore">--</div>
+                    <div class="metric-label">Clima Geral (0-10)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="checkinsCount">0</div>
+                    <div class="metric-label">Check-ins da Semana</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="oneoneCount">0</div>
+                    <div class="metric-label">1:1 Realizados (mês)</div>
+                </div>
+            </div>
+            <div class="action-suggestion" id="climateAction">
+                💡 Ação sugerida baseada no clima...
+            </div>
+        </div>
 
-    // Inicializar ou carregar dados
-    function initData() {
-        const saved = localStorage.getItem('gestaoCelulasTI');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                // Mesclar dados preservando estrutura
-                Object.keys(config.tasks).forEach(memberId => {
-                    if (parsed.tasks && parsed.tasks[memberId]) {
-                        parsed.tasks[memberId].forEach((savedTask, idx) => {
-                            if (config.tasks[memberId] && config.tasks[memberId][idx]) {
-                                config.tasks[memberId][idx].completed = savedTask.completed;
-                            }
-                        });
-                    }
-                });
-                if (parsed.notes) {
-                    config.notes = parsed.notes;
-                }
-            } catch(e) { console.error('Erro ao carregar dados'); }
+        <!-- Agenda Diária com IA -->
+        <div class="daily-agenda">
+            <div class="section-title">⏰ Sua Agenda do Dia</div>
+            <div id="dailyAgenda"></div>
+        </div>
+
+        <!-- One-on-One Agenda -->
+        <div class="oneonone-section">
+            <div class="section-title">💬 One-on-One Agendados</div>
+            <div id="oneononeList"></div>
+            <button class="quick-btn secondary" style="margin-top: 12px;" onclick="suggestOneOnOne()">✨ Sugerir 1:1 com IA</button>
+        </div>
+
+        <!-- Rituais e Boas Práticas -->
+        <div class="rituals-section">
+            <div class="section-title">🌟 Rituais de Liderança</div>
+            <div id="ritualsList"></div>
+        </div>
+
+        <!-- Sugestões de Temas para Daily -->
+        <div class="climate-section">
+            <div class="section-title">💡 Temas para Daily (09:30)</div>
+            <div id="dailyThemes"></div>
+            <button class="quick-btn secondary" style="margin-top: 12px;" onclick="refreshDailyThemes()">🔄 Gerar novos temas</button>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <button class="quick-btn" onclick="sendGoodMorning()">🌅 Enviar Bom Dia</button>
+        <button class="quick-btn secondary" onclick="showTeamPulse()">💓 Check-in do Time</button>
+    </div>
+
+    <script>
+        // ================= CONFIGURAÇÃO DE DADOS =================
+        let teamData = {
+            members: [
+                { id: 1, nome: "Amanda Furquim", funcao: "Suporte Executivo", lastOneOnOne: "2025-03-15", mood: null },
+                { id: 2, nome: "Vitória Nogueira", funcao: "Suporte Executivo", lastOneOnOne: "2025-03-10", mood: null },
+                { id: 3, nome: "Mauro Artioli", funcao: "Governança MS/Power BI", lastOneOnOne: "2025-03-18", mood: null },
+                { id: 4, nome: "Eduardo Silva", funcao: "Infraestrutura", lastOneOnOne: "2025-03-12", mood: null },
+                { id: 5, nome: "Anderson Santos", funcao: "Infraestrutura", lastOneOnOne: "2025-03-05", mood: null },
+                { id: 6, nome: "Marcel Bertulino", funcao: "Áudio e Vídeo", lastOneOnOne: "2025-03-08", mood: null },
+                { id: 7, nome: "Fernando Fernandes", funcao: "Áudio e Vídeo", lastOneOnOne: "2025-03-14", mood: null },
+                { id: 8, nome: "Ivanete Sousa", funcao: "Gestão de Ativos", lastOneOnOne: "2025-03-20", mood: null }
+            ],
+            moods: [], // histórico de moods
+            dailyCheckins: [], // check-ins rápidos do time
+            oneOnOneHistory: [],
+            climateActions: []
+        };
+
+        // Rituais de liderança
+        const rituals = [
+            { time: "08:00", descricao: "💬 Enviar mensagem de bom dia para o time", dica: "Pergunte como estão, mostre presença humana" },
+            { time: "08:30", descricao: "📋 Revisar pendências do dia anterior", dica: "Priorize o que é crítico para o time" },
+            { time: "09:30", descricao: "🎯 Daily com o time", dica: "Use os temas sugeridos pela IA" },
+            { time: "10:30", descricao: "💡 15 minutos de reconhecimento", dica: "Destaque publicamente uma entrega de alguém" },
+            { time: "12:00", descricao: "🍽️ Pausa - respeite o almoço do time", dica: "Evite mensagens no horário de almoço" },
+            { time: "14:00", descricao: "🎧 One-on-One (se houver)", dica: "Escute mais do que fale" },
+            { time: "16:00", descricao: "📊 Check de métricas e impedimentos", dica: "Veja onde pode desbloquear o time" },
+            { time: "17:30", descricao: "📝 Fechamento do dia", dica: "Agradeça e reconheça o esforço do time" }
+        ];
+
+        // Temas para Daily
+        const dailyThemesDB = [
+            "🚀 O que vamos entregar hoje que é mais crítico?",
+            "⚠️ Tem algum impedimento que eu possa ajudar a remover?",
+            "🤝 Como podemos colaborar mais entre as células hoje?",
+            "📈 O que aprendemos ontem que podemos aplicar hoje?",
+            "🎯 Estamos alinhados com as metas do semestre?",
+            "💡 Alguém tem uma sugestão para melhorar nosso processo?",
+            "🌟 Quem merece um reconhecimento hoje?",
+            "⚡ O que está consumindo mais energia do time?",
+            "🔄 Temos alguma dependência externa que precisa de atenção?",
+            "🧘 Como podemos cuidar melhor do nosso bem-estar hoje?"
+        ];
+
+        // Carregar dados salvos
+        function loadData() {
+            const saved = localStorage.getItem('liderancaEstrategica');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    teamData = { ...teamData, ...parsed };
+                } catch(e) {}
+            }
+            updateUI();
+            startClock();
+        }
+
+        function saveData() {
+            localStorage.setItem('liderancaEstrategica', JSON.stringify(teamData));
+        }
+
+        // IA que analisa e dá sugestões
+        function updateIA() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const currentTime = hour + minute/100;
+            
+            let message = "";
+            let suggestion = "";
+            
+            // IA baseada no horário
+            if (currentTime < 8) {
+                message = "🌅 Bom dia, líder! Prepare-se para um dia de conexão genuína com seu time.";
+                suggestion = "Que tal preparar uma mensagem pessoal para o time? Pergunte como cada um está hoje. O lado humano vem primeiro.";
+            } 
+            else if (currentTime >= 8 && currentTime < 9) {
+                message = "☕ Hora do café e conexão. Hoje, que tal fazer um check-in individual com alguém?";
+                suggestion = `Sugestão: chame ${teamData.members[Math.floor(Math.random() * teamData.members.length)].nome} para um café virtual de 5 minutos. Pergunte sobre o fim de semana, mostre interesse genuíno.`;
+            }
+            else if (currentTime >= 9 && currentTime < 10) {
+                message = "🎯 Daily se aproximando! Use os temas sugeridos para uma reunião leve e produtiva.";
+                const randomTheme = dailyThemesDB[Math.floor(Math.random() * dailyThemesDB.length)];
+                suggestion = `Tema para hoje: "${randomTheme}"\n\nLembre-se: comece perguntando como estão, não só sobre trabalho.`;
+            }
+            else if (currentTime >= 10 && currentTime < 12) {
+                message = "💪 Hora de reconhecer. Quem merece um elogio público hoje?";
+                suggestion = "Feedback público fortalece o clima. Identifique uma entrega recente e destaque em grupo. Isso gera engajamento.";
+            }
+            else if (currentTime >= 12 && currentTime < 14) {
+                message = "🍽️ Respeite o momento do time. Evite mensagens agora.";
+                suggestion = "Use esse tempo para refletir: como você pode apoiar mais o time esta semana? Anote uma ação concreta.";
+            }
+            else if (currentTime >= 14 && currentTime < 16) {
+                message = "🎧 Hora de ouvir. One-on-One fortalece vínculos.";
+                suggestion = getOneOnOneSuggestion();
+            }
+            else if (currentTime >= 16 && currentTime < 18) {
+                message = "📊 Como está o clima hoje? Faça um check-in rápido.";
+                suggestion = "Pergunte ao time: 'De 0 a 10, como vocês estão se sentindo hoje?' Isso mostra cuidado e gera dados valiosos.";
+            }
+            else {
+                message = "🌙 Dia produtivo! Reflita: o que funcionou bem hoje?";
+                suggestion = "Anote 3 coisas boas que aconteceram hoje e 1 que pode melhorar amanhã. Compartilhe com o time amanhã na daily.";
+            }
+            
+            document.getElementById('iaMessage').innerHTML = message;
+            document.getElementById('iaSuggestion').innerHTML = suggestion;
         }
         
-        // Inicializar anotações vazias
-        config.members.forEach(member => {
-            if (!config.notes[member.id]) {
-                config.notes[member.id] = "";
-            }
-        });
-        
-        saveData();
-    }
-
-    function saveData() {
-        const toSave = {
-            tasks: config.tasks,
-            notes: config.notes,
-            lastUpdate: new Date().toISOString()
-        };
-        localStorage.setItem('gestaoCelulasTI', JSON.stringify(toSave));
-        updateStats();
-    }
-
-    function updateStats() {
-        let totalTasks = 0;
-        let completedTasks = 0;
-        
-        Object.values(config.tasks).forEach(memberTasks => {
-            memberTasks.forEach(task => {
-                totalTasks++;
-                if (task.completed) completedTasks++;
+        function getOneOnOneSuggestion() {
+            const overdue = teamData.members.filter(m => {
+                const lastDate = new Date(m.lastOneOnOne);
+                const daysDiff = (new Date() - lastDate) / (1000 * 3600 * 24);
+                return daysDiff > 20;
             });
-        });
-        
-        const percent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-        document.getElementById('stats').innerHTML = `
-            <span class="stat-badge">📊 ${completedTasks}/${totalTasks} tarefas</span>
-            <span class="stat-badge">✅ ${percent}% concluído</span>
-            <span class="stat-badge">👥 ${config.members.length} membros</span>
-        `;
-    }
-
-    function render() {
-        const container = document.getElementById('cellsContainer');
-        let html = '';
-        
-        config.cells.forEach(cell => {
-            const membersInCell = config.members.filter(m => m.cell_id === cell.id);
             
-            html += `
-                <div class="card">
-                    <div class="card-header">
-                        <div class="cell-title">
-                            <span>${cell.nome}</span>
-                            <span class="member-count">${membersInCell.length} membros</span>
-                        </div>
+            if (overdue.length > 0) {
+                return `⚠️ ${overdue[0].nome} está há mais de 20 dias sem 1:1. Que tal agendar agora? Pergunte sobre desafios, carreira e bem-estar.`;
+            }
+            return "Escolha alguém para um 1:1 hoje. Perguntas: 'Como posso te ajudar?', 'O que te motiva?', 'Como está sua energia?'";
+        }
+        
+        // Atualizar métricas de clima
+        function updateClimateMetrics() {
+            // Calcular clima baseado em moods e check-ins
+            let climateAvg = 7.5; // valor base
+            
+            const recentMoods = teamData.moods.slice(-5);
+            const moodValues = { '😊': 9, '😐': 6, '😔': 3, '⚡': 8, '🤔': 5 };
+            let moodSum = 0;
+            recentMoods.forEach(m => {
+                if (moodValues[m.mood]) moodSum += moodValues[m.mood];
+            });
+            if (recentMoods.length > 0) climateAvg = moodSum / recentMoods.length;
+            
+            document.getElementById('climateScore').innerHTML = climateAvg.toFixed(1);
+            document.getElementById('checkinsCount').innerHTML = teamData.dailyCheckins.filter(c => {
+                const date = new Date(c.date);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return date > weekAgo;
+            }).length;
+            document.getElementById('oneoneCount').innerHTML = teamData.oneOnOneHistory.filter(o => {
+                const date = new Date(o.date);
+                const monthAgo = new Date();
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                return date > monthAgo;
+            }).length;
+            
+            // Ação sugerida baseada no clima
+            let climateAction = "";
+            if (climateAvg < 5) {
+                climateAction = "⚠️ Clima baixo detectado. Ação: faça 1:1 individuais hoje, pergunte 'O que podemos melhorar juntos?'. Mostre vulnerabilidade e escuta ativa.";
+            } else if (climateAvg < 7) {
+                climateAction = "📈 Clima neutro. Ação: faça um reconhecimento público hoje. Um 'obrigado' genuíno eleva o engajamento.";
+            } else {
+                climateAction = "🌟 Clima positivo! Ação: aproveite o momento para fortalecer vínculos. Um café coletivo ou happy hour reforça o senso de equipe.";
+            }
+            document.getElementById('climateAction').innerHTML = `💡 ${climateAction}`;
+        }
+        
+        // Registrar humor do líder
+        function registerMood(mood) {
+            teamData.moods.push({ mood: mood, date: new Date().toISOString(), type: 'leader' });
+            saveData();
+            updateClimateMetrics();
+            alert(`🙏 Obrigado! Seu humor foi registrado. Lembre-se: sua energia impacta o time.`);
+        }
+        
+        // Enviar bom dia (simula envio)
+        function sendGoodMorning() {
+            const now = new Date();
+            const hour = now.getHours();
+            let greeting = "";
+            if (hour < 12) greeting = "Bom dia";
+            else if (hour < 18) greeting = "Boa tarde";
+            else greeting = "Boa noite";
+            
+            const message = `${greeting}, time! 🌟\n\nComo vocês estão hoje? Quero começar o dia reconhecendo o trabalho incrível de cada um. Estou aqui para apoiar no que precisarem.\n\nQue tenhamos um dia produtivo e, principalmente, saudável. 💚\n\nQualquer coisa, estou por aqui!`;
+            
+            if (confirm(`Enviar mensagem para o time?\n\n"${message}"\n\n(Simula envio - em produção conectaria com WhatsApp/Teams)`)) {
+                teamData.dailyCheckins.push({ type: 'goodMorning', date: new Date().toISOString() });
+                saveData();
+                alert("✅ Mensagem enviada! Lembre-se de personalizar com o nome de alguém para tornar mais humano.");
+            }
+        }
+        
+        // Mostrar check-in do time
+        function showTeamPulse() {
+            const question = prompt("Pergunta para o time:\n\nDe 0 a 10, como você está se sentindo hoje? (0-muito ruim, 10-ótimo)\n\n(ou qualquer outro feedback)");
+            if (question) {
+                teamData.dailyCheckins.push({ 
+                    type: 'pulse', 
+                    response: question, 
+                    date: new Date().toISOString() 
+                });
+                saveData();
+                alert("✅ Check-in registrado! Use esses dados para ajustar sua liderança.");
+            }
+        }
+        
+        // Sugerir 1:1 com IA
+        function suggestOneOnOne() {
+            const overdue = teamData.members.filter(m => {
+                const lastDate = new Date(m.lastOneOnOne);
+                const daysDiff = (new Date() - lastDate) / (1000 * 3600 * 24);
+                return daysDiff > 20;
+            });
+            
+            if (overdue.length > 0) {
+                alert(`🎯 IA sugere 1:1 com ${overdue[0].nome} (último foi em ${new Date(overdue[0].lastOneOnOne).toLocaleDateString()})\n\nPerguntas sugeridas:\n- Como você está se sentindo no trabalho?\n- O que posso fazer para te ajudar?\n- Como está sua energia?\n- O que você gostaria de desenvolver?`);
+            } else {
+                const random = teamData.members[Math.floor(Math.random() * teamData.members.length)];
+                alert(`🎯 Que tal um 1:1 com ${random.nome}?\n\nPerguntas sugeridas:\n- O que te motiva ultimamente?\n- Tem algo que te desmotiva?\n- Como posso ser um líder melhor para você?`);
+            }
+        }
+        
+        // Gerar agenda diária
+        function updateDailyAgenda() {
+            const now = new Date();
+            const agenda = [
+                { time: "08:00", desc: "💬 Bom dia ao time", done: now.getHours() >= 8 },
+                { time: "08:30", desc: "📋 Revisão de pendências", done: now.getHours() >= 8.5 },
+                { time: "09:30", desc: "🎯 Daily com temas IA", done: now.getHours() >= 9.5 },
+                { time: "10:30", desc: "🌟 Reconhecimento público", done: now.getHours() >= 10.5 },
+                { time: "14:00", desc: "🎧 One-on-One", done: now.getHours() >= 14 },
+                { time: "16:00", desc: "📊 Check de métricas", done: now.getHours() >= 16 },
+                { time: "17:30", desc: "📝 Fechamento e agradecimento", done: now.getHours() >= 17.5 }
+            ];
+            
+            let html = '';
+            agenda.forEach(item => {
+                html += `
+                    <div class="agenda-item">
+                        <div class="agenda-time">${item.time}</div>
+                        <div class="agenda-desc">${item.desc}</div>
+                        <div class="agenda-status ${item.done ? 'done' : ''}"></div>
                     </div>
-                    <div class="members-list">
-            `;
-            
-            membersInCell.forEach(member => {
-                const memberTasks = config.tasks[member.id] || [];
-                const memberNote = config.notes[member.id] || "";
-                const completedCount = memberTasks.filter(t => t.completed).length;
-                const totalCount = memberTasks.length;
+                `;
+            });
+            document.getElementById('dailyAgenda').innerHTML = html;
+        }
+        
+        // Lista de 1:1
+        function updateOneOnOneList() {
+            let html = '';
+            teamData.members.forEach(member => {
+                const lastDate = new Date(member.lastOneOnOne);
+                const daysDiff = Math.floor((new Date() - lastDate) / (1000 * 3600 * 24));
+                let status = '';
+                let urgency = '';
+                if (daysDiff > 30) {
+                    status = '🔴 Urgente';
+                    urgency = 'style="border-left: 4px solid #dc3545"';
+                } else if (daysDiff > 20) {
+                    status = '🟡 Pendente';
+                    urgency = 'style="border-left: 4px solid #ffc107"';
+                } else {
+                    status = '✅ Em dia';
+                }
                 
                 html += `
-                    <div class="member-item" data-member-id="${member.id}">
-                        <div class="member-header">
-                            <span class="member-name">${member.nome}</span>
-                            <span class="member-funcao">${member.funcao}</span>
+                    <div class="person-card" ${urgency}>
+                        <div class="person-info">
+                            <span class="person-name">${member.nome}</span>
+                            <span class="person-last-1x1">Último: ${lastDate.toLocaleDateString()} (${daysDiff} dias) • ${status}</span>
                         </div>
-                        <div style="font-size: 0.7rem; color: #2d6a4f; margin-bottom: 8px;">
-                            Progresso: ${completedCount}/${totalCount} tarefas
-                        </div>
-                        
-                        <div class="section-title">📌 Atividades e Entregas</div>
-                        <div class="tasks-list">
-                `;
-                
-                memberTasks.forEach(task => {
-                    html += `
-                        <div class="task-item">
-                            <input type="checkbox" class="task-check" data-member="${member.id}" data-task-id="${task.id}" ${task.completed ? 'checked' : ''}>
-                            <span class="task-text ${task.completed ? 'completed' : ''}">${task.descricao}</span>
-                            <span class="task-period">${task.period}</span>
-                        </div>
-                    `;
-                });
-                
-                html += `</div>
-                        
-                        <div class="note-area">
-                            <div class="section-title">📝 Anotações do Líder</div>
-                            <textarea class="note-input" data-member="${member.id}" placeholder="Anotações, feedbacks, pendências, observações..." rows="2">${escapeHtml(memberNote)}</textarea>
-                        </div>
+                        <button class="schedule-btn" onclick="scheduleOneOnOne(${member.id})">Agendar</button>
                     </div>
                 `;
             });
-            
-            html += `</div></div>`;
-        });
+            document.getElementById('oneononeList').innerHTML = html;
+        }
         
-        container.innerHTML = html;
-        
-        // Event listeners
-        document.querySelectorAll('.task-check').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const memberId = parseInt(checkbox.dataset.member);
-                const taskId = parseInt(checkbox.dataset.taskId);
-                const task = config.tasks[memberId].find(t => t.id === taskId);
-                if (task) {
-                    task.completed = checkbox.checked;
-                    saveData();
-                    render();
-                }
-            });
-        });
-        
-        document.querySelectorAll('.note-input').forEach(textarea => {
-            textarea.addEventListener('blur', (e) => {
-                const memberId = parseInt(textarea.dataset.member);
-                config.notes[memberId] = textarea.value;
+        function scheduleOneOnOne(memberId) {
+            const member = teamData.members.find(m => m.id === memberId);
+            const date = prompt(`Agendar 1:1 com ${member.nome}\n\nData (YYYY-MM-DD):`, new Date().toISOString().split('T')[0]);
+            if (date) {
+                member.lastOneOnOne = date;
+                teamData.oneOnOneHistory.push({ memberId, date, notes: "" });
                 saveData();
-            });
-        });
-    }
-    
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    function showQuickNote() {
-        const memberList = config.members.map((m, idx) => `${idx+1} - ${m.nome}`).join("\n");
-        const escolha = prompt(`Anotação rápida para quem?\n${memberList}\n\nDigite o número:`);
-        const idx = parseInt(escolha) - 1;
-        if (config.members[idx]) {
-            const nota = prompt(`Anotação para ${config.members[idx].nome}:`);
-            if (nota !== null) {
-                config.notes[config.members[idx].id] = nota;
-                saveData();
-                render();
-                alert("✅ Anotação salva!");
+                updateOneOnOneList();
+                alert(`✅ 1:1 agendado com ${member.nome} para ${date}\n\nDica: prepare perguntas sobre carreira, bem-estar e como você pode ajudar.`);
             }
         }
-    }
-    
-    function resetTodayProgress() {
-        if (confirm("⚠️ Resetar apenas as tarefas DIÁRIAS? (Tarefas de 1º/2º Semestre e Mensais serão mantidas)")) {
-            Object.keys(config.tasks).forEach(memberId => {
-                config.tasks[memberId].forEach(task => {
-                    if (task.period === "Diária") {
-                        task.completed = false;
-                    }
-                });
+        
+        // Rituais
+        function updateRituals() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentTime = currentHour + currentMinute/100;
+            
+            let html = '';
+            rituals.forEach(ritual => {
+                const [hour, minute] = ritual.time.split(':').map(Number);
+                const ritualTime = hour + minute/100;
+                let status = ritualTime <= currentTime ? '✅ ' : '⏰ ';
+                html += `
+                    <div class="ritual-card">
+                        <div class="ritual-time">${status} ${ritual.time}</div>
+                        <div><strong>${ritual.descricao}</strong></div>
+                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 4px;">💡 ${ritual.dica}</div>
+                    </div>
+                `;
             });
-            saveData();
-            render();
-            alert("✅ Tarefas diárias resetadas!");
+            document.getElementById('ritualsList').innerHTML = html;
         }
-    }
-    
-    function updateDate() {
-        const today = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('currentDate').innerHTML = today.toLocaleDateString('pt-BR', options);
-    }
-    
-    // Inicializar
-    initData();
-    updateDate();
-    render();
-</script>
+        
+        // Temas para daily
+        function refreshDailyThemes() {
+            const shuffled = [...dailyThemesDB];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            const selected = shuffled.slice(0, 3);
+            
+            let html = '<div style="margin-bottom: 12px;">🎯 Sugestões de temas para a daily de hoje:</div>';
+            selected.forEach(theme => {
+                html += `<div style="background: #f8f9fc; padding: 12px; border-radius: 16px; margin-bottom: 8px;">${theme}</div>`;
+            });
+            html += `<div style="font-size: 0.75rem; color: #6c757d; margin-top: 8px;">✨ Lembre-se: comece perguntando como as pessoas estão. O lado humano primeiro.</div>`;
+            document.getElementById('dailyThemes').innerHTML = html;
+        }
+        
+        // Relógio e saudação
+        function startClock() {
+            function update() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('currentTime').innerHTML = `${hours}:${minutes}`;
+                
+                let greeting = "";
+                if (now.getHours() < 12) greeting = "🌅 Bom dia, líder! Hora de inspirar o time.";
+                else if (now.getHours() < 18) greeting = "☀️ Boa tarde! Continue com a energia positiva.";
+                else greeting = "🌙 Boa noite! Reflita sobre o dia e se prepare para amanhã.";
+                document.getElementById('greeting').innerHTML = greeting;
+            }
+            update();
+            setInterval(update, 1000);
+        }
+        
+        function updateUI() {
+            updateIA();
+            updateClimateMetrics();
+            updateDailyAgenda();
+            updateOneOnOneList();
+            updateRituals();
+            refreshDailyThemes();
+        }
+        
+        // Inicialização
+        loadData();
+        setInterval(() => {
+            updateIA();
+            updateDailyAgenda();
+            updateRituals();
+        }, 60000);
+    </script>
 </body>
 </html>
