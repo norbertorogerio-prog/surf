@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>Líder 360 - Gestão de Pessoas e Resultados</title>
+    <title>Líder 360 - Gestão Humanizada com Consultoria IA</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
             padding-bottom: 100px;
         }
 
-        /* Header com horário */
+        /* Header */
         .hero {
             background: linear-gradient(135deg, #0f2b1f 0%, #1e4d3a 100%);
             color: white;
@@ -48,7 +48,7 @@
             font-style: italic;
         }
 
-        /* Cards padrão */
+        /* Cards */
         .card {
             background: white;
             margin: 16px;
@@ -65,11 +65,18 @@
             font-weight: 600;
             font-size: 1.2rem;
             color: #1e3a2f;
+            border-left: 4px solid #2d6a4f;
+            padding-left: 12px;
         }
 
-        /* IA Assistente */
+        /* IA Card */
         .ia-card {
             background: linear-gradient(135deg, #2c5a4a 0%, #1e3a2f 100%);
+            color: white;
+        }
+
+        .ia-card .card-header {
+            border-left-color: white;
             color: white;
         }
 
@@ -87,32 +94,26 @@
             margin-top: 12px;
         }
 
-        /* Mensagem do dia */
-        .message-card {
-            background: linear-gradient(135deg, #3a6b5a 0%, #2c5a4a 100%);
-            color: white;
-        }
-
-        .daily-message {
-            font-size: 1rem;
-            line-height: 1.5;
-            font-weight: 500;
-        }
-
-        /* Métricas de clima */
+        /* Grid de métricas */
         .metrics-grid {
             display: flex;
             gap: 12px;
-            margin-bottom: 16px;
             flex-wrap: wrap;
+            margin-bottom: 16px;
         }
 
-        .metric {
+        .metric-card {
             flex: 1;
             background: #f8f9fc;
             padding: 12px;
             border-radius: 20px;
             text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .metric-card:active {
+            transform: scale(0.98);
         }
 
         .metric-value {
@@ -126,110 +127,98 @@
             color: #6c757d;
         }
 
-        /* Agenda do dia */
-        .agenda-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #e9ecef;
+        /* Termômetro de Confiança */
+        .trust-meter {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 16px;
+            border-radius: 28px;
+            padding: 20px;
         }
 
-        .agenda-time {
-            min-width: 65px;
-            font-weight: 600;
-            color: #2d6a4f;
+        .trust-slider {
+            width: 100%;
+            margin: 12px 0;
         }
 
-        .agenda-desc {
-            flex: 1;
-        }
-
-        .agenda-badge {
-            width: 10px;
-            height: 10px;
-            border-radius: 10px;
-            background: #ffc107;
-        }
-
-        .agenda-badge.done {
-            background: #28a745;
-        }
-
-        /* Temas para Daily com atividades diárias */
-        .daily-theme-item {
-            background: #f8f9fc;
-            padding: 14px;
+        /* Reconhecimento entre pares */
+        .recognition-item {
+            background: #fff8e7;
+            padding: 12px;
             border-radius: 20px;
             margin-bottom: 10px;
-            border-left: 4px solid #2d6a4f;
+            border-left: 4px solid #f4a261;
         }
 
-        .daily-theme-text {
-            font-weight: 500;
-            margin-bottom: 6px;
+        .recognition-star {
+            color: #f4a261;
+            font-size: 1.2rem;
         }
 
-        .daily-theme-context {
-            font-size: 0.7rem;
-            color: #e67e22;
+        /* Mapa de Dependências */
+        .dependency-item {
+            background: #e8f0fe;
+            padding: 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
         }
 
-        /* One-on-One */
-        .person-row {
+        /* Memes */
+        .meme-item {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            background: #f8f9fc;
+        }
+
+        /* Piloto do Líder */
+        .leader-commitment {
+            background: #e8f5e9;
+            padding: 16px;
             border-radius: 20px;
-            margin-bottom: 10px;
+            margin-top: 12px;
+            border-left: 4px solid #2d6a4f;
         }
 
-        .person-info {
-            flex: 1;
-        }
-
-        .person-name {
-            font-weight: 600;
-        }
-
-        .person-last {
-            font-size: 0.7rem;
-            color: #6c757d;
-        }
-
-        .urgency-high {
-            border-left: 4px solid #dc3545;
-        }
-
-        .urgency-medium {
-            border-left: 4px solid #ffc107;
-        }
-
-        .btn-small {
+        /* Botões */
+        .btn-primary {
             background: #2d6a4f;
             color: white;
             border: none;
-            padding: 6px 14px;
+            padding: 10px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.85rem;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .btn-secondary {
+            background: #f4a261;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn-small {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
             border-radius: 40px;
             font-size: 0.7rem;
             cursor: pointer;
         }
 
-        /* Rituais */
-        .ritual-item {
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .ritual-time {
-            font-weight: 600;
-            color: #2d6a4f;
-            font-size: 0.8rem;
-        }
-
-        /* Ações rápidas */
+        /* Ações fixas */
         .actions-fixed {
             position: fixed;
             bottom: 0;
@@ -251,7 +240,7 @@
             padding: 12px;
             border-radius: 40px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             text-align: center;
         }
@@ -260,8 +249,14 @@
             background: #f4a261;
         }
 
-        .action-btn.danger {
-            background: #e76f51;
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.3s ease-out;
         }
 
         @media (max-width: 600px) {
@@ -290,13 +285,12 @@
     <div class="actions-fixed">
         <button class="action-btn" id="sendMessageBtn">📱 Enviar Mensagem</button>
         <button class="action-btn warning" id="teamPulseBtn">💓 Check-in do Time</button>
-        <button class="action-btn danger" id="resetDailyBtn">🔄 Resetar Diárias</button>
     </div>
 
     <script>
         // ================= CONFIGURAÇÃO COMPLETA =================
         
-        // Rotação de mensagens de bom dia (segunda a sexta)
+        // Rotação de mensagens
         const morningMessages = [
             "🌅 Bom dia, time! Que nosso dia seja leve, produtivo e cheio de boas entregas. Estou aqui para apoiar vocês no que precisarem. Vamos juntos! 💚",
             "☀️ Bom dia, equipe! Hoje é mais uma oportunidade de fazermos a diferença. Contem comigo para desbloquear o que for preciso. Um ótimo dia para todos! 🚀",
@@ -305,13 +299,10 @@
             "🌈 Bom dia, família! Que a gente consiga entregar valor, mas sem esquecer de respirar e cuidar da gente. Tenham um dia incrível! ✨"
         ];
         
-        // Mensagem de sexta-feira (manhã)
         const fridayMorningMessage = "🎉 SEXTOU, GALERA! 🎉\n\nBom dia, time! Último dia da semana com energia total. Vamos fechar com chave de ouro e celebrar nossas conquistas. Um ótimo dia para todos! 🍻💚";
-        
-        // Mensagem de sexta-feira (final do dia)
         const fridayEveningMessage = "🏆 FECHAMOS MAIS UMA SEMANA! 🏆\n\nQuero agradecer profundamente cada um de vocês pelo esforço, dedicação e comprometimento. Vocês são incríveis! \n\nTenham um fim de semana merecido, descansem, recarreguem as energias. Na segunda estaremos juntos novamente para mais desafios.\n\nGratidão demais! 🙏💚✨";
         
-        // Atividades diárias para temas de daily
+        // Atividades diárias
         const dailyActivities = [
             { activity: "Jornal da Área", cell: "Suporte Executivo", members: "Amanda e Vitória" },
             { activity: "Diário Executivo", cell: "Suporte Executivo", members: "Amanda e Vitória" },
@@ -321,7 +312,7 @@
             { activity: "Suporte e atendimento VIP", cell: "Áudio e Vídeo", members: "Marcel e Fernando" }
         ];
         
-        // Temas fixos para daily + integração com atividades diárias
+        // Base de temas para daily
         const baseDailyThemes = [
             "🚀 Quais são as prioridades de hoje?",
             "⚠️ Tem algum impedimento que eu possa ajudar a remover?",
@@ -335,412 +326,569 @@
             "🧘 Como podemos cuidar melhor do nosso bem-estar hoje?"
         ];
         
-        // Dados do time completo
-        let teamData = {
+        // Dados completos do sistema
+        let systemData = {
             members: [
-                { id: 1, nome: "Amanda Furquim", funcao: "Suporte Executivo", cell: "Executivo", lastOneOnOne: "2025-03-15" },
-                { id: 2, nome: "Vitória Nogueira", funcao: "Suporte Executivo", cell: "Executivo", lastOneOnOne: "2025-03-10" },
-                { id: 3, nome: "Mauro Artioli", funcao: "Governança MS/Power BI", cell: "MS/Gov", lastOneOnOne: "2025-03-18" },
-                { id: 4, nome: "Eduardo Silva", funcao: "Infraestrutura", cell: "Infra", lastOneOnOne: "2025-03-12" },
-                { id: 5, nome: "Anderson Santos", funcao: "Infraestrutura", cell: "Infra", lastOneOnOne: "2025-03-05" },
-                { id: 6, nome: "Marcel Bertulino", funcao: "Áudio e Vídeo", cell: "AV", lastOneOnOne: "2025-03-08" },
-                { id: 7, nome: "Fernando Fernandes", funcao: "Áudio e Vídeo", cell: "AV", lastOneOnOne: "2025-03-14" },
-                { id: 8, nome: "Ivanete Sousa", funcao: "Gestão de Ativos", cell: "Ativos", lastOneOnOne: "2025-03-20" }
+                { id: 1, nome: "Amanda Furquim", funcao: "Suporte Executivo", cell: "Executivo", lastOneOnOne: "2025-03-15", careerGoal: "", nextStep: "" },
+                { id: 2, nome: "Vitória Nogueira", funcao: "Suporte Executivo", cell: "Executivo", lastOneOnOne: "2025-03-10", careerGoal: "", nextStep: "" },
+                { id: 3, nome: "Mauro Artioli", funcao: "Governança MS/Power BI", cell: "MS/Gov", lastOneOnOne: "2025-03-18", careerGoal: "", nextStep: "" },
+                { id: 4, nome: "Eduardo Silva", funcao: "Infraestrutura", cell: "Infra", lastOneOnOne: "2025-03-12", careerGoal: "", nextStep: "" },
+                { id: 5, nome: "Anderson Santos", funcao: "Infraestrutura", cell: "Infra", lastOneOnOne: "2025-03-05", careerGoal: "", nextStep: "" },
+                { id: 6, nome: "Marcel Bertulino", funcao: "Áudio e Vídeo", cell: "AV", lastOneOnOne: "2025-03-08", careerGoal: "", nextStep: "" },
+                { id: 7, nome: "Fernando Fernandes", funcao: "Áudio e Vídeo", cell: "AV", lastOneOnOne: "2025-03-14", careerGoal: "", nextStep: "" },
+                { id: 8, nome: "Ivanete Sousa", funcao: "Gestão de Ativos", cell: "Ativos", lastOneOnOne: "2025-03-20", careerGoal: "", nextStep: "" }
             ],
+            // 1. Termômetro de Confiança
+            trustScores: [],
+            // 3. Reconhecimento entre pares
+            recognitions: [],
+            // 4. Checklist de Autonomia
+            autonomyDecisions: [],
+            // 5. Sexta do Aprendizado
+            fridayLearnings: [],
+            // 6. Previsibilidade de Estresse
+            stressLevels: [],
+            // 7. Mapa de Dependências
+            dependencies: [],
+            // 8. Check-out do Dia
+            checkouts: [],
+            // 9. Memes e Leveza
+            memes: [],
+            // 10. Piloto do Líder
+            leaderCommitments: [],
+            // Controles existentes
+            dailyTasksStatus: {},
             moods: [],
-            dailyTasksStatus: {}, // controle das atividades diárias
-            sentMessages: [], // histórico de mensagens enviadas
+            sentMessages: [],
             checkins: []
         };
         
-        // Inicializar status das atividades diárias
-        function initDailyTasksStatus() {
-            dailyActivities.forEach((activity, idx) => {
-                const key = `daily_${idx}`;
-                if (!teamData.dailyTasksStatus[key]) {
-                    teamData.dailyTasksStatus[key] = { completed: false, date: new Date().toISOString().split('T')[0] };
-                }
-                // resetar se for um novo dia
-                const today = new Date().toISOString().split('T')[0];
-                if (teamData.dailyTasksStatus[key].date !== today) {
-                    teamData.dailyTasksStatus[key] = { completed: false, date: today };
-                }
-            });
-        }
-        
-        // Salvar dados
-        function saveData() {
-            localStorage.setItem('lider360', JSON.stringify(teamData));
-        }
-        
-        function loadData() {
-            const saved = localStorage.getItem('lider360');
+        // Inicializar
+        function initData() {
+            const saved = localStorage.getItem('lider360v2');
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
-                    teamData = { ...teamData, ...parsed };
+                    systemData = { ...systemData, ...parsed };
                 } catch(e) {}
             }
-            initDailyTasksStatus();
+            
+            // Inicializar status das atividades diárias
+            const today = new Date().toISOString().split('T')[0];
+            dailyActivities.forEach((_, idx) => {
+                const key = `daily_${idx}`;
+                if (!systemData.dailyTasksStatus[key] || systemData.dailyTasksStatus[key].date !== today) {
+                    systemData.dailyTasksStatus[key] = { completed: false, date: today };
+                }
+            });
+            
             saveData();
         }
         
-        // ================= IA ASSISTENTE =================
-        function getIAMessage() {
+        function saveData() {
+            localStorage.setItem('lider360v2', JSON.stringify(systemData));
+        }
+        
+        // ================= IA CONSULTOR =================
+        function getConsultantTip() {
             const now = new Date();
             const hour = now.getHours();
-            const minute = now.getMinutes();
-            const currentTime = hour + minute/100;
             
-            if (currentTime < 8) {
-                return { message: "🌅 Bom dia, líder! O dia está começando. Prepare-se para inspirar seu time.", tip: "Hoje, tente fazer uma pergunta genuína para cada pessoa. 'Como você está?' parece simples, mas faz toda diferença." };
-            } else if (currentTime >= 8 && currentTime < 9) {
-                return { message: "☕ Hora do café e conexão. Que tal um contato mais humano agora?", tip: "Escolha uma pessoa do time e mande uma mensagem pessoal. Pergunte sobre o fim de semana, mostre que você se importa de verdade." };
-            } else if (currentTime >= 9 && currentTime < 10) {
-                const pendingActivities = dailyActivities.filter((_, idx) => !teamData.dailyTasksStatus[`daily_${idx}`]?.completed);
-                if (pendingActivities.length > 0) {
-                    return { message: "🎯 Daily começando! Hoje temos atividades diárias importantes.", tip: `Não esqueça de alinhar: ${pendingActivities.map(a => a.activity).join(', ')}. Pergunte como está o andamento.` };
-                }
-                return { message: "🎯 Hora da Daily! Use os temas sugeridos.", tip: "Comece perguntando como as pessoas estão. Depois, foque nos impedimentos. Escute mais do que fale." };
-            } else if (currentTime >= 10 && currentTime < 12) {
-                return { message: "💪 Momento de reconhecer. Quem merece destaque hoje?", tip: "Feedback público fortalece o time. Identifique uma entrega recente e valorize publicamente. Isso gera engajamento." };
-            } else if (currentTime >= 12 && currentTime < 14) {
-                return { message: "🍽️ Hora de pausa. Respeite o momento do time.", tip: "Evite mensagens agora. Use esse tempo para refletir: como você pode ser um líder ainda melhor esta semana?" };
-            } else if (currentTime >= 14 && currentTime < 16) {
-                return { message: "🎧 Hora de ouvir. One-on-One fortalece vínculos.", tip: getOneOnOneTip() };
-            } else if (currentTime >= 16 && currentTime < 18) {
-                return { message: "📊 Como está o clima hoje? Faça um check-in rápido.", tip: "Pergunte: 'De 0 a 10, como vocês estão se sentindo hoje?' Isso mostra cuidado e gera dados valiosos." };
+            // Analisar confiança
+            const recentTrust = systemData.trustScores.slice(-3);
+            const avgTrust = recentTrust.length > 0 ? recentTrust.reduce((a,b) => a + b.score, 0) / recentTrust.length : 7;
+            
+            // Analisar estresse
+            const recentStress = systemData.stressLevels.slice(-5);
+            const avgStress = recentStress.length > 0 ? recentStress.reduce((a,b) => a + b.level, 0) / recentStress.length : 3;
+            
+            let tip = "";
+            
+            if (avgTrust < 5) {
+                tip = "🔴 O termômetro de confiança está baixo. Sugiro: faça uma reunião de transparência total. Compartilhe um erro seu e peça feedback. Vulnerabilidade gera confiança.";
+            } else if (avgStress > 4) {
+                tip = "⚠️ Níveis de estresse elevados detectados. Ação imediata: redistribua tarefas hoje mesmo e faça check-ins individuais perguntando 'O que posso tirar do seu prato?'";
+            } else if (hour >= 8 && hour < 10) {
+                tip = "☀️ Hora de conectar. Que tal começar com um reconhecimento público? Identifique uma entrega recente e valorize. Isso eleva o engajamento imediatamente.";
+            } else if (hour >= 14 && hour < 16) {
+                tip = "🎧 Momento de ouvir. Olhe o mapa de dependências e veja onde você pode desbloquear o time. Pergunte: 'O que está travando você hoje?'";
             } else {
-                return { message: "🌙 Dia produtivo! Reflita sobre suas entregas e sobre o time.", tip: "Anote 3 coisas boas que aconteceram hoje e 1 que pode melhorar amanhã. A liderança se aprimora com reflexão." };
+                tip = "💡 Lembrete: times com alta confiança são 3x mais produtivos. Invista 15 minutos hoje em uma conversa de carreira com alguém do time.";
             }
+            
+            return tip;
         }
         
-        function getOneOnOneTip() {
-            const overdue = teamData.members.filter(m => {
-                const daysDiff = (new Date() - new Date(m.lastOneOnOne)) / (1000 * 3600 * 24);
-                return daysDiff > 20;
-            });
-            if (overdue.length > 0) {
-                return `⚠️ ${overdue[0].nome} está há mais de 20 dias sem 1:1. Agende agora! Pergunte sobre desafios, carreira e bem-estar.`;
-            }
-            return "Escolha alguém para um 1:1 hoje. Perguntas: 'Como posso te ajudar?', 'O que te motiva?', 'Como está sua energia?'";
-        }
-        
-        // ================= MENSAGENS ROTATIVAS =================
+        // ================= MENSAGENS =================
         function getMessageOfTheDay() {
             const now = new Date();
-            const dayOfWeek = now.getDay(); // 0=domingo, 5=sexta, 6=sábado
+            const dayOfWeek = now.getDay();
             const hour = now.getHours();
             
-            // Se for sexta-feira após 17h, mensagem de agradecimento
-            if (dayOfWeek === 5 && hour >= 17) {
-                return { message: fridayEveningMessage, type: "thanks" };
-            }
-            
-            // Se for sexta-feira de manhã, mensagem especial
-            if (dayOfWeek === 5 && hour < 17) {
-                return { message: fridayMorningMessage, type: "friday" };
-            }
-            
-            // Dias úteis (segunda a quinta)
+            if (dayOfWeek === 5 && hour >= 17) return { message: fridayEveningMessage, type: "thanks" };
+            if (dayOfWeek === 5) return { message: fridayMorningMessage, type: "friday" };
             if (dayOfWeek >= 1 && dayOfWeek <= 4) {
-                // Rotação baseada no dia do mês
                 const dayOfMonth = now.getDate();
                 const messageIndex = dayOfMonth % morningMessages.length;
                 return { message: morningMessages[messageIndex], type: "regular" };
             }
-            
-            // Fim de semana - mensagem mais leve
-            return { message: "🌿 Bom fim de semana, time! Descansem, recarreguem as energias. Na segunda estaremos juntos novamente. 🍃", type: "weekend" };
+            return { message: "🌿 Bom fim de semana, time! Descansem e recarreguem as energias. 🍃", type: "weekend" };
         }
         
         function sendMessage() {
             const msg = getMessageOfTheDay();
-            const confirmMsg = `Enviar mensagem para o time?\n\n"${msg.message}"\n\n(Simula envio - em produção conectaria com WhatsApp/Teams)`;
-            if (confirm(confirmMsg)) {
-                teamData.sentMessages.push({ message: msg.message, date: new Date().toISOString(), type: msg.type });
+            if (confirm(`Enviar mensagem para o time?\n\n"${msg.message}"`)) {
+                systemData.sentMessages.push({ message: msg.message, date: new Date().toISOString() });
                 saveData();
-                alert("✅ Mensagem enviada! Lembre-se: a consistência na comunicação fortalece a confiança.");
+                alert("✅ Mensagem enviada! A consistência na comunicação fortalece a confiança.");
                 render();
             }
         }
         
-        // ================= TEMAS PARA DAILY COM ATIVIDADES DIÁRIAS =================
+        // ================= 1. TERMÔMETRO DE CONFIANÇA =================
+        function recordTrust() {
+            const score = prompt("Termômetro de Confiança\n\nDe 0 a 10, o quanto você confia que o time vai te apoiar quando você errar?\n\n0 = nenhuma confiança | 10 = confiança total");
+            if (score && !isNaN(score)) {
+                systemData.trustScores.push({ score: parseInt(score), date: new Date().toISOString() });
+                saveData();
+                alert(`✅ Confiança registrada (${score}/10). ${score < 5 ? "Vamos trabalhar nisso juntos!" : "Que bom! Continue cultivando esse ambiente."}`);
+                render();
+            }
+        }
+        
+        // ================= 2. CONVERSAS DE CARREIRA =================
+        function updateCareerGoal(memberId) {
+            const member = systemData.members.find(m => m.id === memberId);
+            const goal = prompt(`Meta de carreira para ${member.nome}:\n\nO que você quer aprender nos próximos 90 dias?`, member.careerGoal || "");
+            if (goal !== null) {
+                member.careerGoal = goal;
+                saveData();
+                alert(`✅ Meta registrada para ${member.nome}`);
+                render();
+            }
+        }
+        
+        // ================= 3. RECONHECIMENTO ENTRE PARES =================
+        function addRecognition() {
+            const memberList = systemData.members.map((m, idx) => `${idx+1} - ${m.nome}`).join("\n");
+            const to = prompt(`Quem você quer reconhecer?\n${memberList}\n\nDigite o número:`);
+            const toIdx = parseInt(to) - 1;
+            if (systemData.members[toIdx]) {
+                const from = prompt("Seu nome (quem está reconhecendo):");
+                const reason = prompt("Motivo do reconhecimento:");
+                if (from && reason) {
+                    systemData.recognitions.push({
+                        to: systemData.members[toIdx].nome,
+                        from: from,
+                        reason: reason,
+                        date: new Date().toISOString()
+                    });
+                    saveData();
+                    alert(`🌟 Reconhecimento registrado! ${systemData.members[toIdx].nome} recebeu um destaque.`);
+                    render();
+                }
+            }
+        }
+        
+        // ================= 4. AUTONOMIA =================
+        function addAutonomyDecision(memberId) {
+            const member = systemData.members.find(m => m.id === memberId);
+            const decision = prompt(`${member.nome}, qual decisão você tomou hoje sem precisar da minha aprovação?`);
+            if (decision) {
+                systemData.autonomyDecisions.push({
+                    member: member.nome,
+                    decision: decision,
+                    date: new Date().toISOString()
+                });
+                saveData();
+                alert(`✅ Autonomia registrada! ${member.nome} está ganhando mais independência.`);
+                render();
+            }
+        }
+        
+        // ================= 5. SEXTA DO APRENDIZADO =================
+        function addLearning() {
+            const learning = prompt("Qual foi o seu principal aprendizado esta semana? (pode ser técnico, comportamental, sobre o cliente, etc)");
+            if (learning) {
+                systemData.fridayLearnings.push({
+                    learning: learning,
+                    date: new Date().toISOString()
+                });
+                saveData();
+                alert("✅ Aprendizado registrado! Na sexta compartilharemos com o time.");
+                render();
+            }
+        }
+        
+        // ================= 6. PREVISIBILIDADE DE ESTRESSE =================
+        function recordStress() {
+            const level = prompt("Nível de estresse hoje (1 a 5):\n1 = tranquilo | 5 = muito estressado");
+            if (level && !isNaN(level)) {
+                const cause = prompt("Qual a principal causa? (opcional)");
+                systemData.stressLevels.push({
+                    level: parseInt(level),
+                    cause: cause || "",
+                    date: new Date().toISOString()
+                });
+                saveData();
+                alert(`✅ Estresse registrado (${level}/5). ${level > 3 ? "Vamos redistribuir tarefas para aliviar!" : "Que bom que está tranquilo!"}`);
+                render();
+            }
+        }
+        
+        // ================= 7. MAPA DE DEPENDÊNCIAS =================
+        function addDependency() {
+            const cells = ["Executivo", "MS/Gov", "Infra", "AV", "Ativos"];
+            const fromCell = prompt(`Qual célula precisa de ajuda?\n${cells.join(", ")}`);
+            const toCell = prompt(`De qual célula precisa?`);
+            const need = prompt(`O que precisa?`);
+            if (fromCell && toCell && need) {
+                systemData.dependencies.push({
+                    from: fromCell,
+                    to: toCell,
+                    need: need,
+                    status: "pendente",
+                    date: new Date().toISOString()
+                });
+                saveData();
+                alert(`✅ Dependência registrada: ${fromCell} precisa de ${toCell} para: ${need}`);
+                render();
+            }
+        }
+        
+        function resolveDependency(idx) {
+            systemData.dependencies[idx].status = "resolvido";
+            saveData();
+            render();
+        }
+        
+        // ================= 8. CHECK-OUT DO DIA =================
+        function addCheckout() {
+            const delivered = prompt("O que você entregou hoje?");
+            const pending = prompt("O que ficou pendente?");
+            const needHelp = prompt("Precisa de ajuda para amanhã?");
+            if (delivered) {
+                systemData.checkouts.push({
+                    delivered: delivered,
+                    pending: pending || "",
+                    needHelp: needHelp || "",
+                    date: new Date().toISOString()
+                });
+                saveData();
+                alert("✅ Check-out registrado! Amanhã começamos com mais previsibilidade.");
+                render();
+            }
+        }
+        
+        // ================= 9. MEMES E LEVEZA =================
+        function addMeme() {
+            const memeUrl = prompt("URL ou descrição do meme (ou cole o texto):");
+            if (memeUrl) {
+                systemData.memes.push({
+                    content: memeUrl,
+                    date: new Date().toISOString()
+                });
+                saveData();
+                alert("😂 Meme adicionado! Humor fortalece o time.");
+                render();
+            }
+        }
+        
+        // ================= 10. PILOTO DO LÍDER =================
+        function addLeaderCommitment() {
+            const commitment = prompt("Essa semana, eu como líder vou melhorar em:");
+            if (commitment) {
+                systemData.leaderCommitments.push({
+                    commitment: commitment,
+                    date: new Date().toISOString(),
+                    feedback: ""
+                });
+                saveData();
+                alert(`✅ Compromisso registrado: "${commitment}". Na semana que vem, peça feedback se cumpriu!`);
+                render();
+            }
+        }
+        
+        function addFeedbackToCommitment(idx) {
+            const feedback = prompt("Feedback sobre o compromisso do líder:");
+            if (feedback) {
+                systemData.leaderCommitments[idx].feedback = feedback;
+                saveData();
+                render();
+            }
+        }
+        
+        // ================= TEMAS PARA DAILY =================
         function getDailyThemes() {
-            // Pegar atividades diárias pendentes
-            const pendingActivities = dailyActivities.filter((_, idx) => !teamData.dailyTasksStatus[`daily_${idx}`]?.completed);
-            
-            // Selecionar 3 temas aleatórios da base
+            const pendingActivities = dailyActivities.filter((_, idx) => !systemData.dailyTasksStatus[`daily_${idx}`]?.completed);
             const shuffled = [...baseDailyThemes];
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
-            const randomThemes = shuffled.slice(0, 2);
             
-            // Construir temas com as atividades diárias
             let themes = [];
-            
             if (pendingActivities.length > 0) {
                 themes.push({
                     theme: "📋 Atividades Diárias - Checkpoint",
-                    context: `Precisamos alinhar o andamento de: ${pendingActivities.map(a => a.activity).join(', ')}. Como está o progresso?`
+                    context: `Alinhar andamento: ${pendingActivities.map(a => a.activity).join(', ')}`
                 });
             }
-            
-            themes.push(...randomThemes.map(t => ({ theme: t, context: null })));
-            
-            // Adicionar tema de clima sempre
-            themes.push({
-                theme: "💚 Clima e bem-estar",
-                context: "Como vocês estão se sentindo hoje? O que podemos fazer para melhorar o ambiente?"
-            });
+            themes.push(...shuffled.slice(0, 2).map(t => ({ theme: t, context: null })));
+            themes.push({ theme: "💚 Clima e bem-estar", context: "Como vocês estão se sentindo hoje?" });
             
             return themes;
         }
         
-        // ================= RITUAIS DE LIDERANÇA =================
-        const rituals = [
-            { time: "08:00", action: "💬 Enviar mensagem de bom dia", tip: "Use a mensagem rotativa do sistema. Seja humano e próximo." },
-            { time: "08:30", action: "📋 Revisar pendências e atividades diárias", tip: "Veja o que precisa de atenção hoje. Priorize o crítico." },
-            { time: "09:30", action: "🎯 Daily com o time", tip: "Use os temas sugeridos. Comece perguntando como estão." },
-            { time: "10:30", action: "🌟 Reconhecimento público", tip: "Destaque uma entrega de alguém. Valorize publicamente." },
-            { time: "12:00", action: "🍽️ Pausa - respeitar horário do time", tip: "Não mande mensagens no horário de almoço." },
-            { time: "14:00", action: "🎧 One-on-One (se houver)", tip: "Escute mais do que fale. Pergunte sobre carreira e bem-estar." },
-            { time: "16:00", action: "📊 Check de métricas e impedimentos", tip: "Veja onde pode desbloquear o time." },
-            { time: "17:30", action: "📝 Fechamento e agradecimento", tip: "Reconheça o esforço do dia. Sexta: mensagem de agradecimento." }
-        ];
-        
-        // ================= MÉTRICAS DE CLIMA =================
-        function updateClimateMetrics() {
-            const recentMoods = teamData.moods.slice(-7);
-            let avgMood = 7;
-            if (recentMoods.length > 0) {
-                const moodValues = { '😊': 9, '😐': 6, '😔': 3, '⚡': 8, '🤔': 5 };
-                const sum = recentMoods.reduce((acc, m) => acc + (moodValues[m.mood] || 7), 0);
-                avgMood = sum / recentMoods.length;
-            }
+        // ================= MÉTRICAS =================
+        function getMetrics() {
+            const recentTrust = systemData.trustScores.slice(-5);
+            const avgTrust = recentTrust.length > 0 ? (recentTrust.reduce((a,b) => a + b.score, 0) / recentTrust.length).toFixed(1) : "7.0";
+            const recentStress = systemData.stressLevels.slice(-5);
+            const avgStress = recentStress.length > 0 ? (recentStress.reduce((a,b) => a + b.level, 0) / recentStress.length).toFixed(1) : "2.5";
+            const recognitionCount = systemData.recognitions.length;
+            const autonomyCount = systemData.autonomyDecisions.length;
             
-            const oneOnOneCount = teamData.members.filter(m => {
-                const daysDiff = (new Date() - new Date(m.lastOneOnOne)) / (1000 * 3600 * 24);
-                return daysDiff <= 30;
-            }).length;
-            
-            return { avgMood: avgMood.toFixed(1), oneOnOneCount, checkinsCount: teamData.checkins.length };
+            return { avgTrust, avgStress, recognitionCount, autonomyCount };
         }
         
         // ================= RENDERIZAÇÃO COMPLETA =================
         function render() {
             const now = new Date();
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
-            const currentTimeNum = currentHour + currentMinute/100;
-            
-            const climate = updateClimateMetrics();
-            const ia = getIAMessage();
+            const isFriday = now.getDay() === 5;
+            const metrics = getMetrics();
             const dailyThemes = getDailyThemes();
             const messageOfDay = getMessageOfTheDay();
+            const consultantTip = getConsultantTip();
             
             let html = `
-                <!-- IA Assistente -->
+                <!-- IA Consultor -->
                 <div class="card ia-card">
-                    <div class="card-header">🧠✨ IA Assistente de Liderança</div>
-                    <div class="ia-message">${ia.message}</div>
-                    <div class="ia-tip">💡 ${ia.tip}</div>
+                    <div class="card-header">👨‍💼 Consultor Sênior (30 anos de estrada)</div>
+                    <div class="ia-message">${consultantTip}</div>
                 </div>
                 
                 <!-- Mensagem do Dia -->
-                <div class="card message-card">
+                <div class="card">
                     <div class="card-header">📱 Mensagem do Dia</div>
-                    <div class="daily-message">${messageOfDay.message}</div>
-                    <div style="margin-top: 12px; font-size: 0.7rem; opacity: 0.8;">✨ Clique em "Enviar Mensagem" abaixo para enviar ao time</div>
+                    <div style="background: #e8f5e9; padding: 12px; border-radius: 16px; margin-bottom: 12px;">
+                        ${messageOfDay.message}
+                    </div>
+                    <button class="btn-primary" onclick="sendMessage()">📤 Enviar para o Time</button>
                 </div>
                 
-                <!-- Métricas de Clima -->
+                <!-- Métricas Rápidas -->
                 <div class="card">
-                    <div class="card-header">📊 Clima e Engajamento</div>
+                    <div class="card-header">📊 Indicadores de Gestão</div>
                     <div class="metrics-grid">
-                        <div class="metric">
-                            <div class="metric-value">${climate.avgMood}</div>
-                            <div class="metric-label">Clima Geral (0-10)</div>
+                        <div class="metric-card" onclick="recordTrust()">
+                            <div class="metric-value">${metrics.avgTrust}</div>
+                            <div class="metric-label">🔒 Confiança (0-10)</div>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">${climate.oneOnOneCount}/8</div>
-                            <div class="metric-label">1:1 em dia</div>
+                        <div class="metric-card" onclick="recordStress()">
+                            <div class="metric-value">${metrics.avgStress}</div>
+                            <div class="metric-label">⚠️ Estresse (1-5)</div>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">${teamData.checkins.length}</div>
-                            <div class="metric-label">Check-ins (total)</div>
+                        <div class="metric-card" onclick="addRecognition()">
+                            <div class="metric-value">${metrics.recognitionCount}</div>
+                            <div class="metric-label">🌟 Reconhecimentos</div>
                         </div>
-                    </div>
-                    <div style="background: #e8f5e9; padding: 12px; border-radius: 16px; font-size: 0.85rem;">
-                        💡 ${climate.avgMood < 6 ? "Clima precisa de atenção. Faça 1:1 individuais hoje e pergunte como você pode ajudar." : "Clima positivo! Mantenha o reconhecimento e fortaleça os vínculos."}
+                        <div class="metric-card" onclick="addAutonomyDecision()">
+                            <div class="metric-value">${metrics.autonomyCount}</div>
+                            <div class="metric-label">🚀 Decisões Autônomas</div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Agenda do Dia -->
-                <div class="card">
-                    <div class="card-header">⏰ Sua Agenda de Liderança</div>
-            `;
-            
-            rituals.forEach(ritual => {
-                const [hour, minute] = ritual.time.split(':').map(Number);
-                const ritualTime = hour + minute/100;
-                const isDone = ritualTime <= currentTimeNum;
-                html += `
-                    <div class="agenda-item">
-                        <div class="agenda-time">${ritual.time}</div>
-                        <div class="agenda-desc">${ritual.action}</div>
-                        <div class="agenda-badge ${isDone ? 'done' : ''}"></div>
+                <!-- Termômetro de Confiança -->
+                <div class="trust-meter">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <strong>🔒 Termômetro de Confiança</strong>
+                        <button class="btn-small" onclick="recordTrust()">Registrar</button>
                     </div>
-                    <div style="font-size: 0.7rem; color: #6c757d; margin-left: 77px; margin-top: -8px; margin-bottom: 4px;">💡 ${ritual.tip}</div>
-                `;
-            });
-            
-            html += `</div>`;
-            
-            // Temas para Daily com atividades diárias
-            html += `
+                    <div>Confiança é a base de tudo. Times com alta confiança são 3x mais produtivos.</div>
+                </div>
+                
+                <!-- Temas para Daily -->
                 <div class="card">
                     <div class="card-header">🎯 Temas para Daily (09:30)</div>
-            `;
-            
-            dailyThemes.forEach(theme => {
-                html += `
-                    <div class="daily-theme-item">
-                        <div class="daily-theme-text">${theme.theme}</div>
-                        ${theme.context ? `<div class="daily-theme-context">📌 ${theme.context}</div>` : ''}
-                    </div>
-                `;
-            });
-            
-            html += `<div style="margin-top: 12px; font-size: 0.7rem; color: #6c757d;">✨ Lembre-se: comece perguntando como as pessoas estão. O lado humano primeiro.</div>`;
-            html += `</div>`;
-            
-            // Atividades Diárias - Checkbox para controle
-            html += `
-                <div class="card">
-                    <div class="card-header">📋 Atividades Diárias do Time</div>
-            `;
-            
-            dailyActivities.forEach((activity, idx) => {
-                const key = `daily_${idx}`;
-                const isCompleted = teamData.dailyTasksStatus[key]?.completed || false;
-                html += `
-                    <div class="agenda-item">
-                        <input type="checkbox" id="task_${idx}" ${isCompleted ? 'checked' : ''} onchange="toggleDailyTask(${idx})" style="width: 20px; height: 20px;">
-                        <div class="agenda-desc" style="${isCompleted ? 'text-decoration: line-through; opacity: 0.6;' : ''}">
-                            <strong>${activity.activity}</strong><br>
-                            <span style="font-size: 0.7rem; color: #6c757d;">${activity.cell} - ${activity.members}</span>
+                    ${dailyThemes.map(theme => `
+                        <div style="background: #f8f9fc; padding: 12px; border-radius: 16px; margin-bottom: 10px;">
+                            <div><strong>${theme.theme}</strong></div>
+                            ${theme.context ? `<div style="font-size: 0.75rem; color: #e67e22; margin-top: 4px;">📌 ${theme.context}</div>` : ''}
                         </div>
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-            
-            // One-on-One
-            html += `
-                <div class="card">
-                    <div class="card-header">💬 One-on-One - Acompanhamento</div>
-            `;
-            
-            teamData.members.forEach(member => {
-                const daysDiff = Math.floor((new Date() - new Date(member.lastOneOnOne)) / (1000 * 3600 * 24));
-                let urgencyClass = '';
-                let statusText = '';
-                if (daysDiff > 30) {
-                    urgencyClass = 'urgency-high';
-                    statusText = '🔴 Urgente';
-                } else if (daysDiff > 20) {
-                    urgencyClass = 'urgency-medium';
-                    statusText = '🟡 Pendente';
-                } else {
-                    statusText = '✅ Em dia';
-                }
+                    `).join('')}
+                </div>
                 
+                <!-- Atividades Diárias -->
+                <div class="card">
+                    <div class="card-header">📋 Atividades Diárias</div>
+                    ${dailyActivities.map((activity, idx) => {
+                        const key = `daily_${idx}`;
+                        const completed = systemData.dailyTasksStatus[key]?.completed;
+                        return `
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #e9ecef;">
+                                <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleDailyTask(${idx})" style="width: 20px; height: 20px;">
+                                <div style="flex:1">
+                                    <div style="${completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}"><strong>${activity.activity}</strong></div>
+                                    <div style="font-size: 0.7rem; color: #6c757d;">${activity.cell} - ${activity.members}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                <!-- One-on-One com Carreira -->
+                <div class="card">
+                    <div class="card-header">💬 One-on-One + Carreira</div>
+                    ${systemData.members.map(member => {
+                        const daysDiff = Math.floor((new Date() - new Date(member.lastOneOnOne)) / (1000 * 3600 * 24));
+                        return `
+                            <div style="background: #f8f9fc; border-radius: 16px; padding: 12px; margin-bottom: 10px; ${daysDiff > 30 ? 'border-left: 4px solid #dc3545' : daysDiff > 20 ? 'border-left: 4px solid #ffc107' : ''}">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                                    <div>
+                                        <strong>${member.nome}</strong><br>
+                                        <span style="font-size: 0.7rem; color: #6c757d;">Último: ${new Date(member.lastOneOnOne).toLocaleDateString()} (${daysDiff} dias)</span>
+                                        ${member.careerGoal ? `<div style="font-size: 0.7rem; color: #2d6a4f; margin-top: 4px;">🎯 Meta: ${member.careerGoal}</div>` : ''}
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn-small" onclick="scheduleOneOnOne(${member.id})">Agendar</button>
+                                        <button class="btn-small" onclick="updateCareerGoal(${member.id})">Carreira</button>
+                                        <button class="btn-small" onclick="addAutonomyDecision(${member.id})">Autonomia</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            
+            // Reconhecimentos entre pares
+            if (systemData.recognitions.length > 0) {
                 html += `
-                    <div class="person-row ${urgencyClass}">
-                        <div class="person-info">
-                            <div class="person-name">${member.nome}</div>
-                            <div class="person-last">Último: ${new Date(member.lastOneOnOne).toLocaleDateString()} (${daysDiff} dias) • ${statusText}</div>
-                            <div style="font-size: 0.7rem; color: #2d6a4f;">${member.funcao}</div>
-                        </div>
-                        <button class="btn-small" onclick="scheduleOneOnOne(${member.id})">Agendar</button>
+                    <div class="card">
+                        <div class="card-header">🌟 Reconhecimentos entre Pares</div>
+                        ${systemData.recognitions.slice(-5).map(r => `
+                            <div class="recognition-item">
+                                <div><span class="recognition-star">⭐</span> <strong>${r.to}</strong> recebeu de <strong>${r.from}</strong></div>
+                                <div style="font-size: 0.8rem;">💬 "${r.reason}"</div>
+                                <div style="font-size: 0.7rem; color: #6c757d;">${new Date(r.date).toLocaleDateString()}</div>
+                            </div>
+                        `).join('')}
+                        <button class="btn-primary" onclick="addRecognition()">✨ Adicionar Reconhecimento</button>
                     </div>
                 `;
-            });
+            }
             
-            html += `<button class="action-btn warning" style="margin-top: 12px; width: 100%;" onclick="suggestOneOnOne()">✨ IA: Sugerir próximo 1:1</button>`;
-            html += `</div>`;
+            // Mapa de Dependências
+            html += `
+                <div class="card">
+                    <div class="card-header">🗺️ Mapa de Dependências</div>
+                    ${systemData.dependencies.length > 0 ? systemData.dependencies.map((dep, idx) => `
+                        <div class="dependency-item">
+                            <div><strong>${dep.from}</strong> → <strong>${dep.to}</strong></div>
+                            <div style="font-size: 0.85rem;">📌 ${dep.need}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                                <span style="font-size: 0.7rem; color: ${dep.status === 'resolvido' ? '#28a745' : '#ffc107'}">${dep.status === 'resolvido' ? '✅ Resolvido' : '⏳ Pendente'}</span>
+                                ${dep.status !== 'resolvido' ? `<button class="btn-small" onclick="resolveDependency(${idx})">Marcar Resolvido</button>` : ''}
+                            </div>
+                        </div>
+                    `).join('') : '<div style="text-align: center; color: #6c757d;">Nenhuma dependência registrada</div>'}
+                    <button class="btn-primary" onclick="addDependency()">➕ Adicionar Dependência</button>
+                </div>
+            `;
+            
+            // Memes e Leveza
+            html += `
+                <div class="card">
+                    <div class="card-header">😂 Memes e Leveza</div>
+                    ${systemData.memes.length > 0 ? systemData.memes.slice(-3).map(meme => `
+                        <div class="meme-item">
+                            <span>${meme.content}</span>
+                            <span style="font-size: 0.7rem; color: #6c757d;">${new Date(meme.date).toLocaleDateString()}</span>
+                        </div>
+                    `).join('') : '<div style="text-align: center; color: #6c757d;">Nenhum meme ainda. Adicione um para alegrar o time!</div>'}
+                    <button class="btn-primary" onclick="addMeme()">😂 Adicionar Meme</button>
+                </div>
+            `;
+            
+            // Piloto do Líder
+            html += `
+                <div class="card">
+                    <div class="card-header">🎯 Piloto do Líder (meu compromisso)</div>
+                    ${systemData.leaderCommitments.length > 0 ? systemData.leaderCommitments.slice(-2).map((c, idx) => `
+                        <div class="leader-commitment">
+                            <div><strong>📌 ${c.commitment}</strong></div>
+                            <div style="font-size: 0.7rem; color: #6c757d;">Registrado em: ${new Date(c.date).toLocaleDateString()}</div>
+                            ${c.feedback ? `<div style="margin-top: 8px; background: #e8f5e9; padding: 8px; border-radius: 12px;">💬 Feedback: "${c.feedback}"</div>` : `<button class="btn-small" style="margin-top: 8px;" onclick="addFeedbackToCommitment(${systemData.leaderCommitments.length - 1})">Pedir Feedback</button>`}
+                        </div>
+                    `).join('') : '<div style="text-align: center; color: #6c757d;">Nenhum compromisso registrado</div>'}
+                    <button class="btn-primary" onclick="addLeaderCommitment()">📝 Assumir Compromisso</button>
+                </div>
+            `;
+            
+            // Sexta do Aprendizado
+            if (isFriday) {
+                html += `
+                    <div class="card">
+                        <div class="card-header">📚 Sexta do Aprendizado</div>
+                        ${systemData.fridayLearnings.slice(-3).map(l => `
+                            <div style="background: #e8f5e9; padding: 12px; border-radius: 16px; margin-bottom: 8px;">
+                                💡 "${l.learning}"
+                                <div style="font-size: 0.7rem; color: #6c757d;">${new Date(l.date).toLocaleDateString()}</div>
+                            </div>
+                        `).join('')}
+                        <button class="btn-primary" onclick="addLearning()">📖 Compartilhar Aprendizado</button>
+                    </div>
+                `;
+            }
+            
+            // Check-out do Dia (final do dia)
+            if (now.getHours() >= 16) {
+                html += `
+                    <div class="card">
+                        <div class="card-header">📝 Check-out do Dia</div>
+                        <div style="background: #f8f9fc; padding: 12px; border-radius: 16px; margin-bottom: 12px;">
+                            Como foi seu dia? Registre o que entregou e o que ficou pendente.
+                        </div>
+                        <button class="btn-primary" onclick="addCheckout()">✅ Fazer Check-out</button>
+                    </div>
+                `;
+            }
             
             document.getElementById('app').innerHTML = html;
         }
         
-        // Funções globais
+        // Funções auxiliares globais
         function toggleDailyTask(idx) {
             const key = `daily_${idx}`;
-            teamData.dailyTasksStatus[key].completed = !teamData.dailyTasksStatus[key].completed;
+            systemData.dailyTasksStatus[key].completed = !systemData.dailyTasksStatus[key].completed;
             saveData();
             render();
         }
         
         function scheduleOneOnOne(memberId) {
-            const member = teamData.members.find(m => m.id === memberId);
+            const member = systemData.members.find(m => m.id === memberId);
             const date = prompt(`Agendar 1:1 com ${member.nome}\n\nData (YYYY-MM-DD):`, new Date().toISOString().split('T')[0]);
             if (date) {
                 member.lastOneOnOne = date;
-                teamData.checkins.push({ type: 'oneonone', memberId, date: new Date().toISOString() });
                 saveData();
                 render();
-                alert(`✅ 1:1 agendado com ${member.nome} para ${date}\n\nDica: prepare perguntas sobre carreira, bem-estar e como você pode ajudar.`);
-            }
-        }
-        
-        function suggestOneOnOne() {
-            const overdue = teamData.members.filter(m => {
-                const daysDiff = (new Date() - new Date(m.lastOneOnOne)) / (1000 * 3600 * 24);
-                return daysDiff > 20;
-            });
-            
-            if (overdue.length > 0) {
-                alert(`🎯 IA sugere 1:1 com ${overdue[0].nome} (último foi em ${new Date(overdue[0].lastOneOnOne).toLocaleDateString()})\n\nPerguntas sugeridas:\n- Como você está se sentindo no trabalho?\n- O que posso fazer para te ajudar?\n- Como está sua energia?\n- O que você gostaria de desenvolver?`);
-            } else {
-                const random = teamData.members[Math.floor(Math.random() * teamData.members.length)];
-                alert(`🎯 Que tal um 1:1 com ${random.nome}?\n\nPerguntas sugeridas:\n- O que te motiva ultimamente?\n- Tem algo que te desmotiva?\n- Como posso ser um líder melhor para você?`);
+                alert(`✅ 1:1 agendado com ${member.nome} para ${date}`);
             }
         }
         
         function teamPulse() {
-            const response = prompt("Check-in rápido com o time:\n\nDe 0 a 10, como vocês estão se sentindo hoje?\n\n(ou deixe um feedback que queira compartilhar)");
+            const response = prompt("Check-in rápido com o time:\n\nDe 0 a 10, como vocês estão se sentindo hoje?");
             if (response) {
-                teamData.checkins.push({ type: 'pulse', response, date: new Date().toISOString() });
+                systemData.checkins.push({ response, date: new Date().toISOString() });
                 saveData();
-                alert("✅ Check-in registrado! Use esses dados para ajustar sua liderança.");
+                alert("✅ Check-in registrado!");
                 render();
             }
         }
         
-        function resetDailyTasks() {
-            if (confirm("⚠️ Resetar todas as atividades diárias? Isso vai marcar todas como não concluídas para hoje.")) {
-                const today = new Date().toISOString().split('T')[0];
-                dailyActivities.forEach((_, idx) => {
-                    teamData.dailyTasksStatus[`daily_${idx}`] = { completed: false, date: today };
-                });
-                saveData();
-                render();
-                alert("✅ Atividades diárias resetadas!");
-            }
-        }
-        
-        function registerMood(mood) {
-            teamData.moods.push({ mood, date: new Date().toISOString() });
-            saveData();
-            alert(`🙏 Obrigado! Seu humor foi registrado. Lembre-se: sua energia impacta o time.`);
-            render();
-        }
-        
-        // Relógio e saudação
+        // Relógio
         function startClock() {
             function update() {
                 const now = new Date();
@@ -752,28 +900,43 @@
                 document.getElementById('currentDate').innerHTML = now.toLocaleDateString('pt-BR', options);
                 
                 const quotes = [
-                    "“Liderar é fazer com que os outros façam o que precisam ser feitos, mas com vontade.”",
+                    "“Liderar é fazer com que os outros façam o que precisa ser feito, mas com vontade.”",
                     "“A verdadeira liderança é servir.”",
                     "“Seja o líder que você gostaria de ter.”",
                     "“Confiança se constrói com transparência e consistência.”",
                     "“Pessoas não se lembram do que você disse, mas de como você as fez sentir.”"
                 ];
-                const dayOfMonth = now.getDate();
-                document.getElementById('leaderQuote').innerHTML = quotes[dayOfMonth % quotes.length];
+                document.getElementById('leaderQuote').innerHTML = quotes[now.getDate() % quotes.length];
             }
             update();
             setInterval(update, 1000);
         }
         
+        // Expor funções globalmente
+        window.sendMessage = sendMessage;
+        window.recordTrust = recordTrust;
+        window.recordStress = recordStress;
+        window.addRecognition = addRecognition;
+        window.addAutonomyDecision = addAutonomyDecision;
+        window.addLearning = addLearning;
+        window.addDependency = addDependency;
+        window.resolveDependency = resolveDependency;
+        window.addCheckout = addCheckout;
+        window.addMeme = addMeme;
+        window.addLeaderCommitment = addLeaderCommitment;
+        window.addFeedbackToCommitment = addFeedbackToCommitment;
+        window.toggleDailyTask = toggleDailyTask;
+        window.scheduleOneOnOne = scheduleOneOnOne;
+        window.updateCareerGoal = updateCareerGoal;
+        window.teamPulse = teamPulse;
+        
         // Inicialização
-        loadData();
+        initData();
         startClock();
         render();
         
-        // Bind dos botões
         document.getElementById('sendMessageBtn').onclick = sendMessage;
         document.getElementById('teamPulseBtn').onclick = teamPulse;
-        document.getElementById('resetDailyBtn').onclick = resetDailyTasks;
     </script>
 </body>
 </html>
