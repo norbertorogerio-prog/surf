@@ -2,20 +2,21 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Gestão de Células</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Gestão de Células - Líder</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f4f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
             padding: 16px;
-            padding-bottom: 80px;
+            padding-bottom: 100px;
         }
 
         .container {
@@ -23,121 +24,199 @@
             margin: 0 auto;
         }
 
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e3a2f 0%, #2d6a4f 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .date {
+            font-size: 0.8rem;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
         /* Cards */
         .card {
             background: white;
-            border-radius: 24px;
-            padding: 20px;
+            border-radius: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.2s;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
         }
 
         .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
+            background: #f8f9fa;
+            padding: 16px 20px;
             border-left: 4px solid #2d6a4f;
-            padding-left: 12px;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .cell-title {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: #1e3a2f;
-        }
-
-        .member-list {
-            margin-top: 16px;
-        }
-
-        .member-item {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-
-        .member-name {
-            font-weight: 600;
-            font-size: 1.1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .member-funcao {
-            font-size: 0.8rem;
-            color: #2d6a4f;
-            background: #e9f5ef;
+        .member-count {
+            font-size: 0.75rem;
+            background: #e9ecef;
             padding: 4px 10px;
             border-radius: 20px;
+            color: #495057;
         }
 
-        .tasks-list {
-            margin-top: 12px;
-            margin-left: 8px;
+        /* Member Item */
+        .member-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.2s;
+        }
+
+        .member-item:last-child {
+            border-bottom: none;
+        }
+
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .member-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #212529;
+        }
+
+        .member-funcao {
+            font-size: 0.7rem;
+            background: #e8f5e9;
+            color: #2d6a4f;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Tasks */
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #6c757d;
+            margin: 12px 0 8px 0;
+            letter-spacing: 0.5px;
         }
 
         .task-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 6px 0;
         }
 
         .task-check {
             width: 20px;
             height: 20px;
             cursor: pointer;
+            accent-color: #2d6a4f;
         }
 
         .task-text {
             flex: 1;
+            font-size: 0.9rem;
+            color: #212529;
         }
 
-        .delivery-badge {
-            background: #fff3e0;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            margin-top: 8px;
-            display: inline-block;
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #adb5bd;
+        }
+
+        /* Deliveries */
+        .delivery-item {
+            background: #fff8e7;
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delivery-title {
+            font-weight: 500;
+        }
+
+        .delivery-status {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #ffe0b5;
+        }
+
+        .delivery-status.done {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* Notes */
+        .note-area {
+            margin-top: 12px;
         }
 
         .note-input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
+            padding: 10px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
             font-family: inherit;
-            margin-top: 12px;
+            font-size: 0.85rem;
             resize: vertical;
+            background: #f8f9fa;
         }
 
-        button {
+        .note-input:focus {
+            outline: none;
+            border-color: #2d6a4f;
+            background: white;
+        }
+
+        /* Buttons */
+        .add-btn {
             background: #2d6a4f;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 12px 20px;
             border-radius: 40px;
             font-weight: 500;
             cursor: pointer;
             font-size: 0.9rem;
-        }
-
-        .status-pendente {
-            color: #e67e22;
-            font-size: 0.7rem;
-        }
-
-        .status-concluido {
-            color: #27ae60;
-            text-decoration: line-through;
-            opacity: 0.7;
+            width: 100%;
+            margin-top: 8px;
         }
 
         .fab {
@@ -155,160 +234,359 @@
             font-size: 28px;
             cursor: pointer;
             color: white;
+            border: none;
+            z-index: 1000;
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quick-btn {
+            flex: 1;
+            background: white;
+            padding: 12px;
+            border-radius: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #2d6a4f;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+        }
+
+        .quick-btn:active {
+            background: #f0f0f0;
         }
 
         @media (max-width: 600px) {
             body {
                 padding: 12px;
             }
+            .member-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container" id="app">
-    <div style="margin-bottom: 20px;">
-        <h1>📋 Liderança de Células</h1>
-        <p style="color: #3b5c4a;">Controle de entregas e atividades diárias</p>
+<div class="container">
+    <div class="header">
+        <h1>📋 Gestão de Células</h1>
+        <p>Controle diário de atividades e entregas</p>
+        <div class="date" id="currentDate"></div>
+    </div>
+
+    <div class="quick-actions">
+        <div class="quick-btn" onclick="showAddMember()">➕ Add Membro</div>
+        <div class="quick-btn" onclick="showGlobalTask()">📝 Add Tarefa Rápida</div>
     </div>
 
     <div id="cellsContainer">
-        <!-- células serão inseridas aqui via JS -->
-        <div class="card">Carregando equipes...</div>
+        <!-- células serão inseridas aqui -->
+        <div style="text-align: center; padding: 40px;">Carregando...</div>
     </div>
 </div>
 
-<div class="fab" onclick="abrirChecklistRapido()">+</div>
+<button class="fab" onclick="showQuickNote()">✏️</button>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // ================= CONFIGURAÇÃO SUPABASE =================
-    const SUPABASE_URL = "https://SEU_PROJETO.supabase.co";
-    const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON";
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Dados mockados enquanto você não cria as tabelas
-    // depois substituir por chamadas reais ao Supabase
-
-    let membrosMock = [
-        { id: 1, nome: "Ana Souza", funcao: "Coordenadora de Campo", cell_id: 1 },
-        { id: 2, nome: "Carlos Lima", funcao: "Técnico de Obras", cell_id: 1 },
-        { id: 3, nome: "Mariana Rocha", funcao: "Líder de Terceiros", cell_id: 2 },
-        { id: 4, nome: "João Pedro", funcao: "Auxiliar", cell_id: 2 }
-    ];
-
-    let cellsMock = [
-        { id: 1, nome: "Célula Azul - Infraestrutura" },
-        { id: 2, nome: "Célula Verde - Terceiros" }
-    ];
-
-    let atividadesMock = {
-        1: [
-            { id: 101, descricao: "Revisar cronograma de campo", status: "pendente" },
-            { id: 102, descricao: "Validar relatório de entregas", status: "concluido" }
+    // ================= DADOS INICIAIS =================
+    let dados = {
+        cells: [
+            { id: 1, nome: "Célula Azul - Infraestrutura" },
+            { id: 2, nome: "Célula Verde - Terceiros" },
+            { id: 3, nome: "Célula Amarela - Suporte" }
         ],
-        2: [
-            { id: 103, descricao: "Acompanhar equipe terceirizada", status: "pendente" }
+        members: [
+            { id: 1, nome: "Ana Souza", funcao: "Coordenadora de Campo", cell_id: 1 },
+            { id: 2, nome: "Carlos Lima", funcao: "Técnico de Obras", cell_id: 1 },
+            { id: 3, nome: "Mariana Rocha", funcao: "Líder de Terceiros", cell_id: 2 },
+            { id: 4, nome: "João Pedro", funcao: "Auxiliar", cell_id: 2 },
+            { id: 5, nome: "Fernanda Santos", funcao: "Analista de Suporte", cell_id: 3 }
         ],
-        3: [
-            { id: 104, descricao: "Negociar contrato com novo fornecedor", status: "pendente" }
-        ],
-        4: [
-            { id: 105, descricao: "Organizar ferramentas", status: "concluido" }
-        ]
+        tasks: {}, // formato: { memberId: [{ id, descricao, completed }] }
+        deliveries: {}, // formato: { memberId: [{ id, titulo, data, completed }] }
+        notes: {} // formato: { memberId: "nota" }
     };
 
-    let entregasMock = [
-        { id: 1, member_id: 1, titulo: "Relatório mensal", data_entrega: "2025-03-28", status: "pendente" },
-        { id: 2, member_id: 2, titulo: "Checklist de segurança", data_entrega: "2025-03-27", status: "concluido" }
-    ];
+    // Inicializar dados se não existirem no localStorage
+    function initData() {
+        const saved = localStorage.getItem('gestaoCelulas');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                dados = { ...dados, ...parsed };
+            } catch(e) { console.error('Erro ao carregar dados'); }
+        }
+        
+        // Inicializar estruturas vazias para membros que não têm
+        dados.members.forEach(member => {
+            if (!dados.tasks[member.id]) {
+                dados.tasks[member.id] = [
+                    { id: Date.now() + member.id + 1, descricao: "Revisar atividades do dia", completed: false },
+                    { id: Date.now() + member.id + 2, descricao: "Registrar entregas no sistema", completed: false }
+                ];
+            }
+            if (!dados.deliveries[member.id]) {
+                dados.deliveries[member.id] = [];
+            }
+            if (!dados.notes[member.id]) {
+                dados.notes[member.id] = "";
+            }
+        });
+        
+        saveData();
+    }
 
-    // Função para carregar e exibir dados (usando mock + integração futura)
-    async function carregarDashboard() {
-        // Aqui depois você vai buscar do Supabase:
-        // const { data: cells } = await supabase.from('cells').select('*')
-        // const { data: members } = await supabase.from('members').select('*')
-        // const { data: dailyTasks } = await supabase.from('daily_tasks').select('*')
-        // const { data: deliveries } = await supabase.from('deliveries').select('*')
+    function saveData() {
+        localStorage.setItem('gestaoCelulas', JSON.stringify(dados));
+    }
 
-        // Exemplo com dados locais
-        const cells = cellsMock;
-        const members = membrosMock;
-
+    // Renderizar dashboard
+    function render() {
+        const container = document.getElementById('cellsContainer');
         let html = '';
-        for (let cell of cells) {
-            const membrosDaCell = members.filter(m => m.cell_id === cell.id);
+        
+        dados.cells.forEach(cell => {
+            const membersInCell = dados.members.filter(m => m.cell_id === cell.id);
+            
             html += `
                 <div class="card">
                     <div class="card-header">
-                        <div class="cell-title">${cell.nome}</div>
-                        <span style="font-size: 0.8rem;">${membrosDaCell.length} pessoas</span>
-                    </div>
-                    <div class="member-list">
-            `;
-            for (let membro of membrosDaCell) {
-                const tarefas = atividadesMock[membro.id] || [];
-                const entregasMembro = entregasMock.filter(e => e.member_id === membro.id);
-                html += `
-                    <div class="member-item">
-                        <div class="member-name">
-                            <span>${membro.nome}</span>
-                            <span class="member-funcao">${membro.funcao}</span>
+                        <div class="cell-title">
+                            <span>${cell.nome}</span>
+                            <span class="member-count">${membersInCell.length} membros</span>
                         </div>
-                        <div class="tasks-list">
-                            <strong>📌 Atividades diárias:</strong>
+                    </div>
+                    <div class="members-list">
+            `;
+            
+            membersInCell.forEach(member => {
+                const memberTasks = dados.tasks[member.id] || [];
+                const memberDeliveries = dados.deliveries[member.id] || [];
+                const memberNote = dados.notes[member.id] || "";
+                
+                html += `
+                    <div class="member-item" data-member-id="${member.id}">
+                        <div class="member-header">
+                            <span class="member-name">${member.nome}</span>
+                            <span class="member-funcao">${member.funcao}</span>
+                        </div>
+                        
+                        <div class="section-title">📌 Atividades Diárias</div>
+                        <div class="tasks-list" id="tasks-${member.id}">
                 `;
-                for (let task of tarefas) {
-                    const statusClass = task.status === 'concluido' ? 'status-concluido' : '';
+                
+                memberTasks.forEach(task => {
                     html += `
                         <div class="task-item">
-                            <input type="checkbox" class="task-check" data-task-id="${task.id}" ${task.status === 'concluido' ? 'checked' : ''}>
-                            <span class="task-text ${statusClass}">${task.descricao}</span>
+                            <input type="checkbox" class="task-check" data-member="${member.id}" data-task-id="${task.id}" ${task.completed ? 'checked' : ''}>
+                            <span class="task-text ${task.completed ? 'completed' : ''}">${task.descricao}</span>
                         </div>
                     `;
-                }
-                html += `</div><div>`;
-                if (entregasMembro.length > 0) {
-                    html += `<strong>📦 Entregas:</strong><br>`;
-                    for (let entrega of entregasMembro) {
-                        html += `<div class="delivery-badge">📅 ${entrega.titulo} - até ${entrega.data_entrega} (${entrega.status})</div>`;
-                    }
-                }
+                });
+                
                 html += `
+                            <button class="add-btn" style="background: #6c757d; margin-top: 4px;" onclick="addTaskToMember(${member.id})">+ Nova Atividade</button>
                         </div>
-                        <textarea class="note-input" placeholder="Anotação do dia para ${membro.nome}..." rows="2"></textarea>
+                        
+                        <div class="section-title">📦 Entregas</div>
+                        <div class="deliveries-list">
+                `;
+                
+                if (memberDeliveries.length === 0) {
+                    html += `<div style="font-size: 0.8rem; color: #6c757d; padding: 8px 0;">Nenhuma entrega cadastrada</div>`;
+                } else {
+                    memberDeliveries.forEach(delivery => {
+                        html += `
+                            <div class="delivery-item">
+                                <span class="delivery-title">${delivery.titulo}</span>
+                                <span class="delivery-status ${delivery.completed ? 'done' : ''}">
+                                    ${delivery.completed ? '✅ Concluída' : '⏳ Pendente'}
+                                </span>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += `
+                            <button class="add-btn" style="background: #f4a261; margin-top: 4px;" onclick="addDeliveryToMember(${member.id})">+ Nova Entrega</button>
+                        </div>
+                        
+                        <div class="note-area">
+                            <div class="section-title">📝 Anotações</div>
+                            <textarea class="note-input" data-member="${member.id}" placeholder="Anotações do dia, observações, pendências..." rows="2">${escapeHtml(memberNote)}</textarea>
+                        </div>
                     </div>
                 `;
-            }
+            });
+            
             html += `</div></div>`;
-        }
-        document.getElementById('cellsContainer').innerHTML = html;
-
-        // Adicionar eventos aos checkboxes (aqui você pode integrar com Supabase depois)
+        });
+        
+        container.innerHTML = html;
+        
+        // Adicionar event listeners
         document.querySelectorAll('.task-check').forEach(checkbox => {
-            checkbox.addEventListener('change', async (e) => {
-                const taskId = e.target.dataset.taskId;
-                const novoStatus = e.target.checked ? 'concluido' : 'pendente';
-                // Aqui você atualizaria no Supabase
-                // await supabase.from('daily_tasks').update({ status: novoStatus }).eq('id', taskId);
-                console.log(`Tarefa ${taskId} -> ${novoStatus}`);
-                // Recarregar para refletir visual (opcional)
-                // carregarDashboard();
+            checkbox.addEventListener('change', (e) => {
+                const memberId = parseInt(checkbox.dataset.member);
+                const taskId = parseInt(checkbox.dataset.taskId);
+                const task = dados.tasks[memberId].find(t => t.id === taskId);
+                if (task) {
+                    task.completed = checkbox.checked;
+                    saveData();
+                    render(); // re-render para atualizar estilo
+                }
+            });
+        });
+        
+        document.querySelectorAll('.note-input').forEach(textarea => {
+            textarea.addEventListener('blur', (e) => {
+                const memberId = parseInt(textarea.dataset.member);
+                dados.notes[memberId] = textarea.value;
+                saveData();
             });
         });
     }
-
-    // Função para adicionar checklist rápido
-    function abrirChecklistRapido() {
-        const novaTarefa = prompt("Nova atividade rápida (para você ou equipe):");
-        if (novaTarefa) {
-            alert("Funcionalidade: em breve com Supabase você salvará esta tarefa!");
-            console.log("Tarefa rápida:", novaTarefa);
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Funções de ação
+    function addTaskToMember(memberId) {
+        const descricao = prompt("Digite a nova atividade:");
+        if (descricao && descricao.trim()) {
+            const newTask = {
+                id: Date.now(),
+                descricao: descricao.trim(),
+                completed: false
+            };
+            dados.tasks[memberId].push(newTask);
+            saveData();
+            render();
         }
     }
-
-    // Inicialização
-    carregarDashboard();
+    
+    function addDeliveryToMember(memberId) {
+        const titulo = prompt("Digite o título da entrega:");
+        if (titulo && titulo.trim()) {
+            const data = prompt("Data limite (opcional, ex: 25/03):") || "Sem data";
+            const newDelivery = {
+                id: Date.now(),
+                titulo: titulo.trim(),
+                data: data,
+                completed: false
+            };
+            dados.deliveries[memberId].push(newDelivery);
+            saveData();
+            render();
+        }
+    }
+    
+    function showAddMember() {
+        const nome = prompt("Nome do novo membro:");
+        if (!nome) return;
+        const funcao = prompt("Função do membro:");
+        if (!funcao) return;
+        
+        let cellOptions = dados.cells.map(c => `${c.id} - ${c.nome}`).join("\n");
+        const cellId = prompt(`Qual célula?\n${cellOptions}\n\nDigite o número da célula:`);
+        const selectedCell = dados.cells.find(c => c.id === parseInt(cellId));
+        
+        if (selectedCell) {
+            const newId = Math.max(...dados.members.map(m => m.id), 0) + 1;
+            const newMember = {
+                id: newId,
+                nome: nome,
+                funcao: funcao,
+                cell_id: selectedCell.id
+            };
+            dados.members.push(newMember);
+            dados.tasks[newId] = [];
+            dados.deliveries[newId] = [];
+            dados.notes[newId] = "";
+            saveData();
+            render();
+            alert(`✅ ${nome} adicionado à ${selectedCell.nome}`);
+        } else {
+            alert("Célula inválida!");
+        }
+    }
+    
+    function showGlobalTask() {
+        const descricao = prompt("Tarefa rápida para todos os membros? (ou deixe em branco para selecionar um membro)");
+        if (descricao && descricao.trim()) {
+            const paraTodos = confirm("Adicionar para TODOS os membros? Cancelar para escolher um específico.");
+            if (paraTodos) {
+                dados.members.forEach(member => {
+                    dados.tasks[member.id].push({
+                        id: Date.now() + member.id,
+                        descricao: descricao.trim(),
+                        completed: false
+                    });
+                });
+                saveData();
+                render();
+                alert(`✅ Tarefa adicionada para ${dados.members.length} membros`);
+            } else {
+                const memberList = dados.members.map((m, idx) => `${idx+1} - ${m.nome} (${m.funcao})`).join("\n");
+                const escolha = prompt(`Escolha o membro:\n${memberList}\n\nDigite o número:`);
+                const idx = parseInt(escolha) - 1;
+                if (dados.members[idx]) {
+                    dados.tasks[dados.members[idx].id].push({
+                        id: Date.now(),
+                        descricao: descricao.trim(),
+                        completed: false
+                    });
+                    saveData();
+                    render();
+                    alert(`✅ Tarefa adicionada para ${dados.members[idx].nome}`);
+                }
+            }
+        }
+    }
+    
+    function showQuickNote() {
+        const memberList = dados.members.map((m, idx) => `${idx+1} - ${m.nome}`).join("\n");
+        const escolha = prompt(`Anotação rápida para quem?\n${memberList}\n\nDigite o número:`);
+        const idx = parseInt(escolha) - 1;
+        if (dados.members[idx]) {
+            const nota = prompt(`Anotação para ${dados.members[idx].nome}:`);
+            if (nota !== null) {
+                dados.notes[dados.members[idx].id] = nota;
+                saveData();
+                render();
+                alert("✅ Anotação salva!");
+            }
+        }
+    }
+    
+    // Atualizar data
+    function updateDate() {
+        const today = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').innerHTML = today.toLocaleDateString('pt-BR', options);
+    }
+    
+    // Inicializar
+    initData();
+    updateDate();
+    render();
 </script>
 </body>
 </html>
