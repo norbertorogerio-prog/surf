@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>Líder Estratégico - Gestão de Pessoas e Clima</title>
+    <title>Líder 360 - Gestão de Pessoas e Resultados</title>
     <style>
         * {
             margin: 0;
@@ -14,67 +14,72 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f5f7fb;
+            background: #f0f2f8;
             padding: 0;
-            padding-bottom: 80px;
+            padding-bottom: 100px;
         }
 
-        /* Timeline e IA */
-        .timeline-bar {
-            background: linear-gradient(135deg, #1a2a3a 0%, #0f1a24 100%);
+        /* Header com horário */
+        .hero {
+            background: linear-gradient(135deg, #0f2b1f 0%, #1e4d3a 100%);
             color: white;
-            padding: 16px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 24px 20px;
+            border-radius: 0 0 32px 32px;
+            margin-bottom: 20px;
         }
 
-        .current-time {
-            font-size: 1.8rem;
+        .time-large {
+            font-size: 2.5rem;
             font-weight: 700;
             letter-spacing: 2px;
         }
 
-        .greeting {
-            font-size: 0.9rem;
-            opacity: 0.9;
+        .date-info {
+            font-size: 0.85rem;
+            opacity: 0.85;
             margin-top: 4px;
         }
 
-        .ia-card {
-            background: linear-gradient(135deg, #2d5a4c 0%, #1e3a2f 100%);
+        .leader-quote {
+            font-size: 0.9rem;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-style: italic;
+        }
+
+        /* Cards padrão */
+        .card {
+            background: white;
             margin: 16px;
             border-radius: 28px;
             padding: 20px;
-            color: white;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
         }
 
-        .ia-header {
+        .card-header {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 16px;
-        }
-
-        .ia-icon {
-            font-size: 2rem;
-        }
-
-        .ia-title {
             font-weight: 600;
-            font-size: 1rem;
-            opacity: 0.9;
+            font-size: 1.2rem;
+            color: #1e3a2f;
+        }
+
+        /* IA Assistente */
+        .ia-card {
+            background: linear-gradient(135deg, #2c5a4a 0%, #1e3a2f 100%);
+            color: white;
         }
 
         .ia-message {
             font-size: 1rem;
             line-height: 1.4;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
-        .ia-suggestion {
+        .ia-tip {
             background: rgba(255,255,255,0.15);
             padding: 12px;
             border-radius: 20px;
@@ -82,69 +87,46 @@
             margin-top: 12px;
         }
 
-        /* Métricas de Clima */
-        .climate-section {
-            background: white;
-            margin: 16px;
-            border-radius: 28px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        /* Mensagem do dia */
+        .message-card {
+            background: linear-gradient(135deg, #3a6b5a 0%, #2c5a4a 100%);
+            color: white;
         }
 
-        .section-title {
-            font-weight: 600;
-            font-size: 1.1rem;
+        .daily-message {
+            font-size: 1rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Métricas de clima */
+        .metrics-grid {
+            display: flex;
+            gap: 12px;
             margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #1e3a2f;
-        }
-
-        .climate-metrics {
-            display: flex;
-            gap: 16px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
         }
 
-        .metric-card {
+        .metric {
             flex: 1;
             background: #f8f9fc;
-            padding: 16px;
+            padding: 12px;
             border-radius: 20px;
             text-align: center;
         }
 
         .metric-value {
-            font-size: 2rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: #2d6a4f;
         }
 
         .metric-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #6c757d;
-            margin-top: 4px;
         }
 
-        .action-suggestion {
-            background: #e8f5e9;
-            padding: 16px;
-            border-radius: 20px;
-            margin-top: 12px;
-            border-left: 4px solid #2d6a4f;
-        }
-
-        /* Daily Agenda */
-        .daily-agenda {
-            background: white;
-            margin: 16px;
-            border-radius: 28px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
+        /* Agenda do dia */
         .agenda-item {
             display: flex;
             align-items: center;
@@ -154,459 +136,570 @@
         }
 
         .agenda-time {
+            min-width: 65px;
             font-weight: 600;
             color: #2d6a4f;
-            min-width: 70px;
         }
 
         .agenda-desc {
             flex: 1;
         }
 
-        .agenda-status {
+        .agenda-badge {
             width: 10px;
             height: 10px;
             border-radius: 10px;
             background: #ffc107;
         }
 
-        .agenda-status.done {
+        .agenda-badge.done {
             background: #28a745;
         }
 
-        /* One-on-One */
-        .oneonone-section {
-            background: white;
-            margin: 16px;
-            border-radius: 28px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        /* Temas para Daily com atividades diárias */
+        .daily-theme-item {
+            background: #f8f9fc;
+            padding: 14px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2d6a4f;
         }
 
-        .person-card {
-            background: #f8f9fc;
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 12px;
+        .daily-theme-text {
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .daily-theme-context {
+            font-size: 0.7rem;
+            color: #e67e22;
+        }
+
+        /* One-on-One */
+        .person-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s;
+            padding: 12px;
+            background: #f8f9fc;
+            border-radius: 20px;
+            margin-bottom: 10px;
         }
 
         .person-info {
-            display: flex;
-            flex-direction: column;
+            flex: 1;
         }
 
         .person-name {
             font-weight: 600;
         }
 
-        .person-last-1x1 {
+        .person-last {
             font-size: 0.7rem;
             color: #6c757d;
         }
 
-        .schedule-btn {
+        .urgency-high {
+            border-left: 4px solid #dc3545;
+        }
+
+        .urgency-medium {
+            border-left: 4px solid #ffc107;
+        }
+
+        .btn-small {
             background: #2d6a4f;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 40px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: pointer;
         }
 
-        /* Sugestões de Rituais */
-        .rituals-section {
-            background: white;
-            margin: 16px;
-            border-radius: 28px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .ritual-card {
-            background: #fff8e7;
-            padding: 16px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            border-left: 4px solid #f4a261;
+        /* Rituais */
+        .ritual-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .ritual-time {
-            font-size: 0.7rem;
-            color: #e67e22;
             font-weight: 600;
+            color: #2d6a4f;
+            font-size: 0.8rem;
         }
 
-        /* Botões de ação rápida */
-        .quick-actions {
+        /* Ações rápidas */
+        .actions-fixed {
             position: fixed;
-            bottom: 20px;
-            left: 16px;
-            right: 16px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 16px;
             display: flex;
             gap: 12px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
             z-index: 100;
         }
 
-        .quick-btn {
+        .action-btn {
             flex: 1;
             background: #2d6a4f;
             color: white;
             border: none;
-            padding: 14px;
+            padding: 12px;
             border-radius: 40px;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.85rem;
-            text-align: center;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            text-align: center;
         }
 
-        .quick-btn.secondary {
+        .action-btn.warning {
             background: #f4a261;
         }
 
-        /* Check-in Diário */
-        .checkin-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            margin: 16px;
-            border-radius: 28px;
-            padding: 20px;
-        }
-
-        .checkin-question {
-            font-size: 1rem;
-            margin-bottom: 12px;
-        }
-
-        .mood-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: space-around;
-        }
-
-        .mood-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 10px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
+        .action-btn.danger {
+            background: #e76f51;
         }
 
         @media (max-width: 600px) {
-            .climate-metrics {
+            .metrics-grid {
                 flex-direction: column;
             }
-            .quick-actions {
+            .actions-fixed {
                 flex-direction: column;
-                bottom: 16px;
-                left: 16px;
-                right: 16px;
+                gap: 8px;
             }
             body {
-                padding-bottom: 140px;
+                padding-bottom: 180px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="timeline-bar">
-        <div class="current-time" id="currentTime">--:--</div>
-        <div class="greeting" id="greeting">Carregando...</div>
+    <div class="hero">
+        <div class="time-large" id="currentTime">--:--</div>
+        <div class="date-info" id="currentDate"></div>
+        <div class="leader-quote" id="leaderQuote">“Liderar é servir e inspirar”</div>
     </div>
 
-    <div id="app">
-        <!-- IA Assistente -->
-        <div class="ia-card" id="iaCard">
-            <div class="ia-header">
-                <div class="ia-icon">🧠✨</div>
-                <div class="ia-title">IA Assistente de Liderança</div>
-            </div>
-            <div class="ia-message" id="iaMessage">Analisando o dia...</div>
-            <div class="ia-suggestion" id="iaSuggestion"></div>
-        </div>
+    <div id="app"></div>
 
-        <!-- Check-in Diário de Clima -->
-        <div class="checkin-card">
-            <div class="checkin-question">🌡️ Como você está se sentindo hoje para liderar?</div>
-            <div class="mood-buttons">
-                <button class="mood-btn" onclick="registerMood('😊')">😊</button>
-                <button class="mood-btn" onclick="registerMood('😐')">😐</button>
-                <button class="mood-btn" onclick="registerMood('😔')">😔</button>
-                <button class="mood-btn" onclick="registerMood('⚡')">⚡</button>
-                <button class="mood-btn" onclick="registerMood('🤔')">🤔</button>
-            </div>
-        </div>
-
-        <!-- Métricas de Clima -->
-        <div class="climate-section">
-            <div class="section-title">📊 Clima e Engajamento</div>
-            <div class="climate-metrics">
-                <div class="metric-card">
-                    <div class="metric-value" id="climateScore">--</div>
-                    <div class="metric-label">Clima Geral (0-10)</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="checkinsCount">0</div>
-                    <div class="metric-label">Check-ins da Semana</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="oneoneCount">0</div>
-                    <div class="metric-label">1:1 Realizados (mês)</div>
-                </div>
-            </div>
-            <div class="action-suggestion" id="climateAction">
-                💡 Ação sugerida baseada no clima...
-            </div>
-        </div>
-
-        <!-- Agenda Diária com IA -->
-        <div class="daily-agenda">
-            <div class="section-title">⏰ Sua Agenda do Dia</div>
-            <div id="dailyAgenda"></div>
-        </div>
-
-        <!-- One-on-One Agenda -->
-        <div class="oneonone-section">
-            <div class="section-title">💬 One-on-One Agendados</div>
-            <div id="oneononeList"></div>
-            <button class="quick-btn secondary" style="margin-top: 12px;" onclick="suggestOneOnOne()">✨ Sugerir 1:1 com IA</button>
-        </div>
-
-        <!-- Rituais e Boas Práticas -->
-        <div class="rituals-section">
-            <div class="section-title">🌟 Rituais de Liderança</div>
-            <div id="ritualsList"></div>
-        </div>
-
-        <!-- Sugestões de Temas para Daily -->
-        <div class="climate-section">
-            <div class="section-title">💡 Temas para Daily (09:30)</div>
-            <div id="dailyThemes"></div>
-            <button class="quick-btn secondary" style="margin-top: 12px;" onclick="refreshDailyThemes()">🔄 Gerar novos temas</button>
-        </div>
-    </div>
-
-    <div class="quick-actions">
-        <button class="quick-btn" onclick="sendGoodMorning()">🌅 Enviar Bom Dia</button>
-        <button class="quick-btn secondary" onclick="showTeamPulse()">💓 Check-in do Time</button>
+    <div class="actions-fixed">
+        <button class="action-btn" id="sendMessageBtn">📱 Enviar Mensagem</button>
+        <button class="action-btn warning" id="teamPulseBtn">💓 Check-in do Time</button>
+        <button class="action-btn danger" id="resetDailyBtn">🔄 Resetar Diárias</button>
     </div>
 
     <script>
-        // ================= CONFIGURAÇÃO DE DADOS =================
-        let teamData = {
-            members: [
-                { id: 1, nome: "Amanda Furquim", funcao: "Suporte Executivo", lastOneOnOne: "2025-03-15", mood: null },
-                { id: 2, nome: "Vitória Nogueira", funcao: "Suporte Executivo", lastOneOnOne: "2025-03-10", mood: null },
-                { id: 3, nome: "Mauro Artioli", funcao: "Governança MS/Power BI", lastOneOnOne: "2025-03-18", mood: null },
-                { id: 4, nome: "Eduardo Silva", funcao: "Infraestrutura", lastOneOnOne: "2025-03-12", mood: null },
-                { id: 5, nome: "Anderson Santos", funcao: "Infraestrutura", lastOneOnOne: "2025-03-05", mood: null },
-                { id: 6, nome: "Marcel Bertulino", funcao: "Áudio e Vídeo", lastOneOnOne: "2025-03-08", mood: null },
-                { id: 7, nome: "Fernando Fernandes", funcao: "Áudio e Vídeo", lastOneOnOne: "2025-03-14", mood: null },
-                { id: 8, nome: "Ivanete Sousa", funcao: "Gestão de Ativos", lastOneOnOne: "2025-03-20", mood: null }
-            ],
-            moods: [], // histórico de moods
-            dailyCheckins: [], // check-ins rápidos do time
-            oneOnOneHistory: [],
-            climateActions: []
-        };
-
-        // Rituais de liderança
-        const rituals = [
-            { time: "08:00", descricao: "💬 Enviar mensagem de bom dia para o time", dica: "Pergunte como estão, mostre presença humana" },
-            { time: "08:30", descricao: "📋 Revisar pendências do dia anterior", dica: "Priorize o que é crítico para o time" },
-            { time: "09:30", descricao: "🎯 Daily com o time", dica: "Use os temas sugeridos pela IA" },
-            { time: "10:30", descricao: "💡 15 minutos de reconhecimento", dica: "Destaque publicamente uma entrega de alguém" },
-            { time: "12:00", descricao: "🍽️ Pausa - respeite o almoço do time", dica: "Evite mensagens no horário de almoço" },
-            { time: "14:00", descricao: "🎧 One-on-One (se houver)", dica: "Escute mais do que fale" },
-            { time: "16:00", descricao: "📊 Check de métricas e impedimentos", dica: "Veja onde pode desbloquear o time" },
-            { time: "17:30", descricao: "📝 Fechamento do dia", dica: "Agradeça e reconheça o esforço do time" }
+        // ================= CONFIGURAÇÃO COMPLETA =================
+        
+        // Rotação de mensagens de bom dia (segunda a sexta)
+        const morningMessages = [
+            "🌅 Bom dia, time! Que nosso dia seja leve, produtivo e cheio de boas entregas. Estou aqui para apoiar vocês no que precisarem. Vamos juntos! 💚",
+            "☀️ Bom dia, equipe! Hoje é mais uma oportunidade de fazermos a diferença. Contem comigo para desbloquear o que for preciso. Um ótimo dia para todos! 🚀",
+            "🌻 Bom dia, pessoal! Começo o dia agradecendo pelo comprometimento de cada um. Lembrem-se: qualidade de vida vem primeiro. Qualquer coisa, estou por aqui! 🤝",
+            "🌟 Bom dia, time! Hoje vamos focar no que realmente importa. Priorizem com sabedoria e não hesitem em pedir ajuda. Juntos somos mais fortes! 💪",
+            "🌈 Bom dia, família! Que a gente consiga entregar valor, mas sem esquecer de respirar e cuidar da gente. Tenham um dia incrível! ✨"
         ];
-
-        // Temas para Daily
-        const dailyThemesDB = [
-            "🚀 O que vamos entregar hoje que é mais crítico?",
+        
+        // Mensagem de sexta-feira (manhã)
+        const fridayMorningMessage = "🎉 SEXTOU, GALERA! 🎉\n\nBom dia, time! Último dia da semana com energia total. Vamos fechar com chave de ouro e celebrar nossas conquistas. Um ótimo dia para todos! 🍻💚";
+        
+        // Mensagem de sexta-feira (final do dia)
+        const fridayEveningMessage = "🏆 FECHAMOS MAIS UMA SEMANA! 🏆\n\nQuero agradecer profundamente cada um de vocês pelo esforço, dedicação e comprometimento. Vocês são incríveis! \n\nTenham um fim de semana merecido, descansem, recarreguem as energias. Na segunda estaremos juntos novamente para mais desafios.\n\nGratidão demais! 🙏💚✨";
+        
+        // Atividades diárias para temas de daily
+        const dailyActivities = [
+            { activity: "Jornal da Área", cell: "Suporte Executivo", members: "Amanda e Vitória" },
+            { activity: "Diário Executivo", cell: "Suporte Executivo", members: "Amanda e Vitória" },
+            { activity: "Suporte Power Platform", cell: "Governança MS", members: "Mauro" },
+            { activity: "Suporte Copilot", cell: "Governança MS", members: "Mauro" },
+            { activity: "Desenvolvimento de chatbot de suporte", cell: "Governança MS", members: "Mauro" },
+            { activity: "Suporte e atendimento VIP", cell: "Áudio e Vídeo", members: "Marcel e Fernando" }
+        ];
+        
+        // Temas fixos para daily + integração com atividades diárias
+        const baseDailyThemes = [
+            "🚀 Quais são as prioridades de hoje?",
             "⚠️ Tem algum impedimento que eu possa ajudar a remover?",
-            "🤝 Como podemos colaborar mais entre as células hoje?",
+            "🤝 Como podemos colaborar melhor entre células hoje?",
             "📈 O que aprendemos ontem que podemos aplicar hoje?",
             "🎯 Estamos alinhados com as metas do semestre?",
-            "💡 Alguém tem uma sugestão para melhorar nosso processo?",
+            "💡 Alguém tem uma sugestão para melhorar nossos processos?",
             "🌟 Quem merece um reconhecimento hoje?",
             "⚡ O que está consumindo mais energia do time?",
             "🔄 Temos alguma dependência externa que precisa de atenção?",
             "🧘 Como podemos cuidar melhor do nosso bem-estar hoje?"
         ];
-
-        // Carregar dados salvos
+        
+        // Dados do time completo
+        let teamData = {
+            members: [
+                { id: 1, nome: "Amanda Furquim", funcao: "Suporte Executivo", cell: "Executivo", lastOneOnOne: "2025-03-15" },
+                { id: 2, nome: "Vitória Nogueira", funcao: "Suporte Executivo", cell: "Executivo", lastOneOnOne: "2025-03-10" },
+                { id: 3, nome: "Mauro Artioli", funcao: "Governança MS/Power BI", cell: "MS/Gov", lastOneOnOne: "2025-03-18" },
+                { id: 4, nome: "Eduardo Silva", funcao: "Infraestrutura", cell: "Infra", lastOneOnOne: "2025-03-12" },
+                { id: 5, nome: "Anderson Santos", funcao: "Infraestrutura", cell: "Infra", lastOneOnOne: "2025-03-05" },
+                { id: 6, nome: "Marcel Bertulino", funcao: "Áudio e Vídeo", cell: "AV", lastOneOnOne: "2025-03-08" },
+                { id: 7, nome: "Fernando Fernandes", funcao: "Áudio e Vídeo", cell: "AV", lastOneOnOne: "2025-03-14" },
+                { id: 8, nome: "Ivanete Sousa", funcao: "Gestão de Ativos", cell: "Ativos", lastOneOnOne: "2025-03-20" }
+            ],
+            moods: [],
+            dailyTasksStatus: {}, // controle das atividades diárias
+            sentMessages: [], // histórico de mensagens enviadas
+            checkins: []
+        };
+        
+        // Inicializar status das atividades diárias
+        function initDailyTasksStatus() {
+            dailyActivities.forEach((activity, idx) => {
+                const key = `daily_${idx}`;
+                if (!teamData.dailyTasksStatus[key]) {
+                    teamData.dailyTasksStatus[key] = { completed: false, date: new Date().toISOString().split('T')[0] };
+                }
+                // resetar se for um novo dia
+                const today = new Date().toISOString().split('T')[0];
+                if (teamData.dailyTasksStatus[key].date !== today) {
+                    teamData.dailyTasksStatus[key] = { completed: false, date: today };
+                }
+            });
+        }
+        
+        // Salvar dados
+        function saveData() {
+            localStorage.setItem('lider360', JSON.stringify(teamData));
+        }
+        
         function loadData() {
-            const saved = localStorage.getItem('liderancaEstrategica');
+            const saved = localStorage.getItem('lider360');
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
                     teamData = { ...teamData, ...parsed };
                 } catch(e) {}
             }
-            updateUI();
-            startClock();
+            initDailyTasksStatus();
+            saveData();
         }
-
-        function saveData() {
-            localStorage.setItem('liderancaEstrategica', JSON.stringify(teamData));
-        }
-
-        // IA que analisa e dá sugestões
-        function updateIA() {
+        
+        // ================= IA ASSISTENTE =================
+        function getIAMessage() {
             const now = new Date();
             const hour = now.getHours();
             const minute = now.getMinutes();
             const currentTime = hour + minute/100;
             
-            let message = "";
-            let suggestion = "";
-            
-            // IA baseada no horário
             if (currentTime < 8) {
-                message = "🌅 Bom dia, líder! Prepare-se para um dia de conexão genuína com seu time.";
-                suggestion = "Que tal preparar uma mensagem pessoal para o time? Pergunte como cada um está hoje. O lado humano vem primeiro.";
-            } 
-            else if (currentTime >= 8 && currentTime < 9) {
-                message = "☕ Hora do café e conexão. Hoje, que tal fazer um check-in individual com alguém?";
-                suggestion = `Sugestão: chame ${teamData.members[Math.floor(Math.random() * teamData.members.length)].nome} para um café virtual de 5 minutos. Pergunte sobre o fim de semana, mostre interesse genuíno.`;
+                return { message: "🌅 Bom dia, líder! O dia está começando. Prepare-se para inspirar seu time.", tip: "Hoje, tente fazer uma pergunta genuína para cada pessoa. 'Como você está?' parece simples, mas faz toda diferença." };
+            } else if (currentTime >= 8 && currentTime < 9) {
+                return { message: "☕ Hora do café e conexão. Que tal um contato mais humano agora?", tip: "Escolha uma pessoa do time e mande uma mensagem pessoal. Pergunte sobre o fim de semana, mostre que você se importa de verdade." };
+            } else if (currentTime >= 9 && currentTime < 10) {
+                const pendingActivities = dailyActivities.filter((_, idx) => !teamData.dailyTasksStatus[`daily_${idx}`]?.completed);
+                if (pendingActivities.length > 0) {
+                    return { message: "🎯 Daily começando! Hoje temos atividades diárias importantes.", tip: `Não esqueça de alinhar: ${pendingActivities.map(a => a.activity).join(', ')}. Pergunte como está o andamento.` };
+                }
+                return { message: "🎯 Hora da Daily! Use os temas sugeridos.", tip: "Comece perguntando como as pessoas estão. Depois, foque nos impedimentos. Escute mais do que fale." };
+            } else if (currentTime >= 10 && currentTime < 12) {
+                return { message: "💪 Momento de reconhecer. Quem merece destaque hoje?", tip: "Feedback público fortalece o time. Identifique uma entrega recente e valorize publicamente. Isso gera engajamento." };
+            } else if (currentTime >= 12 && currentTime < 14) {
+                return { message: "🍽️ Hora de pausa. Respeite o momento do time.", tip: "Evite mensagens agora. Use esse tempo para refletir: como você pode ser um líder ainda melhor esta semana?" };
+            } else if (currentTime >= 14 && currentTime < 16) {
+                return { message: "🎧 Hora de ouvir. One-on-One fortalece vínculos.", tip: getOneOnOneTip() };
+            } else if (currentTime >= 16 && currentTime < 18) {
+                return { message: "📊 Como está o clima hoje? Faça um check-in rápido.", tip: "Pergunte: 'De 0 a 10, como vocês estão se sentindo hoje?' Isso mostra cuidado e gera dados valiosos." };
+            } else {
+                return { message: "🌙 Dia produtivo! Reflita sobre suas entregas e sobre o time.", tip: "Anote 3 coisas boas que aconteceram hoje e 1 que pode melhorar amanhã. A liderança se aprimora com reflexão." };
             }
-            else if (currentTime >= 9 && currentTime < 10) {
-                message = "🎯 Daily se aproximando! Use os temas sugeridos para uma reunião leve e produtiva.";
-                const randomTheme = dailyThemesDB[Math.floor(Math.random() * dailyThemesDB.length)];
-                suggestion = `Tema para hoje: "${randomTheme}"\n\nLembre-se: comece perguntando como estão, não só sobre trabalho.`;
-            }
-            else if (currentTime >= 10 && currentTime < 12) {
-                message = "💪 Hora de reconhecer. Quem merece um elogio público hoje?";
-                suggestion = "Feedback público fortalece o clima. Identifique uma entrega recente e destaque em grupo. Isso gera engajamento.";
-            }
-            else if (currentTime >= 12 && currentTime < 14) {
-                message = "🍽️ Respeite o momento do time. Evite mensagens agora.";
-                suggestion = "Use esse tempo para refletir: como você pode apoiar mais o time esta semana? Anote uma ação concreta.";
-            }
-            else if (currentTime >= 14 && currentTime < 16) {
-                message = "🎧 Hora de ouvir. One-on-One fortalece vínculos.";
-                suggestion = getOneOnOneSuggestion();
-            }
-            else if (currentTime >= 16 && currentTime < 18) {
-                message = "📊 Como está o clima hoje? Faça um check-in rápido.";
-                suggestion = "Pergunte ao time: 'De 0 a 10, como vocês estão se sentindo hoje?' Isso mostra cuidado e gera dados valiosos.";
-            }
-            else {
-                message = "🌙 Dia produtivo! Reflita: o que funcionou bem hoje?";
-                suggestion = "Anote 3 coisas boas que aconteceram hoje e 1 que pode melhorar amanhã. Compartilhe com o time amanhã na daily.";
-            }
-            
-            document.getElementById('iaMessage').innerHTML = message;
-            document.getElementById('iaSuggestion').innerHTML = suggestion;
         }
         
-        function getOneOnOneSuggestion() {
+        function getOneOnOneTip() {
             const overdue = teamData.members.filter(m => {
-                const lastDate = new Date(m.lastOneOnOne);
-                const daysDiff = (new Date() - lastDate) / (1000 * 3600 * 24);
+                const daysDiff = (new Date() - new Date(m.lastOneOnOne)) / (1000 * 3600 * 24);
                 return daysDiff > 20;
             });
-            
             if (overdue.length > 0) {
-                return `⚠️ ${overdue[0].nome} está há mais de 20 dias sem 1:1. Que tal agendar agora? Pergunte sobre desafios, carreira e bem-estar.`;
+                return `⚠️ ${overdue[0].nome} está há mais de 20 dias sem 1:1. Agende agora! Pergunte sobre desafios, carreira e bem-estar.`;
             }
             return "Escolha alguém para um 1:1 hoje. Perguntas: 'Como posso te ajudar?', 'O que te motiva?', 'Como está sua energia?'";
         }
         
-        // Atualizar métricas de clima
-        function updateClimateMetrics() {
-            // Calcular clima baseado em moods e check-ins
-            let climateAvg = 7.5; // valor base
-            
-            const recentMoods = teamData.moods.slice(-5);
-            const moodValues = { '😊': 9, '😐': 6, '😔': 3, '⚡': 8, '🤔': 5 };
-            let moodSum = 0;
-            recentMoods.forEach(m => {
-                if (moodValues[m.mood]) moodSum += moodValues[m.mood];
-            });
-            if (recentMoods.length > 0) climateAvg = moodSum / recentMoods.length;
-            
-            document.getElementById('climateScore').innerHTML = climateAvg.toFixed(1);
-            document.getElementById('checkinsCount').innerHTML = teamData.dailyCheckins.filter(c => {
-                const date = new Date(c.date);
-                const weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                return date > weekAgo;
-            }).length;
-            document.getElementById('oneoneCount').innerHTML = teamData.oneOnOneHistory.filter(o => {
-                const date = new Date(o.date);
-                const monthAgo = new Date();
-                monthAgo.setMonth(monthAgo.getMonth() - 1);
-                return date > monthAgo;
-            }).length;
-            
-            // Ação sugerida baseada no clima
-            let climateAction = "";
-            if (climateAvg < 5) {
-                climateAction = "⚠️ Clima baixo detectado. Ação: faça 1:1 individuais hoje, pergunte 'O que podemos melhorar juntos?'. Mostre vulnerabilidade e escuta ativa.";
-            } else if (climateAvg < 7) {
-                climateAction = "📈 Clima neutro. Ação: faça um reconhecimento público hoje. Um 'obrigado' genuíno eleva o engajamento.";
-            } else {
-                climateAction = "🌟 Clima positivo! Ação: aproveite o momento para fortalecer vínculos. Um café coletivo ou happy hour reforça o senso de equipe.";
-            }
-            document.getElementById('climateAction').innerHTML = `💡 ${climateAction}`;
-        }
-        
-        // Registrar humor do líder
-        function registerMood(mood) {
-            teamData.moods.push({ mood: mood, date: new Date().toISOString(), type: 'leader' });
-            saveData();
-            updateClimateMetrics();
-            alert(`🙏 Obrigado! Seu humor foi registrado. Lembre-se: sua energia impacta o time.`);
-        }
-        
-        // Enviar bom dia (simula envio)
-        function sendGoodMorning() {
+        // ================= MENSAGENS ROTATIVAS =================
+        function getMessageOfTheDay() {
             const now = new Date();
+            const dayOfWeek = now.getDay(); // 0=domingo, 5=sexta, 6=sábado
             const hour = now.getHours();
-            let greeting = "";
-            if (hour < 12) greeting = "Bom dia";
-            else if (hour < 18) greeting = "Boa tarde";
-            else greeting = "Boa noite";
             
-            const message = `${greeting}, time! 🌟\n\nComo vocês estão hoje? Quero começar o dia reconhecendo o trabalho incrível de cada um. Estou aqui para apoiar no que precisarem.\n\nQue tenhamos um dia produtivo e, principalmente, saudável. 💚\n\nQualquer coisa, estou por aqui!`;
+            // Se for sexta-feira após 17h, mensagem de agradecimento
+            if (dayOfWeek === 5 && hour >= 17) {
+                return { message: fridayEveningMessage, type: "thanks" };
+            }
             
-            if (confirm(`Enviar mensagem para o time?\n\n"${message}"\n\n(Simula envio - em produção conectaria com WhatsApp/Teams)`)) {
-                teamData.dailyCheckins.push({ type: 'goodMorning', date: new Date().toISOString() });
+            // Se for sexta-feira de manhã, mensagem especial
+            if (dayOfWeek === 5 && hour < 17) {
+                return { message: fridayMorningMessage, type: "friday" };
+            }
+            
+            // Dias úteis (segunda a quinta)
+            if (dayOfWeek >= 1 && dayOfWeek <= 4) {
+                // Rotação baseada no dia do mês
+                const dayOfMonth = now.getDate();
+                const messageIndex = dayOfMonth % morningMessages.length;
+                return { message: morningMessages[messageIndex], type: "regular" };
+            }
+            
+            // Fim de semana - mensagem mais leve
+            return { message: "🌿 Bom fim de semana, time! Descansem, recarreguem as energias. Na segunda estaremos juntos novamente. 🍃", type: "weekend" };
+        }
+        
+        function sendMessage() {
+            const msg = getMessageOfTheDay();
+            const confirmMsg = `Enviar mensagem para o time?\n\n"${msg.message}"\n\n(Simula envio - em produção conectaria com WhatsApp/Teams)`;
+            if (confirm(confirmMsg)) {
+                teamData.sentMessages.push({ message: msg.message, date: new Date().toISOString(), type: msg.type });
                 saveData();
-                alert("✅ Mensagem enviada! Lembre-se de personalizar com o nome de alguém para tornar mais humano.");
+                alert("✅ Mensagem enviada! Lembre-se: a consistência na comunicação fortalece a confiança.");
+                render();
             }
         }
         
-        // Mostrar check-in do time
-        function showTeamPulse() {
-            const question = prompt("Pergunta para o time:\n\nDe 0 a 10, como você está se sentindo hoje? (0-muito ruim, 10-ótimo)\n\n(ou qualquer outro feedback)");
-            if (question) {
-                teamData.dailyCheckins.push({ 
-                    type: 'pulse', 
-                    response: question, 
-                    date: new Date().toISOString() 
+        // ================= TEMAS PARA DAILY COM ATIVIDADES DIÁRIAS =================
+        function getDailyThemes() {
+            // Pegar atividades diárias pendentes
+            const pendingActivities = dailyActivities.filter((_, idx) => !teamData.dailyTasksStatus[`daily_${idx}`]?.completed);
+            
+            // Selecionar 3 temas aleatórios da base
+            const shuffled = [...baseDailyThemes];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            const randomThemes = shuffled.slice(0, 2);
+            
+            // Construir temas com as atividades diárias
+            let themes = [];
+            
+            if (pendingActivities.length > 0) {
+                themes.push({
+                    theme: "📋 Atividades Diárias - Checkpoint",
+                    context: `Precisamos alinhar o andamento de: ${pendingActivities.map(a => a.activity).join(', ')}. Como está o progresso?`
                 });
+            }
+            
+            themes.push(...randomThemes.map(t => ({ theme: t, context: null })));
+            
+            // Adicionar tema de clima sempre
+            themes.push({
+                theme: "💚 Clima e bem-estar",
+                context: "Como vocês estão se sentindo hoje? O que podemos fazer para melhorar o ambiente?"
+            });
+            
+            return themes;
+        }
+        
+        // ================= RITUAIS DE LIDERANÇA =================
+        const rituals = [
+            { time: "08:00", action: "💬 Enviar mensagem de bom dia", tip: "Use a mensagem rotativa do sistema. Seja humano e próximo." },
+            { time: "08:30", action: "📋 Revisar pendências e atividades diárias", tip: "Veja o que precisa de atenção hoje. Priorize o crítico." },
+            { time: "09:30", action: "🎯 Daily com o time", tip: "Use os temas sugeridos. Comece perguntando como estão." },
+            { time: "10:30", action: "🌟 Reconhecimento público", tip: "Destaque uma entrega de alguém. Valorize publicamente." },
+            { time: "12:00", action: "🍽️ Pausa - respeitar horário do time", tip: "Não mande mensagens no horário de almoço." },
+            { time: "14:00", action: "🎧 One-on-One (se houver)", tip: "Escute mais do que fale. Pergunte sobre carreira e bem-estar." },
+            { time: "16:00", action: "📊 Check de métricas e impedimentos", tip: "Veja onde pode desbloquear o time." },
+            { time: "17:30", action: "📝 Fechamento e agradecimento", tip: "Reconheça o esforço do dia. Sexta: mensagem de agradecimento." }
+        ];
+        
+        // ================= MÉTRICAS DE CLIMA =================
+        function updateClimateMetrics() {
+            const recentMoods = teamData.moods.slice(-7);
+            let avgMood = 7;
+            if (recentMoods.length > 0) {
+                const moodValues = { '😊': 9, '😐': 6, '😔': 3, '⚡': 8, '🤔': 5 };
+                const sum = recentMoods.reduce((acc, m) => acc + (moodValues[m.mood] || 7), 0);
+                avgMood = sum / recentMoods.length;
+            }
+            
+            const oneOnOneCount = teamData.members.filter(m => {
+                const daysDiff = (new Date() - new Date(m.lastOneOnOne)) / (1000 * 3600 * 24);
+                return daysDiff <= 30;
+            }).length;
+            
+            return { avgMood: avgMood.toFixed(1), oneOnOneCount, checkinsCount: teamData.checkins.length };
+        }
+        
+        // ================= RENDERIZAÇÃO COMPLETA =================
+        function render() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentTimeNum = currentHour + currentMinute/100;
+            
+            const climate = updateClimateMetrics();
+            const ia = getIAMessage();
+            const dailyThemes = getDailyThemes();
+            const messageOfDay = getMessageOfTheDay();
+            
+            let html = `
+                <!-- IA Assistente -->
+                <div class="card ia-card">
+                    <div class="card-header">🧠✨ IA Assistente de Liderança</div>
+                    <div class="ia-message">${ia.message}</div>
+                    <div class="ia-tip">💡 ${ia.tip}</div>
+                </div>
+                
+                <!-- Mensagem do Dia -->
+                <div class="card message-card">
+                    <div class="card-header">📱 Mensagem do Dia</div>
+                    <div class="daily-message">${messageOfDay.message}</div>
+                    <div style="margin-top: 12px; font-size: 0.7rem; opacity: 0.8;">✨ Clique em "Enviar Mensagem" abaixo para enviar ao time</div>
+                </div>
+                
+                <!-- Métricas de Clima -->
+                <div class="card">
+                    <div class="card-header">📊 Clima e Engajamento</div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value">${climate.avgMood}</div>
+                            <div class="metric-label">Clima Geral (0-10)</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${climate.oneOnOneCount}/8</div>
+                            <div class="metric-label">1:1 em dia</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${teamData.checkins.length}</div>
+                            <div class="metric-label">Check-ins (total)</div>
+                        </div>
+                    </div>
+                    <div style="background: #e8f5e9; padding: 12px; border-radius: 16px; font-size: 0.85rem;">
+                        💡 ${climate.avgMood < 6 ? "Clima precisa de atenção. Faça 1:1 individuais hoje e pergunte como você pode ajudar." : "Clima positivo! Mantenha o reconhecimento e fortaleça os vínculos."}
+                    </div>
+                </div>
+                
+                <!-- Agenda do Dia -->
+                <div class="card">
+                    <div class="card-header">⏰ Sua Agenda de Liderança</div>
+            `;
+            
+            rituals.forEach(ritual => {
+                const [hour, minute] = ritual.time.split(':').map(Number);
+                const ritualTime = hour + minute/100;
+                const isDone = ritualTime <= currentTimeNum;
+                html += `
+                    <div class="agenda-item">
+                        <div class="agenda-time">${ritual.time}</div>
+                        <div class="agenda-desc">${ritual.action}</div>
+                        <div class="agenda-badge ${isDone ? 'done' : ''}"></div>
+                    </div>
+                    <div style="font-size: 0.7rem; color: #6c757d; margin-left: 77px; margin-top: -8px; margin-bottom: 4px;">💡 ${ritual.tip}</div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            // Temas para Daily com atividades diárias
+            html += `
+                <div class="card">
+                    <div class="card-header">🎯 Temas para Daily (09:30)</div>
+            `;
+            
+            dailyThemes.forEach(theme => {
+                html += `
+                    <div class="daily-theme-item">
+                        <div class="daily-theme-text">${theme.theme}</div>
+                        ${theme.context ? `<div class="daily-theme-context">📌 ${theme.context}</div>` : ''}
+                    </div>
+                `;
+            });
+            
+            html += `<div style="margin-top: 12px; font-size: 0.7rem; color: #6c757d;">✨ Lembre-se: comece perguntando como as pessoas estão. O lado humano primeiro.</div>`;
+            html += `</div>`;
+            
+            // Atividades Diárias - Checkbox para controle
+            html += `
+                <div class="card">
+                    <div class="card-header">📋 Atividades Diárias do Time</div>
+            `;
+            
+            dailyActivities.forEach((activity, idx) => {
+                const key = `daily_${idx}`;
+                const isCompleted = teamData.dailyTasksStatus[key]?.completed || false;
+                html += `
+                    <div class="agenda-item">
+                        <input type="checkbox" id="task_${idx}" ${isCompleted ? 'checked' : ''} onchange="toggleDailyTask(${idx})" style="width: 20px; height: 20px;">
+                        <div class="agenda-desc" style="${isCompleted ? 'text-decoration: line-through; opacity: 0.6;' : ''}">
+                            <strong>${activity.activity}</strong><br>
+                            <span style="font-size: 0.7rem; color: #6c757d;">${activity.cell} - ${activity.members}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            // One-on-One
+            html += `
+                <div class="card">
+                    <div class="card-header">💬 One-on-One - Acompanhamento</div>
+            `;
+            
+            teamData.members.forEach(member => {
+                const daysDiff = Math.floor((new Date() - new Date(member.lastOneOnOne)) / (1000 * 3600 * 24));
+                let urgencyClass = '';
+                let statusText = '';
+                if (daysDiff > 30) {
+                    urgencyClass = 'urgency-high';
+                    statusText = '🔴 Urgente';
+                } else if (daysDiff > 20) {
+                    urgencyClass = 'urgency-medium';
+                    statusText = '🟡 Pendente';
+                } else {
+                    statusText = '✅ Em dia';
+                }
+                
+                html += `
+                    <div class="person-row ${urgencyClass}">
+                        <div class="person-info">
+                            <div class="person-name">${member.nome}</div>
+                            <div class="person-last">Último: ${new Date(member.lastOneOnOne).toLocaleDateString()} (${daysDiff} dias) • ${statusText}</div>
+                            <div style="font-size: 0.7rem; color: #2d6a4f;">${member.funcao}</div>
+                        </div>
+                        <button class="btn-small" onclick="scheduleOneOnOne(${member.id})">Agendar</button>
+                    </div>
+                `;
+            });
+            
+            html += `<button class="action-btn warning" style="margin-top: 12px; width: 100%;" onclick="suggestOneOnOne()">✨ IA: Sugerir próximo 1:1</button>`;
+            html += `</div>`;
+            
+            document.getElementById('app').innerHTML = html;
+        }
+        
+        // Funções globais
+        function toggleDailyTask(idx) {
+            const key = `daily_${idx}`;
+            teamData.dailyTasksStatus[key].completed = !teamData.dailyTasksStatus[key].completed;
+            saveData();
+            render();
+        }
+        
+        function scheduleOneOnOne(memberId) {
+            const member = teamData.members.find(m => m.id === memberId);
+            const date = prompt(`Agendar 1:1 com ${member.nome}\n\nData (YYYY-MM-DD):`, new Date().toISOString().split('T')[0]);
+            if (date) {
+                member.lastOneOnOne = date;
+                teamData.checkins.push({ type: 'oneonone', memberId, date: new Date().toISOString() });
                 saveData();
-                alert("✅ Check-in registrado! Use esses dados para ajustar sua liderança.");
+                render();
+                alert(`✅ 1:1 agendado com ${member.nome} para ${date}\n\nDica: prepare perguntas sobre carreira, bem-estar e como você pode ajudar.`);
             }
         }
         
-        // Sugerir 1:1 com IA
         function suggestOneOnOne() {
             const overdue = teamData.members.filter(m => {
-                const lastDate = new Date(m.lastOneOnOne);
-                const daysDiff = (new Date() - lastDate) / (1000 * 3600 * 24);
+                const daysDiff = (new Date() - new Date(m.lastOneOnOne)) / (1000 * 3600 * 24);
                 return daysDiff > 20;
             });
             
@@ -618,113 +711,33 @@
             }
         }
         
-        // Gerar agenda diária
-        function updateDailyAgenda() {
-            const now = new Date();
-            const agenda = [
-                { time: "08:00", desc: "💬 Bom dia ao time", done: now.getHours() >= 8 },
-                { time: "08:30", desc: "📋 Revisão de pendências", done: now.getHours() >= 8.5 },
-                { time: "09:30", desc: "🎯 Daily com temas IA", done: now.getHours() >= 9.5 },
-                { time: "10:30", desc: "🌟 Reconhecimento público", done: now.getHours() >= 10.5 },
-                { time: "14:00", desc: "🎧 One-on-One", done: now.getHours() >= 14 },
-                { time: "16:00", desc: "📊 Check de métricas", done: now.getHours() >= 16 },
-                { time: "17:30", desc: "📝 Fechamento e agradecimento", done: now.getHours() >= 17.5 }
-            ];
-            
-            let html = '';
-            agenda.forEach(item => {
-                html += `
-                    <div class="agenda-item">
-                        <div class="agenda-time">${item.time}</div>
-                        <div class="agenda-desc">${item.desc}</div>
-                        <div class="agenda-status ${item.done ? 'done' : ''}"></div>
-                    </div>
-                `;
-            });
-            document.getElementById('dailyAgenda').innerHTML = html;
-        }
-        
-        // Lista de 1:1
-        function updateOneOnOneList() {
-            let html = '';
-            teamData.members.forEach(member => {
-                const lastDate = new Date(member.lastOneOnOne);
-                const daysDiff = Math.floor((new Date() - lastDate) / (1000 * 3600 * 24));
-                let status = '';
-                let urgency = '';
-                if (daysDiff > 30) {
-                    status = '🔴 Urgente';
-                    urgency = 'style="border-left: 4px solid #dc3545"';
-                } else if (daysDiff > 20) {
-                    status = '🟡 Pendente';
-                    urgency = 'style="border-left: 4px solid #ffc107"';
-                } else {
-                    status = '✅ Em dia';
-                }
-                
-                html += `
-                    <div class="person-card" ${urgency}>
-                        <div class="person-info">
-                            <span class="person-name">${member.nome}</span>
-                            <span class="person-last-1x1">Último: ${lastDate.toLocaleDateString()} (${daysDiff} dias) • ${status}</span>
-                        </div>
-                        <button class="schedule-btn" onclick="scheduleOneOnOne(${member.id})">Agendar</button>
-                    </div>
-                `;
-            });
-            document.getElementById('oneononeList').innerHTML = html;
-        }
-        
-        function scheduleOneOnOne(memberId) {
-            const member = teamData.members.find(m => m.id === memberId);
-            const date = prompt(`Agendar 1:1 com ${member.nome}\n\nData (YYYY-MM-DD):`, new Date().toISOString().split('T')[0]);
-            if (date) {
-                member.lastOneOnOne = date;
-                teamData.oneOnOneHistory.push({ memberId, date, notes: "" });
+        function teamPulse() {
+            const response = prompt("Check-in rápido com o time:\n\nDe 0 a 10, como vocês estão se sentindo hoje?\n\n(ou deixe um feedback que queira compartilhar)");
+            if (response) {
+                teamData.checkins.push({ type: 'pulse', response, date: new Date().toISOString() });
                 saveData();
-                updateOneOnOneList();
-                alert(`✅ 1:1 agendado com ${member.nome} para ${date}\n\nDica: prepare perguntas sobre carreira, bem-estar e como você pode ajudar.`);
+                alert("✅ Check-in registrado! Use esses dados para ajustar sua liderança.");
+                render();
             }
         }
         
-        // Rituais
-        function updateRituals() {
-            const now = new Date();
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
-            const currentTime = currentHour + currentMinute/100;
-            
-            let html = '';
-            rituals.forEach(ritual => {
-                const [hour, minute] = ritual.time.split(':').map(Number);
-                const ritualTime = hour + minute/100;
-                let status = ritualTime <= currentTime ? '✅ ' : '⏰ ';
-                html += `
-                    <div class="ritual-card">
-                        <div class="ritual-time">${status} ${ritual.time}</div>
-                        <div><strong>${ritual.descricao}</strong></div>
-                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 4px;">💡 ${ritual.dica}</div>
-                    </div>
-                `;
-            });
-            document.getElementById('ritualsList').innerHTML = html;
+        function resetDailyTasks() {
+            if (confirm("⚠️ Resetar todas as atividades diárias? Isso vai marcar todas como não concluídas para hoje.")) {
+                const today = new Date().toISOString().split('T')[0];
+                dailyActivities.forEach((_, idx) => {
+                    teamData.dailyTasksStatus[`daily_${idx}`] = { completed: false, date: today };
+                });
+                saveData();
+                render();
+                alert("✅ Atividades diárias resetadas!");
+            }
         }
         
-        // Temas para daily
-        function refreshDailyThemes() {
-            const shuffled = [...dailyThemesDB];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            const selected = shuffled.slice(0, 3);
-            
-            let html = '<div style="margin-bottom: 12px;">🎯 Sugestões de temas para a daily de hoje:</div>';
-            selected.forEach(theme => {
-                html += `<div style="background: #f8f9fc; padding: 12px; border-radius: 16px; margin-bottom: 8px;">${theme}</div>`;
-            });
-            html += `<div style="font-size: 0.75rem; color: #6c757d; margin-top: 8px;">✨ Lembre-se: comece perguntando como as pessoas estão. O lado humano primeiro.</div>`;
-            document.getElementById('dailyThemes').innerHTML = html;
+        function registerMood(mood) {
+            teamData.moods.push({ mood, date: new Date().toISOString() });
+            saveData();
+            alert(`🙏 Obrigado! Seu humor foi registrado. Lembre-se: sua energia impacta o time.`);
+            render();
         }
         
         // Relógio e saudação
@@ -735,32 +748,32 @@
                 const minutes = now.getMinutes().toString().padStart(2, '0');
                 document.getElementById('currentTime').innerHTML = `${hours}:${minutes}`;
                 
-                let greeting = "";
-                if (now.getHours() < 12) greeting = "🌅 Bom dia, líder! Hora de inspirar o time.";
-                else if (now.getHours() < 18) greeting = "☀️ Boa tarde! Continue com a energia positiva.";
-                else greeting = "🌙 Boa noite! Reflita sobre o dia e se prepare para amanhã.";
-                document.getElementById('greeting').innerHTML = greeting;
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('currentDate').innerHTML = now.toLocaleDateString('pt-BR', options);
+                
+                const quotes = [
+                    "“Liderar é fazer com que os outros façam o que precisam ser feitos, mas com vontade.”",
+                    "“A verdadeira liderança é servir.”",
+                    "“Seja o líder que você gostaria de ter.”",
+                    "“Confiança se constrói com transparência e consistência.”",
+                    "“Pessoas não se lembram do que você disse, mas de como você as fez sentir.”"
+                ];
+                const dayOfMonth = now.getDate();
+                document.getElementById('leaderQuote').innerHTML = quotes[dayOfMonth % quotes.length];
             }
             update();
             setInterval(update, 1000);
         }
         
-        function updateUI() {
-            updateIA();
-            updateClimateMetrics();
-            updateDailyAgenda();
-            updateOneOnOneList();
-            updateRituals();
-            refreshDailyThemes();
-        }
-        
         // Inicialização
         loadData();
-        setInterval(() => {
-            updateIA();
-            updateDailyAgenda();
-            updateRituals();
-        }, 60000);
+        startClock();
+        render();
+        
+        // Bind dos botões
+        document.getElementById('sendMessageBtn').onclick = sendMessage;
+        document.getElementById('teamPulseBtn').onclick = teamPulse;
+        document.getElementById('resetDailyBtn').onclick = resetDailyTasks;
     </script>
 </body>
 </html>
