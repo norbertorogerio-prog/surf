@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gestão de Células</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f4f6fa;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            border-left: 4px solid #2d6a4f;
+            padding-left: 12px;
+        }
+
+        .cell-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1e3a2f;
+        }
+
+        .member-list {
+            margin-top: 16px;
+        }
+
+        .member-item {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .member-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-funcao {
+            font-size: 0.8rem;
+            color: #2d6a4f;
+            background: #e9f5ef;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .tasks-list {
+            margin-top: 12px;
+            margin-left: 8px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .task-check {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .task-text {
+            flex: 1;
+        }
+
+        .delivery-badge {
+            background: #fff3e0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-top: 8px;
+            display: inline-block;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-family: inherit;
+            margin-top: 12px;
+            resize: vertical;
+        }
+
+        button {
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .status-pendente {
+            color: #e67e22;
+            font-size: 0.7rem;
+        }
+
+        .status-concluido {
+            color: #27ae60;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2d6a4f;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div style="margin-bottom: 20px;">
+        <h1>📋 Liderança de Células</h1>
+        <p style="color: #3b5c4a;">Controle de entregas e atividades diárias</p>
+    </div>
+
+    <div id="cellsContainer">
+        <!-- células serão inseridas aqui via JS -->
+        <div class="card">Carregando equipes...</div>
+    </div>
+</div>
+
+<div class="fab" onclick="abrirChecklistRapido()">+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // ================= CONFIGURAÇÃO SUPABASE =================
+    const SUPABASE_URL = "https://SEU_PROJETO.supabase.co";
+    const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Dados mockados enquanto você não cria as tabelas
+    // depois substituir por chamadas reais ao Supabase
+
+    let membrosMock = [
+        { id: 1, nome: "Ana Souza", funcao: "Coordenadora de Campo", cell_id: 1 },
+        { id: 2, nome: "Carlos Lima", funcao: "Técnico de Obras", cell_id: 1 },
+        { id: 3, nome: "Mariana Rocha", funcao: "Líder de Terceiros", cell_id: 2 },
+        { id: 4, nome: "João Pedro", funcao: "Auxiliar", cell_id: 2 }
+    ];
+
+    let cellsMock = [
+        { id: 1, nome: "Célula Azul - Infraestrutura" },
+        { id: 2, nome: "Célula Verde - Terceiros" }
+    ];
+
+    let atividadesMock = {
+        1: [
+            { id: 101, descricao: "Revisar cronograma de campo", status: "pendente" },
+            { id: 102, descricao: "Validar relatório de entregas", status: "concluido" }
+        ],
+        2: [
+            { id: 103, descricao: "Acompanhar equipe terceirizada", status: "pendente" }
+        ],
+        3: [
+            { id: 104, descricao: "Negociar contrato com novo fornecedor", status: "pendente" }
+        ],
+        4: [
+            { id: 105, descricao: "Organizar ferramentas", status: "concluido" }
+        ]
+    };
+
+    let entregasMock = [
+        { id: 1, member_id: 1, titulo: "Relatório mensal", data_entrega: "2025-03-28", status: "pendente" },
+        { id: 2, member_id: 2, titulo: "Checklist de segurança", data_entrega: "2025-03-27", status: "concluido" }
+    ];
+
+    // Função para carregar e exibir dados (usando mock + integração futura)
+    async function carregarDashboard() {
+        // Aqui depois você vai buscar do Supabase:
+        // const { data: cells } = await supabase.from('cells').select('*')
+        // const { data: members } = await supabase.from('members').select('*')
+        // const { data: dailyTasks } = await supabase.from('daily_tasks').select('*')
+        // const { data: deliveries } = await supabase.from('deliveries').select('*')
+
+        // Exemplo com dados locais
+        const cells = cellsMock;
+        const members = membrosMock;
+
+        let html = '';
+        for (let cell of cells) {
+            const membrosDaCell = members.filter(m => m.cell_id === cell.id);
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="cell-title">${cell.nome}</div>
+                        <span style="font-size: 0.8rem;">${membrosDaCell.length} pessoas</span>
+                    </div>
+                    <div class="member-list">
+            `;
+            for (let membro of membrosDaCell) {
+                const tarefas = atividadesMock[membro.id] || [];
+                const entregasMembro = entregasMock.filter(e => e.member_id === membro.id);
+                html += `
+                    <div class="member-item">
+                        <div class="member-name">
+                            <span>${membro.nome}</span>
+                            <span class="member-funcao">${membro.funcao}</span>
+                        </div>
+                        <div class="tasks-list">
+                            <strong>📌 Atividades diárias:</strong>
+                `;
+                for (let task of tarefas) {
+                    const statusClass = task.status === 'concluido' ? 'status-concluido' : '';
+                    html += `
+                        <div class="task-item">
+                            <input type="checkbox" class="task-check" data-task-id="${task.id}" ${task.status === 'concluido' ? 'checked' : ''}>
+                            <span class="task-text ${statusClass}">${task.descricao}</span>
+                        </div>
+                    `;
+                }
+                html += `</div><div>`;
+                if (entregasMembro.length > 0) {
+                    html += `<strong>📦 Entregas:</strong><br>`;
+                    for (let entrega of entregasMembro) {
+                        html += `<div class="delivery-badge">📅 ${entrega.titulo} - até ${entrega.data_entrega} (${entrega.status})</div>`;
+                    }
+                }
+                html += `
+                        </div>
+                        <textarea class="note-input" placeholder="Anotação do dia para ${membro.nome}..." rows="2"></textarea>
+                    </div>
+                `;
+            }
+            html += `</div></div>`;
+        }
+        document.getElementById('cellsContainer').innerHTML = html;
+
+        // Adicionar eventos aos checkboxes (aqui você pode integrar com Supabase depois)
+        document.querySelectorAll('.task-check').forEach(checkbox => {
+            checkbox.addEventListener('change', async (e) => {
+                const taskId = e.target.dataset.taskId;
+                const novoStatus = e.target.checked ? 'concluido' : 'pendente';
+                // Aqui você atualizaria no Supabase
+                // await supabase.from('daily_tasks').update({ status: novoStatus }).eq('id', taskId);
+                console.log(`Tarefa ${taskId} -> ${novoStatus}`);
+                // Recarregar para refletir visual (opcional)
+                // carregarDashboard();
+            });
+        });
+    }
+
+    // Função para adicionar checklist rápido
+    function abrirChecklistRapido() {
+        const novaTarefa = prompt("Nova atividade rápida (para você ou equipe):");
+        if (novaTarefa) {
+            alert("Funcionalidade: em breve com Supabase você salvará esta tarefa!");
+            console.log("Tarefa rápida:", novaTarefa);
+        }
+    }
+
+    // Inicialização
+    carregarDashboard();
+</script>
+</body>
+</html>
