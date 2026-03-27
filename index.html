@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>Gestão de Células - Líder</title>
+    <title>Gestão de Células - Liderança TI</title>
     <style>
         * {
             margin: 0;
@@ -24,7 +24,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, #1e3a2f 0%, #2d6a4f 100%);
             color: white;
@@ -50,14 +49,26 @@
             opacity: 0.8;
         }
 
-        /* Cards */
+        .stats {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stat-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
         .card {
             background: white;
             border-radius: 20px;
             margin-bottom: 20px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: transform 0.2s;
         }
 
         .card-header {
@@ -84,11 +95,9 @@
             color: #495057;
         }
 
-        /* Member Item */
         .member-item {
             padding: 16px 20px;
             border-bottom: 1px solid #e9ecef;
-            transition: background 0.2s;
         }
 
         .member-item:last-child {
@@ -119,7 +128,6 @@
             font-weight: 500;
         }
 
-        /* Tasks */
         .section-title {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -146,7 +154,7 @@
 
         .task-text {
             flex: 1;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #212529;
         }
 
@@ -155,35 +163,15 @@
             color: #adb5bd;
         }
 
-        /* Deliveries */
-        .delivery-item {
-            background: #fff8e7;
-            padding: 8px 12px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            font-size: 0.8rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .delivery-title {
-            font-weight: 500;
-        }
-
-        .delivery-status {
+        .task-period {
             font-size: 0.7rem;
+            color: #e67e22;
+            background: #fff3e0;
             padding: 2px 8px;
             border-radius: 12px;
-            background: #ffe0b5;
+            white-space: nowrap;
         }
 
-        .delivery-status.done {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        /* Notes */
         .note-area {
             margin-top: 12px;
         }
@@ -205,17 +193,15 @@
             background: white;
         }
 
-        /* Buttons */
         .add-btn {
-            background: #2d6a4f;
+            background: #6c757d;
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 40px;
+            padding: 8px 16px;
+            border-radius: 20px;
             font-weight: 500;
             cursor: pointer;
-            font-size: 0.9rem;
-            width: 100%;
+            font-size: 0.75rem;
             margin-top: 8px;
         }
 
@@ -242,31 +228,16 @@
             transform: scale(0.95);
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .quick-actions {
-            display: flex;
-            gap: 10px;
+        .reset-btn {
+            background: #dc3545;
+            margin-top: 20px;
             margin-bottom: 20px;
-        }
-
-        .quick-btn {
-            flex: 1;
-            background: white;
             padding: 12px;
             border-radius: 40px;
             text-align: center;
-            font-size: 0.85rem;
+            color: white;
             font-weight: 500;
-            color: #2d6a4f;
-            border: 1px solid #dee2e6;
             cursor: pointer;
-        }
-
-        .quick-btn:active {
-            background: #f0f0f0;
         }
 
         @media (max-width: 600px) {
@@ -284,66 +255,146 @@
 <div class="container">
     <div class="header">
         <h1>📋 Gestão de Células</h1>
-        <p>Controle diário de atividades e entregas</p>
+        <p>Liderança de Suporte e Infraestrutura TI</p>
         <div class="date" id="currentDate"></div>
+        <div class="stats" id="stats"></div>
     </div>
 
-    <div class="quick-actions">
-        <div class="quick-btn" onclick="showAddMember()">➕ Add Membro</div>
-        <div class="quick-btn" onclick="showGlobalTask()">📝 Add Tarefa Rápida</div>
-    </div>
-
-    <div id="cellsContainer">
-        <!-- células serão inseridas aqui -->
-        <div style="text-align: center; padding: 40px;">Carregando...</div>
-    </div>
+    <div id="cellsContainer"></div>
+    
+    <div class="reset-btn" onclick="resetTodayProgress()">🔄 Resetar Progresso do Dia</div>
 </div>
 
 <button class="fab" onclick="showQuickNote()">✏️</button>
 
 <script>
-    // ================= DADOS INICIAIS =================
-    let dados = {
+    // ================= CONFIGURAÇÃO COMPLETA DAS CÉLULAS =================
+    const config = {
         cells: [
-            { id: 1, nome: "Célula Azul - Infraestrutura" },
-            { id: 2, nome: "Célula Verde - Terceiros" },
-            { id: 3, nome: "Célula Amarela - Suporte" }
+            { id: 1, nome: "📰 Suporte a Assuntos Executivos" },
+            { id: 2, nome: "📊 Governança de Produtos MS / Power BI" },
+            { id: 3, nome: "🏪 Suporte à Infraestrutura (Lojas, ADM, Call Center)" },
+            { id: 4, nome: "🎥 Suporte Áudio e Vídeo" },
+            { id: 5, nome: "💻 Gestão de Ativos, Softwares e Licenciamento" }
         ],
+        
         members: [
-            { id: 1, nome: "Ana Souza", funcao: "Coordenadora de Campo", cell_id: 1 },
-            { id: 2, nome: "Carlos Lima", funcao: "Técnico de Obras", cell_id: 1 },
-            { id: 3, nome: "Mariana Rocha", funcao: "Líder de Terceiros", cell_id: 2 },
-            { id: 4, nome: "João Pedro", funcao: "Auxiliar", cell_id: 2 },
-            { id: 5, nome: "Fernanda Santos", funcao: "Analista de Suporte", cell_id: 3 }
+            // Célula 1 - Suporte Executivo
+            { id: 1, nome: "Amanda Furquim dos Santos", funcao: "Suporte Executivo", cell_id: 1 },
+            { id: 2, nome: "Vitoria Maria Nogueira", funcao: "Suporte Executivo", cell_id: 1 },
+            
+            // Célula 2 - Governança MS / Power BI
+            { id: 3, nome: "Mauro Eliseo Artioli", funcao: "Governança MS / Power BI", cell_id: 2 },
+            
+            // Célula 3 - Infraestrutura
+            { id: 4, nome: "Eduardo Felipe da Silva", funcao: "Infraestrutura", cell_id: 3 },
+            { id: 5, nome: "Anderson Oliveira Santos", funcao: "Infraestrutura", cell_id: 3 },
+            
+            // Célula 4 - Áudio e Vídeo
+            { id: 6, nome: "Marcel Douglas Bertulino da Silva", funcao: "Áudio e Vídeo", cell_id: 4 },
+            { id: 7, nome: "Fernando Fernandes da Silva", funcao: "Áudio e Vídeo", cell_id: 4 },
+            
+            // Célula 5 - Gestão de Ativos
+            { id: 8, nome: "Ivanete Alves de Oliveira Sousa", funcao: "Gestão de Ativos e Licenças", cell_id: 5 }
         ],
-        tasks: {}, // formato: { memberId: [{ id, descricao, completed }] }
-        deliveries: {}, // formato: { memberId: [{ id, titulo, data, completed }] }
-        notes: {} // formato: { memberId: "nota" }
+        
+        tasks: {
+            // Célula 1 - Suporte Executivo
+            1: [ // Amanda
+                { id: 101, descricao: "Criação do Jornal da Área", period: "Diária", completed: false },
+                { id: 102, descricao: "Criação do Diário Executivo", period: "Diária", completed: false }
+            ],
+            2: [ // Vitoria
+                { id: 201, descricao: "Criação do Jornal da Área", period: "Diária", completed: false },
+                { id: 202, descricao: "Criação do Diário Executivo", period: "Diária", completed: false }
+            ],
+            
+            // Célula 2 - Mauro
+            3: [ // Mauro
+                { id: 301, descricao: "Suporte Power Platform", period: "Diária", completed: false },
+                { id: 302, descricao: "Suporte Copilot", period: "Diária", completed: false },
+                { id: 303, descricao: "Desenvolvimento de chatbot de suporte", period: "Diária", completed: false },
+                { id: 304, descricao: "Integração MS / Interface", period: "1º Semestre", completed: false },
+                { id: 305, descricao: "Integração Teams – Command Center", period: "1º Semestre", completed: false },
+                { id: 306, descricao: "Integração Salesforce com Outlook", period: "1º Semestre", completed: false },
+                { id: 307, descricao: "Criação de dashboards", period: "Mensal", completed: false },
+                { id: 308, descricao: "Criação do dashboard Copilot (POC)", period: "1º Semestre", completed: false },
+                { id: 309, descricao: "Construção de Painéis para licenciamento", period: "Mensal", completed: false }
+            ],
+            
+            // Célula 3 - Eduardo e Anderson
+            4: [ // Eduardo
+                { id: 401, descricao: "Reforma de loja", period: "Mensal", completed: false },
+                { id: 402, descricao: "Internalização de loja", period: "Mensal", completed: false },
+                { id: 403, descricao: "Facelift de lojas", period: "Mensal", completed: false },
+                { id: 404, descricao: "Black Friday e Natal (lojas principais)", period: "2º Semestre", completed: false },
+                { id: 405, descricao: "Atualização sistêmica dos tablets MaaS360", period: "1º Semestre", completed: false }
+            ],
+            5: [ // Anderson
+                { id: 501, descricao: "Reforma de loja", period: "Mensal", completed: false },
+                { id: 502, descricao: "Internalização de loja", period: "Mensal", completed: false },
+                { id: 503, descricao: "Facelift de lojas", period: "Mensal", completed: false },
+                { id: 504, descricao: "Black Friday e Natal (lojas principais)", period: "2º Semestre", completed: false },
+                { id: 505, descricao: "Atualização sistêmica dos tablets MaaS360", period: "1º Semestre", completed: false }
+            ],
+            
+            // Célula 4 - Marcel e Fernando
+            6: [ // Marcel
+                { id: 601, descricao: "Suporte e atendimento VIP", period: "Diária", completed: false },
+                { id: 602, descricao: "Retrofit do 19º andar", period: "1º Semestre", completed: false },
+                { id: 603, descricao: "Instalação de 110 MeetUps", period: "1º Semestre", completed: false },
+                { id: 604, descricao: "Reforma e atualização do Auditório ECO", period: "2º Semestre", completed: false }
+            ],
+            7: [ // Fernando
+                { id: 701, descricao: "Suporte e atendimento VIP", period: "Diária", completed: false },
+                { id: 702, descricao: "Retrofit do 19º andar", period: "1º Semestre", completed: false },
+                { id: 703, descricao: "Instalação de 110 MeetUps", period: "1º Semestre", completed: false },
+                { id: 704, descricao: "Reforma e atualização do Auditório ECO", period: "2º Semestre", completed: false }
+            ],
+            
+            // Célula 5 - Ivanete
+            8: [ // Ivanete
+                { id: 801, descricao: "Automação do portal de gestão de software", period: "1º Semestre", completed: false },
+                { id: 802, descricao: "Dashboard de Licenças", period: "1º Semestre", completed: false },
+                { id: 803, descricao: "Migração SailPoint × Licenciamento", period: "1º Semestre", completed: false },
+                { id: 804, descricao: "Implantação do SSO nas ferramentas SAS", period: "1º Semestre", completed: false },
+                { id: 805, descricao: "Sanitização dos softwares homologados", period: "1º Semestre", completed: false },
+                { id: 806, descricao: "Inventário dos softwares no ServiceNow", period: "2º Semestre", completed: false },
+                { id: 807, descricao: "Controle de estoque de licenças no CMDB", period: "2º Semestre", completed: false },
+                { id: 808, descricao: "Radar 365", period: "2º Semestre", completed: false },
+                { id: 809, descricao: "Internalização FIBRASIL", period: "1º Semestre", completed: false }
+            ]
+        },
+        
+        notes: {} // Anotações por membro
     };
 
-    // Inicializar dados se não existirem no localStorage
+    // Inicializar ou carregar dados
     function initData() {
-        const saved = localStorage.getItem('gestaoCelulas');
+        const saved = localStorage.getItem('gestaoCelulasTI');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
-                dados = { ...dados, ...parsed };
+                // Mesclar dados preservando estrutura
+                Object.keys(config.tasks).forEach(memberId => {
+                    if (parsed.tasks && parsed.tasks[memberId]) {
+                        parsed.tasks[memberId].forEach((savedTask, idx) => {
+                            if (config.tasks[memberId] && config.tasks[memberId][idx]) {
+                                config.tasks[memberId][idx].completed = savedTask.completed;
+                            }
+                        });
+                    }
+                });
+                if (parsed.notes) {
+                    config.notes = parsed.notes;
+                }
             } catch(e) { console.error('Erro ao carregar dados'); }
         }
         
-        // Inicializar estruturas vazias para membros que não têm
-        dados.members.forEach(member => {
-            if (!dados.tasks[member.id]) {
-                dados.tasks[member.id] = [
-                    { id: Date.now() + member.id + 1, descricao: "Revisar atividades do dia", completed: false },
-                    { id: Date.now() + member.id + 2, descricao: "Registrar entregas no sistema", completed: false }
-                ];
-            }
-            if (!dados.deliveries[member.id]) {
-                dados.deliveries[member.id] = [];
-            }
-            if (!dados.notes[member.id]) {
-                dados.notes[member.id] = "";
+        // Inicializar anotações vazias
+        config.members.forEach(member => {
+            if (!config.notes[member.id]) {
+                config.notes[member.id] = "";
             }
         });
         
@@ -351,16 +402,40 @@
     }
 
     function saveData() {
-        localStorage.setItem('gestaoCelulas', JSON.stringify(dados));
+        const toSave = {
+            tasks: config.tasks,
+            notes: config.notes,
+            lastUpdate: new Date().toISOString()
+        };
+        localStorage.setItem('gestaoCelulasTI', JSON.stringify(toSave));
+        updateStats();
     }
 
-    // Renderizar dashboard
+    function updateStats() {
+        let totalTasks = 0;
+        let completedTasks = 0;
+        
+        Object.values(config.tasks).forEach(memberTasks => {
+            memberTasks.forEach(task => {
+                totalTasks++;
+                if (task.completed) completedTasks++;
+            });
+        });
+        
+        const percent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        document.getElementById('stats').innerHTML = `
+            <span class="stat-badge">📊 ${completedTasks}/${totalTasks} tarefas</span>
+            <span class="stat-badge">✅ ${percent}% concluído</span>
+            <span class="stat-badge">👥 ${config.members.length} membros</span>
+        `;
+    }
+
     function render() {
         const container = document.getElementById('cellsContainer');
         let html = '';
         
-        dados.cells.forEach(cell => {
-            const membersInCell = dados.members.filter(m => m.cell_id === cell.id);
+        config.cells.forEach(cell => {
+            const membersInCell = config.members.filter(m => m.cell_id === cell.id);
             
             html += `
                 <div class="card">
@@ -374,9 +449,10 @@
             `;
             
             membersInCell.forEach(member => {
-                const memberTasks = dados.tasks[member.id] || [];
-                const memberDeliveries = dados.deliveries[member.id] || [];
-                const memberNote = dados.notes[member.id] || "";
+                const memberTasks = config.tasks[member.id] || [];
+                const memberNote = config.notes[member.id] || "";
+                const completedCount = memberTasks.filter(t => t.completed).length;
+                const totalCount = memberTasks.length;
                 
                 html += `
                     <div class="member-item" data-member-id="${member.id}">
@@ -384,9 +460,12 @@
                             <span class="member-name">${member.nome}</span>
                             <span class="member-funcao">${member.funcao}</span>
                         </div>
+                        <div style="font-size: 0.7rem; color: #2d6a4f; margin-bottom: 8px;">
+                            Progresso: ${completedCount}/${totalCount} tarefas
+                        </div>
                         
-                        <div class="section-title">📌 Atividades Diárias</div>
-                        <div class="tasks-list" id="tasks-${member.id}">
+                        <div class="section-title">📌 Atividades e Entregas</div>
+                        <div class="tasks-list">
                 `;
                 
                 memberTasks.forEach(task => {
@@ -394,40 +473,16 @@
                         <div class="task-item">
                             <input type="checkbox" class="task-check" data-member="${member.id}" data-task-id="${task.id}" ${task.completed ? 'checked' : ''}>
                             <span class="task-text ${task.completed ? 'completed' : ''}">${task.descricao}</span>
+                            <span class="task-period">${task.period}</span>
                         </div>
                     `;
                 });
                 
-                html += `
-                            <button class="add-btn" style="background: #6c757d; margin-top: 4px;" onclick="addTaskToMember(${member.id})">+ Nova Atividade</button>
-                        </div>
-                        
-                        <div class="section-title">📦 Entregas</div>
-                        <div class="deliveries-list">
-                `;
-                
-                if (memberDeliveries.length === 0) {
-                    html += `<div style="font-size: 0.8rem; color: #6c757d; padding: 8px 0;">Nenhuma entrega cadastrada</div>`;
-                } else {
-                    memberDeliveries.forEach(delivery => {
-                        html += `
-                            <div class="delivery-item">
-                                <span class="delivery-title">${delivery.titulo}</span>
-                                <span class="delivery-status ${delivery.completed ? 'done' : ''}">
-                                    ${delivery.completed ? '✅ Concluída' : '⏳ Pendente'}
-                                </span>
-                            </div>
-                        `;
-                    });
-                }
-                
-                html += `
-                            <button class="add-btn" style="background: #f4a261; margin-top: 4px;" onclick="addDeliveryToMember(${member.id})">+ Nova Entrega</button>
-                        </div>
+                html += `</div>
                         
                         <div class="note-area">
-                            <div class="section-title">📝 Anotações</div>
-                            <textarea class="note-input" data-member="${member.id}" placeholder="Anotações do dia, observações, pendências..." rows="2">${escapeHtml(memberNote)}</textarea>
+                            <div class="section-title">📝 Anotações do Líder</div>
+                            <textarea class="note-input" data-member="${member.id}" placeholder="Anotações, feedbacks, pendências, observações..." rows="2">${escapeHtml(memberNote)}</textarea>
                         </div>
                     </div>
                 `;
@@ -438,16 +493,16 @@
         
         container.innerHTML = html;
         
-        // Adicionar event listeners
+        // Event listeners
         document.querySelectorAll('.task-check').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
                 const memberId = parseInt(checkbox.dataset.member);
                 const taskId = parseInt(checkbox.dataset.taskId);
-                const task = dados.tasks[memberId].find(t => t.id === taskId);
+                const task = config.tasks[memberId].find(t => t.id === taskId);
                 if (task) {
                     task.completed = checkbox.checked;
                     saveData();
-                    render(); // re-render para atualizar estilo
+                    render();
                 }
             });
         });
@@ -455,7 +510,7 @@
         document.querySelectorAll('.note-input').forEach(textarea => {
             textarea.addEventListener('blur', (e) => {
                 const memberId = parseInt(textarea.dataset.member);
-                dados.notes[memberId] = textarea.value;
+                config.notes[memberId] = textarea.value;
                 saveData();
             });
         });
@@ -467,108 +522,14 @@
         return div.innerHTML;
     }
     
-    // Funções de ação
-    function addTaskToMember(memberId) {
-        const descricao = prompt("Digite a nova atividade:");
-        if (descricao && descricao.trim()) {
-            const newTask = {
-                id: Date.now(),
-                descricao: descricao.trim(),
-                completed: false
-            };
-            dados.tasks[memberId].push(newTask);
-            saveData();
-            render();
-        }
-    }
-    
-    function addDeliveryToMember(memberId) {
-        const titulo = prompt("Digite o título da entrega:");
-        if (titulo && titulo.trim()) {
-            const data = prompt("Data limite (opcional, ex: 25/03):") || "Sem data";
-            const newDelivery = {
-                id: Date.now(),
-                titulo: titulo.trim(),
-                data: data,
-                completed: false
-            };
-            dados.deliveries[memberId].push(newDelivery);
-            saveData();
-            render();
-        }
-    }
-    
-    function showAddMember() {
-        const nome = prompt("Nome do novo membro:");
-        if (!nome) return;
-        const funcao = prompt("Função do membro:");
-        if (!funcao) return;
-        
-        let cellOptions = dados.cells.map(c => `${c.id} - ${c.nome}`).join("\n");
-        const cellId = prompt(`Qual célula?\n${cellOptions}\n\nDigite o número da célula:`);
-        const selectedCell = dados.cells.find(c => c.id === parseInt(cellId));
-        
-        if (selectedCell) {
-            const newId = Math.max(...dados.members.map(m => m.id), 0) + 1;
-            const newMember = {
-                id: newId,
-                nome: nome,
-                funcao: funcao,
-                cell_id: selectedCell.id
-            };
-            dados.members.push(newMember);
-            dados.tasks[newId] = [];
-            dados.deliveries[newId] = [];
-            dados.notes[newId] = "";
-            saveData();
-            render();
-            alert(`✅ ${nome} adicionado à ${selectedCell.nome}`);
-        } else {
-            alert("Célula inválida!");
-        }
-    }
-    
-    function showGlobalTask() {
-        const descricao = prompt("Tarefa rápida para todos os membros? (ou deixe em branco para selecionar um membro)");
-        if (descricao && descricao.trim()) {
-            const paraTodos = confirm("Adicionar para TODOS os membros? Cancelar para escolher um específico.");
-            if (paraTodos) {
-                dados.members.forEach(member => {
-                    dados.tasks[member.id].push({
-                        id: Date.now() + member.id,
-                        descricao: descricao.trim(),
-                        completed: false
-                    });
-                });
-                saveData();
-                render();
-                alert(`✅ Tarefa adicionada para ${dados.members.length} membros`);
-            } else {
-                const memberList = dados.members.map((m, idx) => `${idx+1} - ${m.nome} (${m.funcao})`).join("\n");
-                const escolha = prompt(`Escolha o membro:\n${memberList}\n\nDigite o número:`);
-                const idx = parseInt(escolha) - 1;
-                if (dados.members[idx]) {
-                    dados.tasks[dados.members[idx].id].push({
-                        id: Date.now(),
-                        descricao: descricao.trim(),
-                        completed: false
-                    });
-                    saveData();
-                    render();
-                    alert(`✅ Tarefa adicionada para ${dados.members[idx].nome}`);
-                }
-            }
-        }
-    }
-    
     function showQuickNote() {
-        const memberList = dados.members.map((m, idx) => `${idx+1} - ${m.nome}`).join("\n");
+        const memberList = config.members.map((m, idx) => `${idx+1} - ${m.nome}`).join("\n");
         const escolha = prompt(`Anotação rápida para quem?\n${memberList}\n\nDigite o número:`);
         const idx = parseInt(escolha) - 1;
-        if (dados.members[idx]) {
-            const nota = prompt(`Anotação para ${dados.members[idx].nome}:`);
+        if (config.members[idx]) {
+            const nota = prompt(`Anotação para ${config.members[idx].nome}:`);
             if (nota !== null) {
-                dados.notes[dados.members[idx].id] = nota;
+                config.notes[config.members[idx].id] = nota;
                 saveData();
                 render();
                 alert("✅ Anotação salva!");
@@ -576,7 +537,21 @@
         }
     }
     
-    // Atualizar data
+    function resetTodayProgress() {
+        if (confirm("⚠️ Resetar apenas as tarefas DIÁRIAS? (Tarefas de 1º/2º Semestre e Mensais serão mantidas)")) {
+            Object.keys(config.tasks).forEach(memberId => {
+                config.tasks[memberId].forEach(task => {
+                    if (task.period === "Diária") {
+                        task.completed = false;
+                    }
+                });
+            });
+            saveData();
+            render();
+            alert("✅ Tarefas diárias resetadas!");
+        }
+    }
+    
     function updateDate() {
         const today = new Date();
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
