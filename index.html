@@ -1,20 +1,9 @@
-O erro 404 indica que o modelo gemini-1.5-flash não foi encontrado na API v1beta. A Google atualizou os endpoints; o modelo correto agora é gemini-1.5-flash ou gemini-1.5-pro, mas usando a versão v1 da API (não v1beta). Vou corrigir o código HTML para usar o endpoint correto e também adicionar um fallback automático para gemini-1.5-pro caso o primeiro falhe.
-
-Abaixo está a página HTML corrigida e aprimorada:
-
-· Endpoint da API: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent
-· Se falhar, tenta novamente com gemini-1.5-pro
-· Mensagens de erro mais claras
-· Visual moderno mantido
-
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-  <title>Assistente WhatsApp + IA</title>
-  <!-- Font Awesome 6 -->
+  <title>Assistente WhatsApp + IA | Resumo + Relatório Executivo</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -37,7 +26,7 @@ Abaixo está a página HTML corrigida e aprimorada:
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(2px);
       border-radius: 28px;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
       padding: 1.2rem;
       margin-bottom: 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.5);
@@ -53,10 +42,6 @@ Abaixo está a página HTML corrigida e aprimorada:
       align-items: center;
       gap: 10px;
       margin-bottom: 0.75rem;
-    }
-    h1 i {
-      background: none;
-      color: #25d366;
     }
     h2 {
       font-size: 1.35rem;
@@ -87,7 +72,6 @@ Abaixo está a página HTML corrigida e aprimorada:
       font-size: 1rem;
       font-family: inherit;
       resize: vertical;
-      transition: all 0.2s;
     }
     textarea:focus {
       outline: none;
@@ -96,7 +80,6 @@ Abaixo está a página HTML corrigida e aprimorada:
     }
     .api-key-section {
       background: #ffffffcc;
-      backdrop-filter: blur(4px);
       border-radius: 44px;
       padding: 12px 16px;
       margin-bottom: 1rem;
@@ -128,7 +111,6 @@ Abaixo está a página HTML corrigida e aprimorada:
       gap: 8px;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     button:active {
       transform: scale(0.97);
@@ -142,6 +124,16 @@ Abaixo está a página HTML corrigida e aprimorada:
     }
     .secondary {
       background: #4b6e8a;
+    }
+    .executive-box {
+      background: #fefce8;
+      border-left: 4px solid #eab308;
+      padding: 12px 14px;
+      border-radius: 18px;
+      font-size: 0.9rem;
+      color: #2d3e50;
+      margin-top: 6px;
+      white-space: pre-wrap;
     }
     .tasks-list {
       list-style: none;
@@ -164,7 +156,6 @@ Abaixo está a página HTML corrigida e aprimorada:
       font-size: 0.95rem;
       font-weight: 500;
       word-break: break-word;
-      color: #1e293b;
     }
     .task-completed .task-text {
       text-decoration: line-through;
@@ -180,7 +171,6 @@ Abaixo está a página HTML corrigida e aprimorada:
       font-size: 0.75rem;
       background: #f1f5f9;
       color: #1e2a3e;
-      box-shadow: none;
     }
     .task-actions .alert-btn {
       background: #fef9c3;
@@ -200,8 +190,8 @@ Abaixo está a página HTML corrigida e aprimorada:
       padding: 10px 14px;
       font-size: 0.75rem;
       color: #2c5a48;
-      margin-top: 8px;
       text-align: center;
+      margin-top: 8px;
     }
     .loading {
       display: inline-block;
@@ -211,7 +201,6 @@ Abaixo está a página HTML corrigida e aprimorada:
       border-top-color: transparent;
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
-      margin-right: 6px;
     }
     @keyframes spin {
       to { transform: rotate(360deg); }
@@ -241,12 +230,12 @@ Abaixo está a página HTML corrigida e aprimorada:
     <button id="saveApiKeyBtn" style="background:#25d366; color:#075e54;">Salvar</button>
   </div>
   <div class="info-text">
-    <i class="fas fa-info-circle"></i> Use sua chave gratuita do <strong>Google AI Studio</strong> (<a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#075e54;">obter aqui</a>). A chave fica salva no seu navegador.
+    <i class="fas fa-info-circle"></i> Use chave gratuita do <strong>Google AI Studio</strong> (<a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#075e54;">obter aqui</a>). A chave fica salva no navegador.
   </div>
 
   <div class="card">
     <h3><i class="fab fa-whatsapp"></i> Mensagens copiadas</h3>
-    <textarea id="whatsappMessages" rows="4" placeholder="Cole aqui a conversa do WhatsApp...&#10;Exemplo:&#10;João: Vamos precisar do relatório amanhã&#10;Maria: OK, vou fazer ainda hoje"></textarea>
+    <textarea id="whatsappMessages" rows="4" placeholder="Cole aqui a conversa do WhatsApp...&#10;Exemplo:&#10;João: Precisamos do orçamento até quinta&#10;Maria: OK, vou priorizar isso"></textarea>
     <button id="generateBtn" class="btn-primary" style="margin-top: 1rem;">
       <i class="fas fa-magic"></i> Gerar com IA
     </button>
@@ -254,10 +243,13 @@ Abaixo está a página HTML corrigida e aprimorada:
 
   <div class="card">
     <h3><i class="fas fa-file-alt"></i> Resumo inteligente</h3>
-    <p id="summaryDisplay" style="line-height: 1.4; color: #2d3e50;">—</p>
+    <p id="summaryDisplay" style="line-height: 1.4;">—</p>
     <hr>
-    <h3><i class="fas fa-comment-dots"></i> Sugestão de resposta / ação</h3>
-    <p id="suggestionDisplay" style="line-height: 1.4; color: #2d3e50;">—</p>
+    <h3><i class="fas fa-chart-line"></i> Relatório Executivo</h3>
+    <div id="executiveDisplay" class="executive-box">—</div>
+    <hr>
+    <h3><i class="fas fa-comment-dots"></i> Sugestão de resposta</h3>
+    <p id="suggestionDisplay" style="line-height: 1.4;">—</p>
   </div>
 
   <div class="card">
@@ -272,7 +264,7 @@ Abaixo está a página HTML corrigida e aprimorada:
     </div>
   </div>
   <footer>
-    <i class="fas fa-mobile-alt"></i> Cole mensagens → IA cria tarefa + resumo + sugestão. Toque em "Alertar" para lembrete (notificação).
+    <i class="fas fa-mobile-alt"></i> Cole mensagens → IA gera Resumo, Relatório Executivo, Sugestão e Tarefa. Alertas por notificação.
   </footer>
 </div>
 
@@ -285,6 +277,7 @@ Abaixo está a página HTML corrigida e aprimorada:
   const generateBtn = document.getElementById('generateBtn');
   const messagesTextarea = document.getElementById('whatsappMessages');
   const summaryDisplay = document.getElementById('summaryDisplay');
+  const executiveDisplay = document.getElementById('executiveDisplay');
   const suggestionDisplay = document.getElementById('suggestionDisplay');
   const tasksContainer = document.getElementById('tasksListContainer');
   const clearCompletedBtn = document.getElementById('clearCompletedTasksBtn');
@@ -299,11 +292,10 @@ Abaixo está a página HTML corrigida e aprimorada:
   }
   function addTask(title) {
     if (!title || title.trim() === '') return;
-    const newTask = { id: Date.now() + Math.random() * 1000, title: title.trim(), completed: false, createdAt: new Date().toISOString() };
+    const newTask = { id: Date.now() + Math.random() * 1000, title: title.trim(), completed: false };
     tasks.unshift(newTask);
     saveTasks();
     renderTasks();
-    return newTask;
   }
   function toggleCompleteTask(taskId) {
     const task = tasks.find(t => t.id == taskId);
@@ -315,48 +307,47 @@ Abaixo está a página HTML corrigida e aprimorada:
     renderTasks();
   }
   function createAlertForTask(taskTitle) {
-    if (!("Notification" in window)) { alert("Seu navegador não suporta notificações."); return; }
+    if (!("Notification" in window)) { alert("Notificações não suportadas."); return; }
     if (Notification.permission === "granted") askMinutesAndNotify(taskTitle);
     else if (Notification.permission !== "denied") {
       Notification.requestPermission().then(perm => {
         if (perm === "granted") askMinutesAndNotify(taskTitle);
-        else alert("Permissão de notificação negada.");
+        else alert("Permissão negada.");
       });
-    } else alert("Permissão bloqueada. Ative nas configurações.");
+    } else alert("Permissão bloqueada.");
   }
   function askMinutesAndNotify(taskTitle) {
-    let minutes = prompt(`⏰ Lembrete para "${taskTitle.substring(0, 40)}"\nDigite em quantos minutos deseja ser alertado:`, "5");
+    let minutes = prompt(`⏰ Lembrete para "${taskTitle.substring(0, 40)}"\nAlertar em quantos minutos?`, "5");
     if (!minutes) return;
     let mins = parseInt(minutes, 10);
     if (isNaN(mins) || mins <= 0) { alert("Número inválido."); return; }
-    const delayMs = mins * 60 * 1000;
-    alert(`✅ Alerta agendado para daqui a ${mins} minuto(s).`);
+    alert(`✅ Alarme definido para ${mins} minuto(s).`);
     setTimeout(() => {
       if (Notification.permission === "granted") {
-        new Notification("📢 Lembrete do Assistente WhatsApp", { body: `Tarefa: ${taskTitle}`, icon: "https://cdn-icons-png.flaticon.com/512/124/124034.png", vibrate: [200,100,200] });
+        new Notification("📢 Lembrete Assistente WhatsApp", { body: `Tarefa: ${taskTitle}` });
       }
-    }, delayMs);
+    }, mins * 60 * 1000);
   }
 
   function renderTasks() {
     if (!tasksContainer) return;
     if (tasks.length === 0) {
-      tasksContainer.innerHTML = '<li style="text-align: center; color: #6c7e97; padding: 12px;"><i class="fas fa-inbox"></i> Nenhuma tarefa. Gere uma nova!</li>';
+      tasksContainer.innerHTML = '<li style="text-align: center; color: #6c7e97;"><i class="fas fa-inbox"></i> Nenhuma tarefa.</li>';
       return;
     }
     const incomplete = tasks.filter(t => !t.completed);
     const completed = tasks.filter(t => t.completed);
-    const allOrdered = [...incomplete, ...completed];
+    const all = [...incomplete, ...completed];
     let html = '';
-    allOrdered.forEach(task => {
+    all.forEach(task => {
       const completedClass = task.completed ? 'task-completed' : '';
       html += `
         <li class="task-item ${completedClass}" data-id="${task.id}">
           <div class="task-text">${escapeHtml(task.title)}</div>
           <div class="task-actions">
-            <button class="complete-btn" data-action="complete" data-id="${task.id}" title="${task.completed ? 'Reabrir' : 'Concluir'}"><i class="fas ${task.completed ? 'fa-undo-alt' : 'fa-check-circle'}"></i> ${task.completed ? 'Reabrir' : 'Concluir'}</button>
-            <button class="alert-btn" data-action="alert" data-id="${task.id}" title="Criar alerta"><i class="fas fa-bell"></i> Alertar</button>
-            <button class="delete-btn" data-action="delete" data-id="${task.id}" title="Excluir"><i class="fas fa-trash"></i> Excluir</button>
+            <button class="complete-btn" data-action="complete" data-id="${task.id}"><i class="fas ${task.completed ? 'fa-undo-alt' : 'fa-check-circle'}"></i> ${task.completed ? 'Reabrir' : 'Concluir'}</button>
+            <button class="alert-btn" data-action="alert" data-id="${task.id}"><i class="fas fa-bell"></i> Alertar</button>
+            <button class="delete-btn" data-action="delete" data-id="${task.id}"><i class="fas fa-trash"></i> Excluir</button>
           </div>
         </li>
       `;
@@ -368,7 +359,7 @@ Abaixo está a página HTML corrigida e aprimorada:
         const action = btn.getAttribute('data-action');
         const taskId = parseFloat(btn.getAttribute('data-id'));
         if (action === 'complete') toggleCompleteTask(taskId);
-        else if (action === 'delete') { if (confirm('Remover tarefa?')) deleteTask(taskId); }
+        else if (action === 'delete') { if (confirm('Excluir tarefa?')) deleteTask(taskId); }
         else if (action === 'alert') { const t = tasks.find(t => t.id === taskId); if (t) createAlertForTask(t.title); }
       });
     });
@@ -380,47 +371,46 @@ Abaixo está a página HTML corrigida e aprimorada:
       if (m === '<') return '&lt;';
       if (m === '>') return '&gt;';
       return m;
-    });
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, c => c);
   }
 
-  // CORREÇÃO AQUI: endpoint correto v1 e fallback de modelo
   async function callGeminiAPI(messagesText, apiKey, model = "gemini-1.5-flash") {
     const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`;
-    const prompt = `Você é um assistente pessoal de produtividade. Analise as mensagens a seguir, extraídas de um grupo ou conversa do WhatsApp.
-    Com base no contexto, realize 3 tarefas:
-    1. Faça um RESUMO conciso (máximo 2 frases) do que é importante.
-    2. Extraia uma TAREFA CLARA e ACIONÁVEL que precisa ser feita (use infinitivo, ex: "Comprar mantimentos", "Responder a Maria sobre o orçamento", "Agendar revisão"). Se houver múltiplas ações, escolha a mais urgente/importante.
-    3. Forneça uma SUGESTÃO DE RESPOSTA ou AÇÃO PRÁTICA que o usuário possa executar (algo para responder no WhatsApp ou atitude imediata).
-    
-    Retorne APENAS UM JSON válido (sem texto extra, sem markdown) no seguinte formato exato:
-    {"resumo": "...", "tarefa": "...", "sugestao": "..."}
-    
+    const prompt = `Você é um assistente executivo. Analise as mensagens do WhatsApp abaixo.
+    Retorne APENAS UM JSON válido e completo com os seguintes campos:
+    - "resumo": resumo curto e claro do essencial (máx 2 frases).
+    - "relatorio_executivo": um relatório executivo profissional, curto e direto, com formatação clara (use bullets ou tópicos, se necessário). Deve conter: contexto, ponto crítico, impacto e recomendação imediata.
+    - "sugestao": sugestão de resposta ou ação prática para o usuário.
+    - "tarefa": uma tarefa clara, acionável e prioritária (no infinitivo).
+
+    Formato JSON obrigatório:
+    {"resumo": "...", "relatorio_executivo": "...", "sugestao": "...", "tarefa": "..."}
+
     Mensagens:
     """${messagesText}"""
     `;
     const payload = {
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.3, maxOutputTokens: 400 }
+      generationConfig: { temperature: 0.3, maxOutputTokens: 500 }
     };
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(`HTTP ${response.status}: ${JSON.stringify(err)}`);
-    }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    if (!textResponse) throw new Error("Resposta vazia da IA.");
+    if (!textResponse) throw new Error("Resposta vazia");
     let jsonString = textResponse.trim();
     const jsonMatch = jsonString.match(/```json\s*([\s\S]*?)\s*```/);
     if (jsonMatch) jsonString = jsonMatch[1];
     const braceMatch = jsonString.match(/\{[\s\S]*\}/);
     if (braceMatch) jsonString = braceMatch[0];
     const parsed = JSON.parse(jsonString);
-    if (!parsed.resumo || !parsed.tarefa || !parsed.sugestao) throw new Error("Campos incompletos.");
+    if (!parsed.resumo || !parsed.relatorio_executivo || !parsed.sugestao || !parsed.tarefa) {
+      throw new Error("Campos incompletos na resposta da IA");
+    }
     return parsed;
   }
 
@@ -435,29 +425,26 @@ Abaixo está a página HTML corrigida e aprimorada:
       geminiApiKey = apiKey;
       localStorage.setItem('gemini_api_key', apiKey);
     }
-    generateBtn.innerHTML = '<span class="loading"></span> Processando IA...';
+    generateBtn.innerHTML = '<span class="loading"></span> Gerando análise...';
     generateBtn.disabled = true;
     try {
       let result;
       try {
         result = await callGeminiAPI(userMessages, apiKey, "gemini-1.5-flash");
       } catch (err) {
-        console.warn("Falha com gemini-1.5-flash, tentando gemini-1.5-pro...", err);
+        console.warn("Flash falhou, tentando Pro", err);
         result = await callGeminiAPI(userMessages, apiKey, "gemini-1.5-pro");
       }
-      summaryDisplay.innerHTML = escapeHtml(result.resumo) || '—';
-      suggestionDisplay.innerHTML = escapeHtml(result.sugestao) || '—';
+      summaryDisplay.innerHTML = escapeHtml(result.resumo);
+      executiveDisplay.innerHTML = escapeHtml(result.relatorio_executivo).replace(/\n/g, '<br>');
+      suggestionDisplay.innerHTML = escapeHtml(result.sugestao);
       if (result.tarefa && result.tarefa.trim()) addTask(result.tarefa);
-      else addTask("Tarefa pendente: revisar conversa");
     } catch (error) {
       console.error(error);
-      let msg = error.message;
-      if (msg.includes("404")) msg = "Modelo não encontrado. Verifique sua chave e tente novamente (modelo padrão gemini-1.5-flash/pro).";
-      else if (msg.includes("API key")) msg = "Chave API inválida. Verifique no Google AI Studio.";
-      else if (msg.includes("fetch")) msg = "Erro de rede. Verifique sua internet.";
-      alert(`❌ Erro: ${msg}`);
-      summaryDisplay.innerHTML = "Erro ao processar. Verifique a chave ou tente novamente.";
-      suggestionDisplay.innerHTML = "—";
+      alert(`❌ Erro: ${error.message}. Verifique sua chave e conexão.`);
+      summaryDisplay.innerHTML = "Erro ao processar.";
+      executiveDisplay.innerHTML = "Falha na geração do relatório executivo.";
+      suggestionDisplay.innerHTML = "Tente novamente mais tarde.";
     } finally {
       generateBtn.innerHTML = '<i class="fas fa-magic"></i> Gerar com IA';
       generateBtn.disabled = false;
@@ -471,7 +458,11 @@ Abaixo está a página HTML corrigida e aprimorada:
   }
   function clearCompletedTasks() {
     if (!tasks.some(t => t.completed)) { alert("Não há tarefas concluídas."); return; }
-    if (confirm("Remover todas as tarefas concluídas?")) { tasks = tasks.filter(t => !t.completed); saveTasks(); renderTasks(); }
+    if (confirm("Remover todas as tarefas concluídas?")) {
+      tasks = tasks.filter(t => !t.completed);
+      saveTasks();
+      renderTasks();
+    }
   }
 
   function init() {
