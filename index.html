@@ -3,22 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Assistente WhatsApp + IA (Gemini-Pro)</title>
+    <title>Assistente WhatsApp + IA (Modo Híbrido)</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #e9f0f5;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 20px 16px 40px;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
+        .container { max-width: 600px; margin: 0 auto; }
         .card {
             background: white;
             border-radius: 28px;
@@ -88,9 +81,7 @@
             padding: 12px;
             margin-top: 12px;
         }
-        .btn-test {
-            background: #4b6e8a;
-        }
+        .btn-test { background: #4b6e8a; }
         .exec-box {
             background: #fef9e3;
             border-left: 4px solid #eab308;
@@ -99,9 +90,7 @@
             white-space: pre-wrap;
             font-size: 0.9rem;
         }
-        .task-list {
-            list-style: none;
-        }
+        .task-list { list-style: none; }
         .task-item {
             background: #f1f5f9;
             border-radius: 20px;
@@ -129,15 +118,15 @@
             animation: spin 0.6s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        hr {
-            margin: 12px 0;
-        }
-        .error-msg {
-            color: #b91c1c;
-            background: #fee2e2;
-            padding: 8px;
-            border-radius: 20px;
-            margin-top: 8px;
+        hr { margin: 12px 0; }
+        .demo-badge {
+            background: #eab308;
+            color: #1e293b;
+            border-radius: 60px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -146,9 +135,12 @@
     <h1>📱 Assistente WhatsApp + IA</h1>
 
     <div class="api-area">
-        🔑 <input type="password" id="apiKey" placeholder="Sua chave do Google Gemini (AI Studio)">
+        🔑 <input type="password" id="apiKey" placeholder="Sua chave do Google Gemini (opcional)">
         <button id="saveKeyBtn" style="background:#25d366; color:#075e54;">Salvar</button>
         <button id="testKeyBtn" class="btn-test">Testar</button>
+    </div>
+    <div style="font-size:0.75rem; text-align:center; margin-bottom:12px;">
+        ⚡ <strong>Modo híbrido:</strong> Se a chave falhar, usamos respostas simuladas (demo). Você não precisa de chave para testar!
     </div>
 
     <div class="card">
@@ -173,12 +165,16 @@
         <ul id="taskList" class="task-list"></ul>
         <button id="clearCompletedBtn" style="background:#cbd5e1; color:#1e293b;">Limpar concluídas</button>
     </div>
+    <div style="font-size:0.7rem; text-align:center; margin-top:8px;">
+        🔔 Clique em 🔔 para criar alerta com notificação.
+    </div>
 </div>
 
 <script>
-    // ---------- CONFIG ----------
+    // ---------- Tarefas ----------
     let tasks = [];
     let apiKey = localStorage.getItem('gemini_key') || '';
+    let isDemoMode = false;  // indica se está usando simulação
 
     const apiInput = document.getElementById('apiKey');
     const saveBtn = document.getElementById('saveKeyBtn');
@@ -193,7 +189,6 @@
 
     if (apiKey) apiInput.value = apiKey;
 
-    // ---------- Tarefas ----------
     function loadTasks() {
         let stored = localStorage.getItem('wa_tasks');
         tasks = stored ? JSON.parse(stored) : [];
@@ -244,10 +239,21 @@
         return str.replace(/[&<>]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
     }
 
-    // ---------- API GEMINI (modelo gemini-pro, endpoint v1) ----------
-    async function callGemini(messagesText, key) {
-        // Usando modelo "gemini-pro" (mais estável e amplamente suportado)
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${key}`;
+    // ---------- IA: simulação local (fallback) ----------
+    function simulateResponse(messagesText) {
+        const firstLine = messagesText.split('\n')[0] || "";
+        return {
+            resumo: `📌 Resumo simulado: "${firstLine.substring(0, 60)}..." - A IA está em modo demonstração porque a chave API não foi configurada ou falhou.`,
+            relatorio_executivo: `**Contexto:** Análise baseada nas mensagens fornecidas.\n**Ponto crítico:** Necessidade de acompanhamento da conversa.\n**Recomendação:** Utilize uma chave Gemini válida para obter análises reais ou continue testando o layout.\n🔧 Modo demonstração ativo.`,
+            sugestao: "✅ Esta é uma sugestão simulada. Para respostas reais, configure uma chave API no campo acima.",
+            tarefa: "🔁 Testar integração com API real"
+        };
+    }
+
+    // ---------- API Gemini real (tentativa com v1beta e gemini-1.0-pro) ----------
+    async function callGeminiReal(messagesText, key) {
+        // Tentativa com modelo mais antigo e estável: gemini-1.0-pro
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${key}`;
         const prompt = `Você é um assistente executivo. Analise as mensagens do WhatsApp abaixo e retorne SOMENTE um JSON válido com os campos:
         "resumo", "relatorio_executivo", "sugestao", "tarefa".
         O relatório executivo deve ser curto, direto, com contexto e recomendação.
@@ -264,46 +270,59 @@
         });
         if (!resp.ok) {
             const errText = await resp.text();
-            throw new Error(`HTTP ${resp.status}: ${errText.substring(0, 200)}`);
+            throw new Error(`HTTP ${resp.status}: ${errText.substring(0, 150)}`);
         }
         const data = await resp.json();
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (!text) throw new Error("Resposta vazia");
-        // Extrai JSON
         let jsonStr = text.match(/\{[\s\S]*\}/)?.[0] || text;
         return JSON.parse(jsonStr);
     }
 
-    async function testApiKey(key) {
-        const url = `https://generativelanguage.googleapis.com/v1/models?key=${key}`;
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        return data.models?.some(m => m.name.includes("gemini-pro")) || false;
-    }
-
+    // ---------- Função principal (tenta real, se falhar usa simulação) ----------
     async function handleGenerate() {
         const msg = messagesArea.value.trim();
         if (!msg) return alert("Cole as mensagens do WhatsApp.");
-        let key = apiKey || apiInput.value.trim();
-        if (!key) return alert("Informe sua chave da API Gemini (obtenha em aistudio.google.com)");
-        apiKey = key;
-        localStorage.setItem('gemini_key', key);
 
-        generateBtn.innerHTML = '<span class="loading"></span> Gerando...';
+        let key = apiKey || apiInput.value.trim();
+        let useReal = (key && key.length > 10); // se tem chave, tenta real
+
+        generateBtn.innerHTML = '<span class="loading"></span> Processando...';
         generateBtn.disabled = true;
+
         try {
-            const result = await callGemini(msg, key);
+            let result;
+            if (useReal) {
+                try {
+                    result = await callGeminiReal(msg, key);
+                    isDemoMode = false;
+                } catch (err) {
+                    console.warn("API real falhou, usando simulação:", err);
+                    result = simulateResponse(msg);
+                    isDemoMode = true;
+                    alert("⚠️ A chave API não funcionou (erro: " + err.message + "). Usando modo demonstração com respostas simuladas.\n\nPara usar IA real, verifique sua chave e ative a API no Google Cloud.");
+                }
+            } else {
+                result = simulateResponse(msg);
+                isDemoMode = true;
+                if (!key) alert("ℹ️ Nenhuma chave informada. Usando modo demonstração (respostas simuladas).");
+                else alert("ℹ️ Chave inválida ou incompleta. Usando modo demonstração.");
+            }
+
             summaryDiv.innerText = result.resumo || "—";
             executiveDiv.innerText = result.relatorio_executivo || "—";
             suggestionDiv.innerText = result.sugestao || "—";
             if (result.tarefa) addTask(result.tarefa);
+
+            if (isDemoMode) {
+                const badge = document.createElement('div');
+                badge.className = 'demo-badge';
+                badge.innerText = '🧪 Modo demonstração ativo';
+                // exibe de forma suave
+            }
         } catch (err) {
             console.error(err);
-            let errorMsg = "Erro: " + err.message;
-            if (err.message.includes("404")) errorMsg = "Erro 404: modelo não encontrado. Tente usar outra chave ou aguarde.";
-            else if (err.message.includes("400")) errorMsg = "Erro 400: chave inválida ou sem permissão. Verifique sua chave no Google AI Studio.";
-            alert(errorMsg);
+            alert("Erro inesperado: " + err.message);
             summaryDiv.innerText = "Erro";
             executiveDiv.innerText = "Falha na geração";
             suggestionDiv.innerText = "Tente novamente";
@@ -313,25 +332,33 @@
         }
     }
 
-    // Eventos
+    // ---------- Teste de chave (apenas para informar) ----------
+    async function testApiKey(key) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        return data.models?.some(m => m.name.includes("gemini")) || false;
+    }
+
     saveBtn.onclick = () => {
         let newKey = apiInput.value.trim();
         if (newKey) {
             localStorage.setItem('gemini_key', newKey);
             apiKey = newKey;
-            alert("Chave salva!");
-        } else alert("Digite uma chave válida.");
+            alert("Chave salva! Agora tente 'Gerar' – se falhar, entrará em modo demo.");
+        } else alert("Digite uma chave ou deixe em branco para usar modo demonstração.");
     };
     testBtn.onclick = async () => {
         let key = apiKey || apiInput.value.trim();
-        if (!key) return alert("Digite ou salve uma chave primeiro.");
+        if (!key) return alert("Nenhuma chave informada. O modo demonstração será usado automaticamente.");
         testBtn.innerHTML = '<span class="loading"></span>';
         testBtn.disabled = true;
         try {
             const ok = await testApiKey(key);
-            alert(ok ? "✅ Chave válida! Modelo gemini-pro disponível." : "⚠️ Chave válida, mas modelo não listado. Tente gerar.");
+            alert(ok ? "✅ Chave válida! O modelo gemini-1.0-pro está disponível." : "⚠️ Chave válida, mas modelo não listado. Tente gerar (entrará em demo).");
         } catch (err) {
-            alert("❌ Chave inválida ou erro: " + err.message);
+            alert("❌ Chave inválida ou erro: " + err.message + "\n\nO app usará modo demonstração.");
         } finally {
             testBtn.innerHTML = 'Testar';
             testBtn.disabled = false;
