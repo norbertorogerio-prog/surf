@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Assistente IA + WhatsApp (IA Avançada Local)</title>
+    <title>Assistente IA + WhatsApp (Gemini Real)</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -43,7 +43,6 @@
             font-family: inherit;
             font-size: 0.95rem;
             resize: vertical;
-            background: white;
         }
         button {
             background: #075e54;
@@ -100,27 +99,40 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         hr { margin: 12px 0; }
-        .badge {
-            background: #25d366;
-            color: #075e54;
+        .api-area {
+            background: #f8fafc;
+            border-radius: 44px;
+            padding: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .api-area input {
+            flex: 1;
+            padding: 10px 14px;
             border-radius: 60px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            display: inline-block;
-            margin-bottom: 10px;
-            font-weight: bold;
+            border: 1px solid #cbd5e1;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>🤖 Assistente IA + WhatsApp</h1>
-    <div class="badge">🧠 IA avançada local | Extrai contexto real</div>
+    <div class="api-area">
+        🔑 <input type="password" id="apiKey" placeholder="Sua chave do Google Gemini">
+        <button id="saveKeyBtn" style="background:#25d366; color:#075e54;">Salvar</button>
+    </div>
+    <div style="font-size:0.7rem; text-align:center; margin-bottom:12px;">
+        Obtenha sua chave gratuita em <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>
+    </div>
 
     <div class="card">
-        <h3>💬 Cole as mensagens</h3>
+        <h3>💬 Mensagens copiadas</h3>
         <textarea id="mensagens" rows="5" placeholder="Cole aqui a conversa do WhatsApp..."></textarea>
-        <button id="gerarBtn">✨ Analisar com IA</button>
+        <button id="gerarBtn">✨ Analisar com IA (Gemini)</button>
     </div>
 
     <div class="card">
@@ -142,14 +154,14 @@
 </div>
 
 <script>
-    // ----- Gerenciamento de tarefas (igual antes) -----
+    // ----- Gerenciamento de tarefas -----
     let tarefas = [];
     function carregarTarefas() {
-        const salvo = localStorage.getItem('tarefas_ia_v2');
+        const salvo = localStorage.getItem('tarefas_gemini');
         tarefas = salvo ? JSON.parse(salvo) : [];
         renderizarTarefas();
     }
-    function salvarTarefas() { localStorage.setItem('tarefas_ia_v2', JSON.stringify(tarefas)); }
+    function salvarTarefas() { localStorage.setItem('tarefas_gemini', JSON.stringify(tarefas)); }
     function adicionarTarefa(titulo) {
         if (!titulo || !titulo.trim()) return;
         tarefas.unshift({ id: Date.now(), titulo: titulo.trim(), concluida: false });
@@ -196,162 +208,99 @@
     };
     function escaparHtml(str) { return str.replace(/[&<>]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
-    // ----- IA AVANÇADA (extrai contexto real, nomes, ações) -----
-    function analisarMensagens(texto) {
-        // Divide em linhas e identifica remetentes
-        const linhas = texto.split(/\r?\n/).filter(l => l.trim().length > 0);
-        const pessoas = new Set();
-        const acoes = [];
-        let conteudoPrincipal = "";
+    // ----- Chamada real à API Gemini (endpoint correto) -----
+    let geminiApiKey = localStorage.getItem('gemini_key') || '';
 
-        // Expressões para detectar ações
-        const verbosAcao = ["precisamos", "vamos", "faça", "envie", "responda", "ligue", "agende", "compre", "prepare", "analise", "revise", "corrija", "implemente", "monitore"];
-        const substantivosAcao = ["relatório", "documento", "prazo", "reunião", "cliente", "feedback", "aprovação", "orçamento", "proposta", "contrato"];
+    document.getElementById('apiKey').value = geminiApiKey;
+    document.getElementById('saveKeyBtn').onclick = () => {
+        const newKey = document.getElementById('apiKey').value.trim();
+        if (newKey) {
+            localStorage.setItem('gemini_key', newKey);
+            geminiApiKey = newKey;
+            alert("Chave salva!");
+        } else alert("Digite uma chave válida.");
+    };
 
-        for (let linha of linhas) {
-            // Extrai remetente (formato "Nome: mensagem")
-            const matchRemetente = linha.match(/^([^:：]+)[:：]\s*(.*)/);
-            if (matchRemetente) {
-                let nome = matchRemetente[1].trim();
-                if (nome.length > 0 && nome.length < 30) pessoas.add(nome);
-                const msg = matchRemetente[2];
-                conteudoPrincipal += msg + " ";
-                
-                // Detecta ações
-                for (let v of verbosAcao) {
-                    if (msg.toLowerCase().includes(v)) {
-                        acoes.push(`${v} → "${msg.substring(0, 80)}"`);
-                        break;
-                    }
-                }
-                for (let s of substantivosAcao) {
-                    if (msg.toLowerCase().includes(s)) {
-                        if (!acoes.some(a => a.includes(s))) acoes.push(`Menção a "${s}"`);
-                        break;
-                    }
-                }
-            } else {
-                conteudoPrincipal += linha + " ";
-            }
+    async function chamarGemini(mensagens) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+        const prompt = `Você é um assistente executivo especializado em análise de conversas do WhatsApp.
+        Com base nas mensagens abaixo, produza uma resposta em formato JSON com os seguintes campos:
+        - "resumo": um resumo claro e completo do essencial da conversa (mínimo 2 frases, máximo 4 frases).
+        - "relatorio": um relatório executivo curto, profissional, contendo contexto, pontos críticos e recomendação concreta.
+        - "sugestao": uma sugestão de resposta adequada ao contexto, mencionando os participantes quando possível.
+        - "tarefa": uma tarefa clara e acionável (no infinitivo) que o usuário deve executar.
+
+        Mensagens:
+        """${mensagens}"""
+        
+        Retorne APENAS um JSON válido, sem texto extra, no formato:
+        {"resumo": "...", "relatorio": "...", "sugestao": "...", "tarefa": "..."}`;
+
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.4, maxOutputTokens: 800 }
+        };
+
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!resp.ok) {
+            const erro = await resp.text();
+            throw new Error(`Erro ${resp.status}: ${erro.substring(0, 200)}`);
         }
 
-        if (pessoas.size === 0) pessoas.add("Participante");
+        const data = await resp.json();
+        const texto = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!texto) throw new Error("Resposta vazia da IA");
 
-        const textoCompleto = texto.toLowerCase();
-        // Palavras-chave específicas para personalizar
-        const temPrazo = /prazo|urgente|asap|hoje|amanhã|data limite/i.test(textoCompleto);
-        const temRelatorio = /relatório|relatorio|documento|planilha|arquivo|pdf|doc/i.test(textoCompleto);
-        const temReuniao = /reunião|reuniao|encontro|call|briefing|alinhamento/i.test(textoCompleto);
-        const temCliente = /cliente|client|consumidor|usuário/i.test(textoCompleto);
-        const temAprovacao = /aprovar|aprovação|review|validação|ok/i.test(textoCompleto);
-        const temDuvida = /dúvida|duvida|questão|problema|ajuda|suporte/i.test(textoCompleto);
-
-        // ---- Resumo inteligente ----
-        let resumo = "";
-        const primeirasLinhas = linhas.slice(0, 3).join(" ").substring(0, 120);
-        if (temPrazo) {
-            resumo = `⚠️ Conversa com urgência de prazo. ${primeirasLinhas}...`;
-        } else if (temRelatorio) {
-            resumo = `📄 Demanda por elaboração de relatório/documento. ${primeirasLinhas}...`;
-        } else if (temReuniao) {
-            resumo = `📅 Sugestão ou necessidade de reunião para alinhamento. ${primeirasLinhas}...`;
-        } else if (temCliente) {
-            resumo = `🤝 Assunto relacionado a cliente. ${primeirasLinhas}...`;
-        } else if (temAprovacao) {
-            resumo = `✅ Aguardando aprovação ou validação de algo. ${primeirasLinhas}...`;
-        } else if (temDuvida) {
-            resumo = `❓ Esclarecimento de dúvida solicitado. ${primeirasLinhas}...`;
-        } else {
-            resumo = `📌 Conversa sobre: ${primeirasLinhas}...`;
-        }
-
-        // ---- Relatório Executivo (usando trechos reais) ----
-        let relatorio = "**📋 Análise da conversa**\n\n";
-        relatorio += `**Participantes mencionados:** ${Array.from(pessoas).join(", ")}\n\n`;
-        if (acoes.length > 0) {
-            relatorio += `**Ações/tópicos identificados:**\n${acoes.slice(0, 3).map(a => `• ${a}`).join("\n")}\n\n`;
-        } else {
-            relatorio += `**Tópico central:** "${conteudoPrincipal.substring(0, 100)}..."\n\n`;
-        }
-        relatorio += "**Impacto potencial:** ";
-        if (temPrazo) relatorio += "Risco de atraso na entrega. ";
-        else if (temCliente) relatorio += "Satisfação do cliente pode ser afetada. ";
-        else relatorio += "Necessidade de acompanhamento para evitar retrabalho. ";
-        relatorio += "\n\n**Recomendação:** ";
-        if (temPrazo) relatorio += "Priorizar imediatamente e comunicar responsáveis.";
-        else if (temRelatorio) relatorio += "Iniciar a elaboração e solicitar prazo ao solicitante.";
-        else if (temReuniao) relatorio += "Agendar reunião com os envolvidos em até 48h.";
-        else relatorio += "Responder confirmando entendimento e alinhar próximos passos.";
-
-        // ---- Sugestão de resposta personalizada (usando contexto) ----
-        let sugestao = "";
-        const ultimaLinha = linhas[linhas.length-1] || "";
-        const remetenteUltimo = ultimaLinha.match(/^([^:：]+)[:：]/);
-        const nomeUltimo = remetenteUltimo ? remetenteUltimo[1].trim() : "pessoa";
-
-        if (temPrazo) {
-            sugestao = `@${nomeUltimo}, entendi a urgência. Vou priorizar isso e retorno ainda hoje com um prazo concreto. Obrigado pelo aviso.`;
-        } else if (temRelatorio) {
-            sugestao = `@${nomeUltimo}, vou preparar o relatório solicitado. Posso enviar até [data]? Qual o formato preferido?`;
-        } else if (temReuniao) {
-            sugestao = `@${nomeUltimo}, ótimo. Vou verificar a agenda e te proponho alguns horários para alinharmos.`;
-        } else if (temCliente) {
-            sugestao = `@${nomeUltimo}, vou entrar em contato com o cliente e já te mantenho informado. Qualquer novidade, aviso.`;
-        } else if (temDuvida) {
-            sugestao = `@${nomeUltimo}, vou analisar a dúvida e te respondo detalhadamente em até 2h. Pode ser?`;
-        } else {
-            sugestao = `@${nomeUltimo}, recebi as informações. Vou avaliar e retorno assim que possível. Obrigado!`;
-        }
-
-        // ---- Tarefa extraída (específica) ----
-        let tarefa = "";
-        if (temPrazo) tarefa = "⏰ Revisar prazos urgentes e definir plano de ação";
-        else if (temRelatorio) tarefa = "📄 Elaborar relatório solicitado na conversa";
-        else if (temReuniao) tarefa = "📅 Agendar reunião de alinhamento";
-        else if (temCliente) tarefa = "🤝 Entrar em contato com o cliente mencionado";
-        else if (temAprovacao) tarefa = "✅ Solicitar aprovação formal do responsável";
-        else if (temDuvida) tarefa = "❓ Responder dúvida com clareza e documentação";
-        else tarefa = "📌 Responder a conversa e definir próximos passos";
-
-        // Extrai detalhe real da mensagem para enriquecer a tarefa
-        const palavrasChave = [...new Set(textoCompleto.match(/\b\w{4,}\b/g)?.slice(0,4) || [])];
-        if (palavrasChave.length > 0) {
-            tarefa += ` (contexto: ${palavrasChave.join(", ")})`;
-        }
-
-        return { resumo, relatorio, sugestao, tarefa };
+        // Extrai o JSON
+        let jsonStr = texto.match(/\{[\s\S]*\}/)?.[0] || texto;
+        return JSON.parse(jsonStr);
     }
 
-    // ----- Ação do botão -----
-    document.getElementById('gerarBtn').addEventListener('click', () => {
+    // Ação do botão Gerar
+    document.getElementById('gerarBtn').onclick = async () => {
         const mensagens = document.getElementById('mensagens').value.trim();
         if (!mensagens) {
-            alert("Cole as mensagens do WhatsApp antes de analisar.");
+            alert("Cole as mensagens do WhatsApp.");
+            return;
+        }
+        if (!geminiApiKey) {
+            alert("Primeiro, salve sua chave da API Gemini no campo acima.");
             return;
         }
 
         const btn = document.getElementById('gerarBtn');
-        const textoOriginal = btn.innerHTML;
-        btn.innerHTML = '<span class="loading"></span> Analisando com IA...';
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="loading"></span> Consultando IA...';
         btn.disabled = true;
 
-        // Pequeno delay para simular processamento (mas é rápido)
-        setTimeout(() => {
-            const resultado = analisarMensagens(mensagens);
+        try {
+            const resultado = await chamarGemini(mensagens);
             document.getElementById('resumo').innerText = resultado.resumo;
             document.getElementById('relatorio').innerHTML = resultado.relatorio.replace(/\n/g, '<br>');
             document.getElementById('sugestao').innerText = resultado.sugestao;
             adicionarTarefa(resultado.tarefa);
-            btn.innerHTML = textoOriginal;
+        } catch (err) {
+            console.error(err);
+            alert("Erro: " + err.message + "\n\nVerifique sua chave e conexão.");
+            document.getElementById('resumo').innerText = "Erro na análise";
+            document.getElementById('relatorio').innerHTML = "Falha ao conectar com a IA. Tente novamente.";
+            document.getElementById('sugestao').innerText = "Verifique sua chave API.";
+        } finally {
+            btn.innerHTML = originalText;
             btn.disabled = false;
-        }, 300);
-    });
+        }
+    };
 
-    document.getElementById('limparConcluidas').addEventListener('click', () => {
+    document.getElementById('limparConcluidas').onclick = () => {
         tarefas = tarefas.filter(t => !t.concluida);
         salvarTarefas();
         renderizarTarefas();
-    });
+    };
 
     carregarTarefas();
 </script>
