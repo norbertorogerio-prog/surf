@@ -1,942 +1,767 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>Líder 360 - Gestão Humanizada com Consultoria IA</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alert Teams – Dashboard (SharePoint)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #1a1a2e; color: #e0e0e0; min-height: 100vh; }
+    /* TOP BAR */
+    .topbar {
+      background: linear-gradient(90deg, #0a0a1a 0%, #1a1a3e 60%, #2d0050 100%);
+      padding: 12px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid #6a0dad;
+      box-shadow: 0 2px 12px rgba(106,13,173,0.4);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .logo { width: 36px; height: 36px; background: linear-gradient(135deg,#7b2ff7,#f72fff); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: #fff; }
+    .title { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+    .subtitle { font-size: 12px; color: #aaa; margin-top: 2px; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #bbb; }
+    .badge { background: #6a0dad; padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 11px; }
+    .live-dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f0f2f8;
-            padding: 0;
-            padding-bottom: 100px;
-        }
+    /* FILTER BAR */
+    .filterbar {
+      background: #12122a; padding: 10px 24px; display: flex; gap: 12px; align-items: center;
+      border-bottom: 1px solid #2a2a4a; flex-wrap: wrap;
+    }
+    .filter-label { font-size: 12px; color: #888; margin-right: 4px; }
+    .filter-chip {
+      background: #1e1e3f; border: 1px solid #3a3a6a; border-radius: 6px;
+      padding: 5px 12px; font-size: 12px; color: #ccc; cursor: pointer; transition: all .2s;
+    }
+    .filter-chip:hover { background: #6a0dad; border-color: #6a0dad; color: #fff; }
+    .filter-chip.active { background: #6a0dad; border-color: #9b59b6; color: #fff; }
 
-        /* Header */
-        .hero {
-            background: linear-gradient(135deg, #0f2b1f 0%, #1e4d3a 100%);
-            color: white;
-            padding: 24px 20px;
-            border-radius: 0 0 32px 32px;
-            margin-bottom: 20px;
-        }
+    /* MAIN */
+    .main { padding: 20px 24px; }
 
-        .time-large {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
+    /* KPI CARDS */
+    .kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 20px; }
+    .kpi-card {
+      background: linear-gradient(135deg, #1e1e3f 0%, #16213e 100%);
+      border-radius: 12px; padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: transform .2s;
+    }
+    .kpi-card:hover { transform: translateY(-3px); }
+    .kpi-icon { font-size: 22px; margin-bottom: 6px; }
+    .kpi-value { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; }
+    .kpi-label { font-size: 11px; color: #999; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .kpi-trend { font-size: 11px; margin-top: 6px; }
+    .trend-up { color: #ff4757; } .trend-down { color: #2ed573; }
 
-        .date-info {
-            font-size: 0.85rem;
-            opacity: 0.85;
-            margin-top: 4px;
-        }
+    /* GRIDS */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+    .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
+    .grid-full { margin-bottom: 18px; }
 
-        .leader-quote {
-            font-size: 0.9rem;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            font-style: italic;
-        }
+    /* CARD */
+    .card {
+      background: linear-gradient(135deg, #1e1e3f 0%, #16213e 100%);
+      border-radius: 12px; padding: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border: 1px solid #2a2a4a;
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .card-title { font-size: 14px; font-weight: 600; color: #d0d0f0; }
+    .card-badge { background: #2a2a5a; padding: 3px 8px; border-radius: 4px; font-size: 10px; color: #9090c0; }
 
-        /* Cards */
-        .card {
-            background: white;
-            margin: 16px;
-            border-radius: 28px;
-            padding: 20px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-        }
+    /* TABLE */
+    .alert-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .alert-table th {
+      background: #0d0d25; color: #8888cc; padding: 8px 10px;
+      text-align: left; font-weight: 600; text-transform: uppercase;
+      font-size: 10px; letter-spacing: 0.5px; border-bottom: 1px solid #2a2a4a;
+    }
+    .alert-table td { padding: 9px 10px; border-bottom: 1px solid #1a1a35; }
+    .alert-table tr:hover td { background: rgba(106,13,173,0.15); }
+    .severity-badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+    .sev-critical { background: rgba(255,71,87,0.2); color: #ff4757; border: 1px solid #ff4757; }
+    .sev-high { background: rgba(255,165,2,0.2); color: #ffa502; border: 1px solid #ffa502; }
+    .sev-medium { background: rgba(255,206,84,0.2); color: #ffce54; border: 1px solid #ffce54; }
+    .sev-ok { background: rgba(46,213,115,0.18); color: #2ed573; border: 1px solid #2ed573; }
+    .progress-bar-wrap { width: 80px; height: 6px; background: #2a2a4a; border-radius: 3px; display: inline-block; vertical-align: middle; margin-left: 6px; }
+    .progress-bar-fill { height: 100%; border-radius: 3px; }
 
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: #1e3a2f;
-            border-left: 4px solid #2d6a4f;
-            padding-left: 12px;
-        }
+    /* ROOM STATUS */
+    .room-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .room-card {
+      background: #12122a; border-radius: 8px; padding: 12px;
+      border: 1px solid #2a2a4a; position: relative; overflow: hidden;
+    }
+    .room-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--rc);
+    }
+    .room-name { font-size: 11px; font-weight: 600; color: #d0d0f0; margin-bottom: 6px; }
+    .room-metric { font-size: 22px; font-weight: 800; }
+    .room-label { font-size: 10px; color: #888; }
+    .room-status { font-size: 10px; margin-top: 4px; }
 
-        /* IA Card */
-        .ia-card {
-            background: linear-gradient(135deg, #2c5a4a 0%, #1e3a2f 100%);
-            color: white;
-        }
+    /* TIMELINE */
+    .timeline-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1a1a35; }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
+    .timeline-content { flex: 1; }
+    .timeline-title { font-size: 12px; color: #d0d0f0; font-weight: 500; }
+    .timeline-meta { font-size: 10px; color: #888; margin-top: 2px; }
 
-        .ia-card .card-header {
-            border-left-color: white;
-            color: white;
-        }
+    /* CHART containers */
+    .chart-wrap { position: relative; height: 200px; }
+    .chart-wrap-sm { position: relative; height: 160px; }
+    .chart-wrap-md { position: relative; height: 220px; }
 
-        .ia-message {
-            font-size: 1rem;
-            line-height: 1.4;
-            margin-bottom: 12px;
-        }
-
-        .ia-tip {
-            background: rgba(255,255,255,0.15);
-            padding: 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            margin-top: 12px;
-        }
-
-        /* Grid de métricas */
-        .metrics-grid {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .metric-card {
-            flex: 1;
-            background: #f8f9fc;
-            padding: 12px;
-            border-radius: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .metric-card:active {
-            transform: scale(0.98);
-        }
-
-        .metric-value {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #2d6a4f;
-        }
-
-        .metric-label {
-            font-size: 0.7rem;
-            color: #6c757d;
-        }
-
-        /* Termômetro de Confiança */
-        .trust-meter {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            margin: 16px;
-            border-radius: 28px;
-            padding: 20px;
-        }
-
-        .trust-slider {
-            width: 100%;
-            margin: 12px 0;
-        }
-
-        /* Reconhecimento entre pares */
-        .recognition-item {
-            background: #fff8e7;
-            padding: 12px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            border-left: 4px solid #f4a261;
-        }
-
-        .recognition-star {
-            color: #f4a261;
-            font-size: 1.2rem;
-        }
-
-        /* Mapa de Dependências */
-        .dependency-item {
-            background: #e8f0fe;
-            padding: 12px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-        }
-
-        /* Memes */
-        .meme-item {
-            background: #f0f0f0;
-            padding: 12px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Piloto do Líder */
-        .leader-commitment {
-            background: #e8f5e9;
-            padding: 16px;
-            border-radius: 20px;
-            margin-top: 12px;
-            border-left: 4px solid #2d6a4f;
-        }
-
-        /* Botões */
-        .btn-primary {
-            background: #2d6a4f;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 40px;
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 0.85rem;
-            width: 100%;
-            margin-top: 8px;
-        }
-
-        .btn-secondary {
-            background: #f4a261;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 40px;
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .btn-small {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-
-        /* Ações fixas */
-        .actions-fixed {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 12px 16px;
-            display: flex;
-            gap: 12px;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
-
-        .action-btn {
-            flex: 1;
-            background: #2d6a4f;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .action-btn.warning {
-            background: #f4a261;
-        }
-
-        /* Animações */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card {
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @media (max-width: 600px) {
-            .metrics-grid {
-                flex-direction: column;
-            }
-            .actions-fixed {
-                flex-direction: column;
-                gap: 8px;
-            }
-            body {
-                padding-bottom: 180px;
-            }
-        }
-    </style>
+    /* FOOTER */
+    .footer { text-align: center; padding: 14px; color: #555; font-size: 11px; border-top: 1px solid #1a1a35; margin-top: 6px; }
+  </style>
 </head>
+
 <body>
-    <div class="hero">
-        <div class="time-large" id="currentTime">--:--</div>
-        <div class="date-info" id="currentDate"></div>
-        <div class="leader-quote" id="leaderQuote">“Liderar é servir e inspirar”</div>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo">⚡</div>
+      <div>
+        <div class="title">Alert Teams – Monitor de Qualidade de Áudio</div>
+        <div class="subtitle">Microsoft Teams Rooms · SharePoint Live Feed</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="live-dot"></div>
+      <span>Ao vivo</span>
+      <span class="badge" id="badgeDate">—</span>
+      <span class="badge">Qualidade de Áudio</span>
+    </div>
+  </div>
+
+  <!-- FILTER BAR (mantida) -->
+  <div class="filterbar">
+    <span class="filter-label">Filtrar por Sala:</span>
+    <div class="filter-chip active" data-room="ALL">Todas</div>
+    <div style="margin-left:auto; display:flex; gap:8px;">
+      <span class="filter-label">Métrica:</span>
+      <div class="filter-chip active" data-metric="ALL">Todas</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- KPI CARDS -->
+    <div class="kpi-row">
+      <div class="kpi-card" style="--accent:#ff4757">
+        <div class="kpi-icon">🚨</div>
+        <div class="kpi-value" id="kpiTotalAlerts">0</div>
+        <div class="kpi-label">Total de Alertas</div>
+        <div class="kpi-trend" id="kpiTrendAlerts">—</div>
+      </div>
+      <div class="kpi-card" style="--accent:#ff6b35">
+        <div class="kpi-icon">📡</div>
+        <div class="kpi-value" id="kpiRoomsWithAlert">0</div>
+        <div class="kpi-label">Salas com Alerta</div>
+        <div class="kpi-trend" id="kpiTrendRooms">—</div>
+      </div>
+      <div class="kpi-card" style="--accent:#ffa502">
+        <div class="kpi-icon">📊</div>
+        <div class="kpi-value" id="kpiAvgLoss">0%</div>
+        <div class="kpi-label">Packet Loss Médio</div>
+        <div class="kpi-trend" id="kpiTrendAvg">—</div>
+      </div>
+      <div class="kpi-card" style="--accent:#ff4757">
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-value" id="kpiWorstLoss">0%</div>
+        <div class="kpi-label">Pior Packet Loss</div>
+        <div class="kpi-trend" id="kpiWorstRoom">—</div>
+      </div>
+      <div class="kpi-card" style="--accent:#2ed573">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-value" id="kpiThreshold">—</div>
+        <div class="kpi-label">Threshold Configurado</div>
+        <div class="kpi-trend trend-down" id="kpiTrendThreshold">—</div>
+      </div>
     </div>
 
-    <div id="app"></div>
+    <!-- ROW 1: Bar Chart + Room Status -->
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📊 Packet Loss (%) por Sala — Comparativo</div>
+          <div class="card-badge">Inbound</div>
+        </div>
+        <div class="chart-wrap-md">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
 
-    <div class="actions-fixed">
-        <button class="action-btn" id="sendMessageBtn">📱 Enviar Mensagem</button>
-        <button class="action-btn warning" id="teamPulseBtn">💓 Check-in do Time</button>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🏢 Status das Salas</div>
+          <div class="card-badge">Tempo Real</div>
+        </div>
+        <div class="room-grid" id="roomGrid"></div>
+      </div>
     </div>
 
-    <script>
-        // ================= CONFIGURAÇÃO COMPLETA =================
-        
-        // Rotação de mensagens
-        const morningMessages = [
-            "🌅 Bom dia, time! Que nosso dia seja leve, produtivo e cheio de boas entregas. Estou aqui para apoiar vocês no que precisarem. Vamos juntos! 💚",
-            "☀️ Bom dia, equipe! Hoje é mais uma oportunidade de fazermos a diferença. Contem comigo para desbloquear o que for preciso. Um ótimo dia para todos! 🚀",
-            "🌻 Bom dia, pessoal! Começo o dia agradecendo pelo comprometimento de cada um. Lembrem-se: qualidade de vida vem primeiro. Qualquer coisa, estou por aqui! 🤝",
-            "🌟 Bom dia, time! Hoje vamos focar no que realmente importa. Priorizem com sabedoria e não hesitem em pedir ajuda. Juntos somos mais fortes! 💪",
-            "🌈 Bom dia, família! Que a gente consiga entregar valor, mas sem esquecer de respirar e cuidar da gente. Tenham um dia incrível! ✨"
-        ];
-        
-        const fridayMorningMessage = "🎉 SEXTOU, GALERA! 🎉\n\nBom dia, time! Último dia da semana com energia total. Vamos fechar com chave de ouro e celebrar nossas conquistas. Um ótimo dia para todos! 🍻💚";
-        const fridayEveningMessage = "🏆 FECHAMOS MAIS UMA SEMANA! 🏆\n\nQuero agradecer profundamente cada um de vocês pelo esforço, dedicação e comprometimento. Vocês são incríveis! \n\nTenham um fim de semana merecido, descansem, recarreguem as energias. Na segunda estaremos juntos novamente para mais desafios.\n\nGratidão demais! 🙏💚✨";
-        
-        // Atividades diárias
-        const dailyActivities = [
-            { activity: "Jornal da Área", cell: "Suporte Executivo", members: "Amanda e Vitória" },
-            { activity: "Diário Executivo", cell: "Suporte Executivo", members: "Amanda e Vitória" },
-            { activity: "Suporte Power Platform", cell: "Governança MS", members: "Mauro" },
-            { activity: "Suporte Copilot", cell: "Governança MS", members: "Mauro" },
-            { activity: "Desenvolvimento de chatbot de suporte", cell: "Governança MS", members: "Mauro" },
-            { activity: "Suporte e atendimento VIP", cell: "Áudio e Vídeo", members: "Marcel e Fernando" }
-        ];
-        
-        // Base de temas para daily
-        const baseDailyThemes = [
-            "🚀 Quais são as prioridades de hoje?",
-            "⚠️ Tem algum impedimento que eu possa ajudar a remover?",
-            "🤝 Como podemos colaborar melhor entre células hoje?",
-            "📈 O que aprendemos ontem que podemos aplicar hoje?",
-            "🎯 Estamos alinhados com as metas do semestre?",
-            "💡 Alguém tem uma sugestão para melhorar nossos processos?",
-            "🌟 Quem merece um reconhecimento hoje?",
-            "⚡ O que está consumindo mais energia do time?",
-            "🔄 Temos alguma dependência externa que precisa de atenção?",
-            "🧘 Como podemos cuidar melhor do nosso bem-estar hoje?"
-        ];
-        
-        // Dados completos do sistema
-        let systemData = {
-            members: [
-                { id: 1, nome: "Amanda Furquim", funcao: "Suporte Executivo", cell: "Executivo", lastOneOnOne: "2025-03-15", careerGoal: "", nextStep: "" },
-                { id: 2, nome: "Vitória Nogueira", funcao: "Suporte Executivo", cell: "Executivo", lastOneOnOne: "2025-03-10", careerGoal: "", nextStep: "" },
-                { id: 3, nome: "Mauro Artioli", funcao: "Governança MS/Power BI", cell: "MS/Gov", lastOneOnOne: "2025-03-18", careerGoal: "", nextStep: "" },
-                { id: 4, nome: "Eduardo Silva", funcao: "Infraestrutura", cell: "Infra", lastOneOnOne: "2025-03-12", careerGoal: "", nextStep: "" },
-                { id: 5, nome: "Anderson Santos", funcao: "Infraestrutura", cell: "Infra", lastOneOnOne: "2025-03-05", careerGoal: "", nextStep: "" },
-                { id: 6, nome: "Marcel Bertulino", funcao: "Áudio e Vídeo", cell: "AV", lastOneOnOne: "2025-03-08", careerGoal: "", nextStep: "" },
-                { id: 7, nome: "Fernando Fernandes", funcao: "Áudio e Vídeo", cell: "AV", lastOneOnOne: "2025-03-14", careerGoal: "", nextStep: "" },
-                { id: 8, nome: "Ivanete Sousa", funcao: "Gestão de Ativos", cell: "Ativos", lastOneOnOne: "2025-03-20", careerGoal: "", nextStep: "" }
-            ],
-            // 1. Termômetro de Confiança
-            trustScores: [],
-            // 3. Reconhecimento entre pares
-            recognitions: [],
-            // 4. Checklist de Autonomia
-            autonomyDecisions: [],
-            // 5. Sexta do Aprendizado
-            fridayLearnings: [],
-            // 6. Previsibilidade de Estresse
-            stressLevels: [],
-            // 7. Mapa de Dependências
-            dependencies: [],
-            // 8. Check-out do Dia
-            checkouts: [],
-            // 9. Memes e Leveza
-            memes: [],
-            // 10. Piloto do Líder
-            leaderCommitments: [],
-            // Controles existentes
-            dailyTasksStatus: {},
-            moods: [],
-            sentMessages: [],
-            checkins: []
-        };
-        
-        // Inicializar
-        function initData() {
-            const saved = localStorage.getItem('lider360v2');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    systemData = { ...systemData, ...parsed };
-                } catch(e) {}
-            }
-            
-            // Inicializar status das atividades diárias
-            const today = new Date().toISOString().split('T')[0];
-            dailyActivities.forEach((_, idx) => {
-                const key = `daily_${idx}`;
-                if (!systemData.dailyTasksStatus[key] || systemData.dailyTasksStatus[key].date !== today) {
-                    systemData.dailyTasksStatus[key] = { completed: false, date: today };
-                }
-            });
-            
-            saveData();
+    <!-- ROW 2: Line + Donut -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📈 Evolução Temporal do Packet Loss</div>
+          <div class="card-badge" id="rangeBadge">—</div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🍩 Distribuição por Severidade</div>
+          <div class="card-badge">Alertas (dedup)</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:20px;">
+          <div class="chart-wrap-sm" style="flex:1">
+            <canvas id="donutChart"></canvas>
+          </div>
+          <div style="font-size:12px; line-height:2;">
+            <div><span style="color:#ff4757">●</span> Crítico (>70%) — <span id="sevCritCount">0</span></div>
+            <div><span style="color:#ffa502">●</span> Alto (50–70%) — <span id="sevHighCount">0</span></div>
+            <div><span style="color:#ffce54">●</span> Médio (30–50%) — <span id="sevMedCount">0</span></div>
+            <div><span style="color:#2ed573">●</span> OK (<= threshold) — <span id="sevOkCount">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 3: Table -->
+    <div class="grid-full">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📋 Tabela Detalhada de Alertas — Alert_teams</div>
+          <div class="card-badge" id="tableBadge">—</div>
+        </div>
+        <table class="alert-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>RoomName</th>
+              <th>Alias</th>
+              <th>MetricName</th>
+              <th>MetricValue</th>
+              <th>Threshold</th>
+              <th>Δ Acima</th>
+              <th>AlertTime</th>
+              <th>RuleName</th>
+              <th>Severidade</th>
+            </tr>
+          </thead>
+          <tbody id="alertTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ROW 4: Timeline + Hbar -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🕐 Linha do Tempo dos Alertas</div>
+          <div class="card-badge">Recentes</div>
+        </div>
+        <div id="timeline"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📊 Alertas por Sala (Contagem)</div>
+          <div class="card-badge">Dedup</div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="hbarChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer" id="footer">
+    Dashboard Alert Teams · Dados: SharePoint List "Alert_teams" · Última atualização: —
+  </div>
+
+<script>
+/* ============================
+  CONFIG (ALTERADO: SHAREPOINT LIST)
+  - Antes: JSON_FILE = "alert_teams.json"
+  - Agora: LIST_TITLE = "Alert_teams"
+============================ */
+const LIST_TITLE = "Alert_teams";  // <-- AJUSTE SE O NOME REAL DA SUA LISTA FOR DIFERENTE
+const REFRESH_MS = 30000;
+const DEDUP_MINUTES = 10;
+
+/* ============================
+  HELPERS
+============================ */
+const colors = {
+  critical: '#ff4757',
+  high: '#ffa502',
+  medium: '#ffce54',
+  ok: '#2ed573',
+  accent: '#7b2ff7',
+  grid: 'rgba(255,255,255,0.05)',
+  text: '#aaaacc'
+};
+const defaultFont = { family: 'Segoe UI', size: 11 };
+
+function toNumber(v){
+  if (v === null || v === undefined) return NaN;
+  return parseFloat(String(v).replace("%","").replace(",",".")); 
+}
+function fmtPct(v){
+  if (isNaN(v)) return "-";
+  return `${Math.round(v*100)/100}%`;
+}
+function safe(v){ return (v===null || v===undefined || v==="") ? "-" : String(v); }
+
+function sevBucket(v, t){
+  if (isNaN(v) || isNaN(t) || v <= t) return "ok";
+  const d = v - t;
+  if (d > 50) return "critical";
+  if (d > 20) return "high";
+  return "medium";
+}
+function sevLabel(bucket){
+  return bucket === "critical" ? "CRÍTICO" : bucket === "high" ? "ALTO" : bucket === "medium" ? "MÉDIO" : "OK";
+}
+function sevBadgeClass(bucket){
+  return bucket === "critical" ? "sev-critical" : bucket === "high" ? "sev-high" : bucket === "medium" ? "sev-medium" : "sev-ok";
+}
+function dotColor(bucket){
+  return bucket === "critical" ? colors.critical : bucket === "high" ? colors.high : bucket === "medium" ? colors.medium : colors.ok;
+}
+function parseDate(d){
+  const x = new Date(d);
+  return isNaN(x.getTime()) ? null : x;
+}
+function pad(n){ return String(n).padStart(2,"0"); }
+function fmtDateTimeISOorLocal(d){
+  const dt = parseDate(d);
+  if(!dt) return safe(d);
+  return `${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+}
+function nowLocalStamp(){
+  const d = new Date();
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/* Dedup por Sala + Janela de tempo */
+function dedupByRoomAndWindow(items){
+  const winMs = DEDUP_MINUTES * 60 * 1000;
+  const map = new Map();
+  // assume items desc por AlertTime (se não vier, a gente ordena antes no refresh)
+  for(const it of items){
+    const room = safe(it.RoomName);
+    const dt = parseDate(it.AlertTime);
+    if(!dt) continue;
+    const bucket = Math.floor(dt.getTime() / winMs);
+    const key = `${room}|${bucket}`;
+    if(!map.has(key)){
+      map.set(key, it);
+    }
+  }
+  return Array.from(map.values()).sort((a,b)=> (parseDate(b.AlertTime)?.getTime()||0) - (parseDate(a.AlertTime)?.getTime()||0));
+}
+function latestPerRoom(items){
+  const map = new Map();
+  for(const it of items){
+    const room = safe(it.RoomName);
+    const dt = parseDate(it.AlertTime);
+    if(!dt) continue;
+    if(!map.has(room)) map.set(room, it); // items já desc => primeiro é o mais recente
+  }
+  return Array.from(map.values());
+}
+function mostFrequentThreshold(latestItems){
+  const freq = new Map();
+  for(const it of latestItems){
+    const t = toNumber(it.Threshold);
+    if(isNaN(t)) continue;
+    const key = String(Math.round(t*100)/100);
+    freq.set(key, (freq.get(key)||0)+1);
+  }
+  let best = null, bestCount = 0;
+  for(const [k,c] of freq.entries()){
+    if(c > bestCount){ best=k; bestCount=c; }
+  }
+  return best ? `${best}%` : "—";
+}
+
+/* ============================
+  DATA LOAD (ALTERADO: SHAREPOINT LIST)
+  - Antes: fetch(JSON_FILE)
+  - Agora: fetch('/_api/web/lists/getbytitle(...)')
+============================ */
+function normalizeItem(x){
+  // aceita variações de nome de campo sem quebrar
+  const RoomName = x.RoomName ?? x.roomName ?? x.Sala ?? x.sala ?? x.Room ?? x.room;
+  const Alias = x.Alias ?? x.alias;
+  const MetricName = x.MetricName ?? x.Metric ?? x.metricName ?? x.metric;
+  const MetricValue= x.MetricValue ?? x.Metricvalue ?? x.metricValue ?? x.PacketLoss ?? x.packetLoss;
+  const Threshold = x.Threshold ?? x.threshold ?? x.Limite ?? x.limite;
+  const AlertTime = x.AlertTime ?? x.alertTime ?? x.Horario ?? x.horario ?? x.Time ?? x.time;
+  const RuleName = x.RuleName ?? x.ruleName ?? x.Rule ?? x.rule;
+  return {
+    RoomName: RoomName,
+    Alias: Alias,
+    MetricName: MetricName,
+    MetricValue: MetricValue,
+    Threshold: Threshold,
+    AlertTime: AlertTime,
+    RuleName: RuleName
+  };
+}
+
+async function loadData(){
+  // IMPORTANTE: isso funciona quando o HTML está hospedado no SharePoint (mesma origem)
+  const url =
+    `/_api/web/lists/getbytitle('${LIST_TITLE}')/items` +
+    `?$top=5000` +
+    `&$select=RoomName,Alias,MetricName,MetricValue,Threshold,AlertTime,RuleName`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: { "Accept": "application/json;odata=nometadata" },
+    cache: "no-store",
+    credentials: "same-origin"
+  });
+
+  if(!res.ok) throw new Error(`Erro ao carregar SharePoint List "${LIST_TITLE}" (HTTP ${res.status})`);
+  const data = await res.json();
+  const arr = data?.value || [];
+  return arr.map(normalizeItem);
+}
+
+/* ============================
+  CHARTS (cria uma vez)
+============================ */
+let barChart, lineChart, donutChart, hbarChart;
+function initCharts(){
+  barChart = new Chart(document.getElementById('barChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'MetricValue (%)', data: [], backgroundColor: [], borderRadius: 5, borderSkipped: false },
+        { label: 'Threshold (%)', data: [], type: 'line', borderColor: colors.ok, borderWidth: 2, borderDash: [6,3], pointRadius: 0, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: colors.text, font: defaultFont, boxWidth: 14 } },
+        tooltip: { backgroundColor: '#1a1a3f', titleColor: '#fff', bodyColor: '#ccc' }
+      },
+      scales: {
+        x: { ticks: { color: colors.text, font: {size:10} }, grid: { color: colors.grid } },
+        y: { min: 0, max: 110, ticks: { color: colors.text, font: defaultFont, callback: v => v + '%' }, grid: { color: colors.grid } }
+      }
+    }
+  });
+
+  lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Packet Loss (%)',
+          data: [],
+          borderColor: colors.accent,
+          backgroundColor: 'rgba(123,47,247,0.15)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: [],
+          pointRadius: 6,
+          pointHoverRadius: 8
+        },
+        {
+          label: 'Threshold (%)',
+          data: [],
+          borderColor: colors.ok,
+          borderDash: [6,3],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false
         }
-        
-        function saveData() {
-            localStorage.setItem('lider360v2', JSON.stringify(systemData));
-        }
-        
-        // ================= IA CONSULTOR =================
-        function getConsultantTip() {
-            const now = new Date();
-            const hour = now.getHours();
-            
-            // Analisar confiança
-            const recentTrust = systemData.trustScores.slice(-3);
-            const avgTrust = recentTrust.length > 0 ? recentTrust.reduce((a,b) => a + b.score, 0) / recentTrust.length : 7;
-            
-            // Analisar estresse
-            const recentStress = systemData.stressLevels.slice(-5);
-            const avgStress = recentStress.length > 0 ? recentStress.reduce((a,b) => a + b.level, 0) / recentStress.length : 3;
-            
-            let tip = "";
-            
-            if (avgTrust < 5) {
-                tip = "🔴 O termômetro de confiança está baixo. Sugiro: faça uma reunião de transparência total. Compartilhe um erro seu e peça feedback. Vulnerabilidade gera confiança.";
-            } else if (avgStress > 4) {
-                tip = "⚠️ Níveis de estresse elevados detectados. Ação imediata: redistribua tarefas hoje mesmo e faça check-ins individuais perguntando 'O que posso tirar do seu prato?'";
-            } else if (hour >= 8 && hour < 10) {
-                tip = "☀️ Hora de conectar. Que tal começar com um reconhecimento público? Identifique uma entrega recente e valorize. Isso eleva o engajamento imediatamente.";
-            } else if (hour >= 14 && hour < 16) {
-                tip = "🎧 Momento de ouvir. Olhe o mapa de dependências e veja onde você pode desbloquear o time. Pergunte: 'O que está travando você hoje?'";
-            } else {
-                tip = "💡 Lembrete: times com alta confiança são 3x mais produtivos. Invista 15 minutos hoje em uma conversa de carreira com alguém do time.";
-            }
-            
-            return tip;
-        }
-        
-        // ================= MENSAGENS =================
-        function getMessageOfTheDay() {
-            const now = new Date();
-            const dayOfWeek = now.getDay();
-            const hour = now.getHours();
-            
-            if (dayOfWeek === 5 && hour >= 17) return { message: fridayEveningMessage, type: "thanks" };
-            if (dayOfWeek === 5) return { message: fridayMorningMessage, type: "friday" };
-            if (dayOfWeek >= 1 && dayOfWeek <= 4) {
-                const dayOfMonth = now.getDate();
-                const messageIndex = dayOfMonth % morningMessages.length;
-                return { message: morningMessages[messageIndex], type: "regular" };
-            }
-            return { message: "🌿 Bom fim de semana, time! Descansem e recarreguem as energias. 🍃", type: "weekend" };
-        }
-        
-        function sendMessage() {
-            const msg = getMessageOfTheDay();
-            if (confirm(`Enviar mensagem para o time?\n\n"${msg.message}"`)) {
-                systemData.sentMessages.push({ message: msg.message, date: new Date().toISOString() });
-                saveData();
-                alert("✅ Mensagem enviada! A consistência na comunicação fortalece a confiança.");
-                render();
-            }
-        }
-        
-        // ================= 1. TERMÔMETRO DE CONFIANÇA =================
-        function recordTrust() {
-            const score = prompt("Termômetro de Confiança\n\nDe 0 a 10, o quanto você confia que o time vai te apoiar quando você errar?\n\n0 = nenhuma confiança | 10 = confiança total");
-            if (score && !isNaN(score)) {
-                systemData.trustScores.push({ score: parseInt(score), date: new Date().toISOString() });
-                saveData();
-                alert(`✅ Confiança registrada (${score}/10). ${score < 5 ? "Vamos trabalhar nisso juntos!" : "Que bom! Continue cultivando esse ambiente."}`);
-                render();
-            }
-        }
-        
-        // ================= 2. CONVERSAS DE CARREIRA =================
-        function updateCareerGoal(memberId) {
-            const member = systemData.members.find(m => m.id === memberId);
-            const goal = prompt(`Meta de carreira para ${member.nome}:\n\nO que você quer aprender nos próximos 90 dias?`, member.careerGoal || "");
-            if (goal !== null) {
-                member.careerGoal = goal;
-                saveData();
-                alert(`✅ Meta registrada para ${member.nome}`);
-                render();
-            }
-        }
-        
-        // ================= 3. RECONHECIMENTO ENTRE PARES =================
-        function addRecognition() {
-            const memberList = systemData.members.map((m, idx) => `${idx+1} - ${m.nome}`).join("\n");
-            const to = prompt(`Quem você quer reconhecer?\n${memberList}\n\nDigite o número:`);
-            const toIdx = parseInt(to) - 1;
-            if (systemData.members[toIdx]) {
-                const from = prompt("Seu nome (quem está reconhecendo):");
-                const reason = prompt("Motivo do reconhecimento:");
-                if (from && reason) {
-                    systemData.recognitions.push({
-                        to: systemData.members[toIdx].nome,
-                        from: from,
-                        reason: reason,
-                        date: new Date().toISOString()
-                    });
-                    saveData();
-                    alert(`🌟 Reconhecimento registrado! ${systemData.members[toIdx].nome} recebeu um destaque.`);
-                    render();
-                }
-            }
-        }
-        
-        // ================= 4. AUTONOMIA =================
-        function addAutonomyDecision(memberId) {
-            const member = systemData.members.find(m => m.id === memberId);
-            const decision = prompt(`${member.nome}, qual decisão você tomou hoje sem precisar da minha aprovação?`);
-            if (decision) {
-                systemData.autonomyDecisions.push({
-                    member: member.nome,
-                    decision: decision,
-                    date: new Date().toISOString()
-                });
-                saveData();
-                alert(`✅ Autonomia registrada! ${member.nome} está ganhando mais independência.`);
-                render();
-            }
-        }
-        
-        // ================= 5. SEXTA DO APRENDIZADO =================
-        function addLearning() {
-            const learning = prompt("Qual foi o seu principal aprendizado esta semana? (pode ser técnico, comportamental, sobre o cliente, etc)");
-            if (learning) {
-                systemData.fridayLearnings.push({
-                    learning: learning,
-                    date: new Date().toISOString()
-                });
-                saveData();
-                alert("✅ Aprendizado registrado! Na sexta compartilharemos com o time.");
-                render();
-            }
-        }
-        
-        // ================= 6. PREVISIBILIDADE DE ESTRESSE =================
-        function recordStress() {
-            const level = prompt("Nível de estresse hoje (1 a 5):\n1 = tranquilo | 5 = muito estressado");
-            if (level && !isNaN(level)) {
-                const cause = prompt("Qual a principal causa? (opcional)");
-                systemData.stressLevels.push({
-                    level: parseInt(level),
-                    cause: cause || "",
-                    date: new Date().toISOString()
-                });
-                saveData();
-                alert(`✅ Estresse registrado (${level}/5). ${level > 3 ? "Vamos redistribuir tarefas para aliviar!" : "Que bom que está tranquilo!"}`);
-                render();
-            }
-        }
-        
-        // ================= 7. MAPA DE DEPENDÊNCIAS =================
-        function addDependency() {
-            const cells = ["Executivo", "MS/Gov", "Infra", "AV", "Ativos"];
-            const fromCell = prompt(`Qual célula precisa de ajuda?\n${cells.join(", ")}`);
-            const toCell = prompt(`De qual célula precisa?`);
-            const need = prompt(`O que precisa?`);
-            if (fromCell && toCell && need) {
-                systemData.dependencies.push({
-                    from: fromCell,
-                    to: toCell,
-                    need: need,
-                    status: "pendente",
-                    date: new Date().toISOString()
-                });
-                saveData();
-                alert(`✅ Dependência registrada: ${fromCell} precisa de ${toCell} para: ${need}`);
-                render();
-            }
-        }
-        
-        function resolveDependency(idx) {
-            systemData.dependencies[idx].status = "resolvido";
-            saveData();
-            render();
-        }
-        
-        // ================= 8. CHECK-OUT DO DIA =================
-        function addCheckout() {
-            const delivered = prompt("O que você entregou hoje?");
-            const pending = prompt("O que ficou pendente?");
-            const needHelp = prompt("Precisa de ajuda para amanhã?");
-            if (delivered) {
-                systemData.checkouts.push({
-                    delivered: delivered,
-                    pending: pending || "",
-                    needHelp: needHelp || "",
-                    date: new Date().toISOString()
-                });
-                saveData();
-                alert("✅ Check-out registrado! Amanhã começamos com mais previsibilidade.");
-                render();
-            }
-        }
-        
-        // ================= 9. MEMES E LEVEZA =================
-        function addMeme() {
-            const memeUrl = prompt("URL ou descrição do meme (ou cole o texto):");
-            if (memeUrl) {
-                systemData.memes.push({
-                    content: memeUrl,
-                    date: new Date().toISOString()
-                });
-                saveData();
-                alert("😂 Meme adicionado! Humor fortalece o time.");
-                render();
-            }
-        }
-        
-        // ================= 10. PILOTO DO LÍDER =================
-        function addLeaderCommitment() {
-            const commitment = prompt("Essa semana, eu como líder vou melhorar em:");
-            if (commitment) {
-                systemData.leaderCommitments.push({
-                    commitment: commitment,
-                    date: new Date().toISOString(),
-                    feedback: ""
-                });
-                saveData();
-                alert(`✅ Compromisso registrado: "${commitment}". Na semana que vem, peça feedback se cumpriu!`);
-                render();
-            }
-        }
-        
-        function addFeedbackToCommitment(idx) {
-            const feedback = prompt("Feedback sobre o compromisso do líder:");
-            if (feedback) {
-                systemData.leaderCommitments[idx].feedback = feedback;
-                saveData();
-                render();
-            }
-        }
-        
-        // ================= TEMAS PARA DAILY =================
-        function getDailyThemes() {
-            const pendingActivities = dailyActivities.filter((_, idx) => !systemData.dailyTasksStatus[`daily_${idx}`]?.completed);
-            const shuffled = [...baseDailyThemes];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            
-            let themes = [];
-            if (pendingActivities.length > 0) {
-                themes.push({
-                    theme: "📋 Atividades Diárias - Checkpoint",
-                    context: `Alinhar andamento: ${pendingActivities.map(a => a.activity).join(', ')}`
-                });
-            }
-            themes.push(...shuffled.slice(0, 2).map(t => ({ theme: t, context: null })));
-            themes.push({ theme: "💚 Clima e bem-estar", context: "Como vocês estão se sentindo hoje?" });
-            
-            return themes;
-        }
-        
-        // ================= MÉTRICAS =================
-        function getMetrics() {
-            const recentTrust = systemData.trustScores.slice(-5);
-            const avgTrust = recentTrust.length > 0 ? (recentTrust.reduce((a,b) => a + b.score, 0) / recentTrust.length).toFixed(1) : "7.0";
-            const recentStress = systemData.stressLevels.slice(-5);
-            const avgStress = recentStress.length > 0 ? (recentStress.reduce((a,b) => a + b.level, 0) / recentStress.length).toFixed(1) : "2.5";
-            const recognitionCount = systemData.recognitions.length;
-            const autonomyCount = systemData.autonomyDecisions.length;
-            
-            return { avgTrust, avgStress, recognitionCount, autonomyCount };
-        }
-        
-        // ================= RENDERIZAÇÃO COMPLETA =================
-        function render() {
-            const now = new Date();
-            const isFriday = now.getDay() === 5;
-            const metrics = getMetrics();
-            const dailyThemes = getDailyThemes();
-            const messageOfDay = getMessageOfTheDay();
-            const consultantTip = getConsultantTip();
-            
-            let html = `
-                <!-- IA Consultor -->
-                <div class="card ia-card">
-                    <div class="card-header">👨‍💼 Consultor Sênior (30 anos de estrada)</div>
-                    <div class="ia-message">${consultantTip}</div>
-                </div>
-                
-                <!-- Mensagem do Dia -->
-                <div class="card">
-                    <div class="card-header">📱 Mensagem do Dia</div>
-                    <div style="background: #e8f5e9; padding: 12px; border-radius: 16px; margin-bottom: 12px;">
-                        ${messageOfDay.message}
-                    </div>
-                    <button class="btn-primary" onclick="sendMessage()">📤 Enviar para o Time</button>
-                </div>
-                
-                <!-- Métricas Rápidas -->
-                <div class="card">
-                    <div class="card-header">📊 Indicadores de Gestão</div>
-                    <div class="metrics-grid">
-                        <div class="metric-card" onclick="recordTrust()">
-                            <div class="metric-value">${metrics.avgTrust}</div>
-                            <div class="metric-label">🔒 Confiança (0-10)</div>
-                        </div>
-                        <div class="metric-card" onclick="recordStress()">
-                            <div class="metric-value">${metrics.avgStress}</div>
-                            <div class="metric-label">⚠️ Estresse (1-5)</div>
-                        </div>
-                        <div class="metric-card" onclick="addRecognition()">
-                            <div class="metric-value">${metrics.recognitionCount}</div>
-                            <div class="metric-label">🌟 Reconhecimentos</div>
-                        </div>
-                        <div class="metric-card" onclick="addAutonomyDecision()">
-                            <div class="metric-value">${metrics.autonomyCount}</div>
-                            <div class="metric-label">🚀 Decisões Autônomas</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Termômetro de Confiança -->
-                <div class="trust-meter">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <strong>🔒 Termômetro de Confiança</strong>
-                        <button class="btn-small" onclick="recordTrust()">Registrar</button>
-                    </div>
-                    <div>Confiança é a base de tudo. Times com alta confiança são 3x mais produtivos.</div>
-                </div>
-                
-                <!-- Temas para Daily -->
-                <div class="card">
-                    <div class="card-header">🎯 Temas para Daily (09:30)</div>
-                    ${dailyThemes.map(theme => `
-                        <div style="background: #f8f9fc; padding: 12px; border-radius: 16px; margin-bottom: 10px;">
-                            <div><strong>${theme.theme}</strong></div>
-                            ${theme.context ? `<div style="font-size: 0.75rem; color: #e67e22; margin-top: 4px;">📌 ${theme.context}</div>` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-                
-                <!-- Atividades Diárias -->
-                <div class="card">
-                    <div class="card-header">📋 Atividades Diárias</div>
-                    ${dailyActivities.map((activity, idx) => {
-                        const key = `daily_${idx}`;
-                        const completed = systemData.dailyTasksStatus[key]?.completed;
-                        return `
-                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #e9ecef;">
-                                <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleDailyTask(${idx})" style="width: 20px; height: 20px;">
-                                <div style="flex:1">
-                                    <div style="${completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}"><strong>${activity.activity}</strong></div>
-                                    <div style="font-size: 0.7rem; color: #6c757d;">${activity.cell} - ${activity.members}</div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-                
-                <!-- One-on-One com Carreira -->
-                <div class="card">
-                    <div class="card-header">💬 One-on-One + Carreira</div>
-                    ${systemData.members.map(member => {
-                        const daysDiff = Math.floor((new Date() - new Date(member.lastOneOnOne)) / (1000 * 3600 * 24));
-                        return `
-                            <div style="background: #f8f9fc; border-radius: 16px; padding: 12px; margin-bottom: 10px; ${daysDiff > 30 ? 'border-left: 4px solid #dc3545' : daysDiff > 20 ? 'border-left: 4px solid #ffc107' : ''}">
-                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                                    <div>
-                                        <strong>${member.nome}</strong><br>
-                                        <span style="font-size: 0.7rem; color: #6c757d;">Último: ${new Date(member.lastOneOnOne).toLocaleDateString()} (${daysDiff} dias)</span>
-                                        ${member.careerGoal ? `<div style="font-size: 0.7rem; color: #2d6a4f; margin-top: 4px;">🎯 Meta: ${member.careerGoal}</div>` : ''}
-                                    </div>
-                                    <div style="display: flex; gap: 8px;">
-                                        <button class="btn-small" onclick="scheduleOneOnOne(${member.id})">Agendar</button>
-                                        <button class="btn-small" onclick="updateCareerGoal(${member.id})">Carreira</button>
-                                        <button class="btn-small" onclick="addAutonomyDecision(${member.id})">Autonomia</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-            
-            // Reconhecimentos entre pares
-            if (systemData.recognitions.length > 0) {
-                html += `
-                    <div class="card">
-                        <div class="card-header">🌟 Reconhecimentos entre Pares</div>
-                        ${systemData.recognitions.slice(-5).map(r => `
-                            <div class="recognition-item">
-                                <div><span class="recognition-star">⭐</span> <strong>${r.to}</strong> recebeu de <strong>${r.from}</strong></div>
-                                <div style="font-size: 0.8rem;">💬 "${r.reason}"</div>
-                                <div style="font-size: 0.7rem; color: #6c757d;">${new Date(r.date).toLocaleDateString()}</div>
-                            </div>
-                        `).join('')}
-                        <button class="btn-primary" onclick="addRecognition()">✨ Adicionar Reconhecimento</button>
-                    </div>
-                `;
-            }
-            
-            // Mapa de Dependências
-            html += `
-                <div class="card">
-                    <div class="card-header">🗺️ Mapa de Dependências</div>
-                    ${systemData.dependencies.length > 0 ? systemData.dependencies.map((dep, idx) => `
-                        <div class="dependency-item">
-                            <div><strong>${dep.from}</strong> → <strong>${dep.to}</strong></div>
-                            <div style="font-size: 0.85rem;">📌 ${dep.need}</div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-                                <span style="font-size: 0.7rem; color: ${dep.status === 'resolvido' ? '#28a745' : '#ffc107'}">${dep.status === 'resolvido' ? '✅ Resolvido' : '⏳ Pendente'}</span>
-                                ${dep.status !== 'resolvido' ? `<button class="btn-small" onclick="resolveDependency(${idx})">Marcar Resolvido</button>` : ''}
-                            </div>
-                        </div>
-                    `).join('') : '<div style="text-align: center; color: #6c757d;">Nenhuma dependência registrada</div>'}
-                    <button class="btn-primary" onclick="addDependency()">➕ Adicionar Dependência</button>
-                </div>
-            `;
-            
-            // Memes e Leveza
-            html += `
-                <div class="card">
-                    <div class="card-header">😂 Memes e Leveza</div>
-                    ${systemData.memes.length > 0 ? systemData.memes.slice(-3).map(meme => `
-                        <div class="meme-item">
-                            <span>${meme.content}</span>
-                            <span style="font-size: 0.7rem; color: #6c757d;">${new Date(meme.date).toLocaleDateString()}</span>
-                        </div>
-                    `).join('') : '<div style="text-align: center; color: #6c757d;">Nenhum meme ainda. Adicione um para alegrar o time!</div>'}
-                    <button class="btn-primary" onclick="addMeme()">😂 Adicionar Meme</button>
-                </div>
-            `;
-            
-            // Piloto do Líder
-            html += `
-                <div class="card">
-                    <div class="card-header">🎯 Piloto do Líder (meu compromisso)</div>
-                    ${systemData.leaderCommitments.length > 0 ? systemData.leaderCommitments.slice(-2).map((c, idx) => `
-                        <div class="leader-commitment">
-                            <div><strong>📌 ${c.commitment}</strong></div>
-                            <div style="font-size: 0.7rem; color: #6c757d;">Registrado em: ${new Date(c.date).toLocaleDateString()}</div>
-                            ${c.feedback ? `<div style="margin-top: 8px; background: #e8f5e9; padding: 8px; border-radius: 12px;">💬 Feedback: "${c.feedback}"</div>` : `<button class="btn-small" style="margin-top: 8px;" onclick="addFeedbackToCommitment(${systemData.leaderCommitments.length - 1})">Pedir Feedback</button>`}
-                        </div>
-                    `).join('') : '<div style="text-align: center; color: #6c757d;">Nenhum compromisso registrado</div>'}
-                    <button class="btn-primary" onclick="addLeaderCommitment()">📝 Assumir Compromisso</button>
-                </div>
-            `;
-            
-            // Sexta do Aprendizado
-            if (isFriday) {
-                html += `
-                    <div class="card">
-                        <div class="card-header">📚 Sexta do Aprendizado</div>
-                        ${systemData.fridayLearnings.slice(-3).map(l => `
-                            <div style="background: #e8f5e9; padding: 12px; border-radius: 16px; margin-bottom: 8px;">
-                                💡 "${l.learning}"
-                                <div style="font-size: 0.7rem; color: #6c757d;">${new Date(l.date).toLocaleDateString()}</div>
-                            </div>
-                        `).join('')}
-                        <button class="btn-primary" onclick="addLearning()">📖 Compartilhar Aprendizado</button>
-                    </div>
-                `;
-            }
-            
-            // Check-out do Dia (final do dia)
-            if (now.getHours() >= 16) {
-                html += `
-                    <div class="card">
-                        <div class="card-header">📝 Check-out do Dia</div>
-                        <div style="background: #f8f9fc; padding: 12px; border-radius: 16px; margin-bottom: 12px;">
-                            Como foi seu dia? Registre o que entregou e o que ficou pendente.
-                        </div>
-                        <button class="btn-primary" onclick="addCheckout()">✅ Fazer Check-out</button>
-                    </div>
-                `;
-            }
-            
-            document.getElementById('app').innerHTML = html;
-        }
-        
-        // Funções auxiliares globais
-        function toggleDailyTask(idx) {
-            const key = `daily_${idx}`;
-            systemData.dailyTasksStatus[key].completed = !systemData.dailyTasksStatus[key].completed;
-            saveData();
-            render();
-        }
-        
-        function scheduleOneOnOne(memberId) {
-            const member = systemData.members.find(m => m.id === memberId);
-            const date = prompt(`Agendar 1:1 com ${member.nome}\n\nData (YYYY-MM-DD):`, new Date().toISOString().split('T')[0]);
-            if (date) {
-                member.lastOneOnOne = date;
-                saveData();
-                render();
-                alert(`✅ 1:1 agendado com ${member.nome} para ${date}`);
-            }
-        }
-        
-        function teamPulse() {
-            const response = prompt("Check-in rápido com o time:\n\nDe 0 a 10, como vocês estão se sentindo hoje?");
-            if (response) {
-                systemData.checkins.push({ response, date: new Date().toISOString() });
-                saveData();
-                alert("✅ Check-in registrado!");
-                render();
-            }
-        }
-        
-        // Relógio
-        function startClock() {
-            function update() {
-                const now = new Date();
-                const hours = now.getHours().toString().padStart(2, '0');
-                const minutes = now.getMinutes().toString().padStart(2, '0');
-                document.getElementById('currentTime').innerHTML = `${hours}:${minutes}`;
-                
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                document.getElementById('currentDate').innerHTML = now.toLocaleDateString('pt-BR', options);
-                
-                const quotes = [
-                    "“Liderar é fazer com que os outros façam o que precisa ser feito, mas com vontade.”",
-                    "“A verdadeira liderança é servir.”",
-                    "“Seja o líder que você gostaria de ter.”",
-                    "“Confiança se constrói com transparência e consistência.”",
-                    "“Pessoas não se lembram do que você disse, mas de como você as fez sentir.”"
-                ];
-                document.getElementById('leaderQuote').innerHTML = quotes[now.getDate() % quotes.length];
-            }
-            update();
-            setInterval(update, 1000);
-        }
-        
-        // Expor funções globalmente
-        window.sendMessage = sendMessage;
-        window.recordTrust = recordTrust;
-        window.recordStress = recordStress;
-        window.addRecognition = addRecognition;
-        window.addAutonomyDecision = addAutonomyDecision;
-        window.addLearning = addLearning;
-        window.addDependency = addDependency;
-        window.resolveDependency = resolveDependency;
-        window.addCheckout = addCheckout;
-        window.addMeme = addMeme;
-        window.addLeaderCommitment = addLeaderCommitment;
-        window.addFeedbackToCommitment = addFeedbackToCommitment;
-        window.toggleDailyTask = toggleDailyTask;
-        window.scheduleOneOnOne = scheduleOneOnOne;
-        window.updateCareerGoal = updateCareerGoal;
-        window.teamPulse = teamPulse;
-        
-        // Inicialização
-        initData();
-        startClock();
-        render();
-        
-        document.getElementById('sendMessageBtn').onclick = sendMessage;
-        document.getElementById('teamPulseBtn').onclick = teamPulse;
-    </script>
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: colors.text, font: defaultFont, boxWidth: 14 } },
+        tooltip: { backgroundColor: '#1a1a3f', titleColor: '#fff', bodyColor: '#ccc' }
+      },
+      scales: {
+        x: { ticks: { color: colors.text, font: {size:9}, maxRotation: 30 }, grid: { color: colors.grid } },
+        y: { min: 0, max: 110, ticks: { color: colors.text, font: defaultFont, callback: v => v + '%' }, grid: { color: colors.grid } }
+      }
+    }
+  });
+
+  donutChart = new Chart(document.getElementById('donutChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Crítico (>70%)','Alto (50-70%)','Médio (30-50%)','OK (<= threshold)'],
+      datasets: [{
+        data: [0,0,0,0],
+        backgroundColor: [colors.critical, colors.high, colors.medium, colors.ok],
+        borderColor: '#1e1e3f',
+        borderWidth: 3,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a3f', titleColor: '#fff', bodyColor: '#ccc' } }
+    }
+  });
+
+  hbarChart = new Chart(document.getElementById('hbarChart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: [], datasets: [{ label: 'Qtd. Alertas', data: [], backgroundColor: [], borderRadius: 5 }] },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a3f', titleColor: '#fff', bodyColor: '#ccc' } },
+      scales: {
+        x: { ticks: { color: colors.text, font: defaultFont, stepSize: 1 }, grid: { color: colors.grid } },
+        y: { ticks: { color: colors.text, font: {size:11} }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+/* ============================
+  RENDER
+============================ */
+function renderRoomStatus(latestItems){
+  const grid = document.getElementById("roomGrid");
+  grid.innerHTML = "";
+  const top = latestItems.slice(0,6);
+  for(const it of top){
+    const room = safe(it.RoomName);
+    const v = toNumber(it.MetricValue);
+    const t = toNumber(it.Threshold);
+    const bucket = sevBucket(v,t);
+    const color = dotColor(bucket);
+    grid.innerHTML += `
+      <div class="room-card" style="--rc:${color}">
+        <div class="room-name">${room}</div>
+        <div class="room-metric" style="color:${color}">${fmtPct(v)}</div>
+        <div class="room-label">${safe(it.MetricName || 'Packet Loss')}</div>
+        <div class="room-status" style="color:${color}">● ${sevLabel(bucket)}</div>
+      </div>`;
+  }
+}
+function renderKPIs(dedupItems, latestItems){
+  const totalAlerts = dedupItems.length;
+  let roomsWithAlert = 0;
+  let sum = 0, count = 0;
+  let worstVal = -1, worstRoom = "-";
+  for(const it of latestItems){
+    const v = toNumber(it.MetricValue);
+    const t = toNumber(it.Threshold);
+    const bucket = sevBucket(v,t);
+    if(bucket !== "ok") roomsWithAlert++;
+    if(!isNaN(v)){ sum += v; count++; }
+    if(!isNaN(v) && v > worstVal){ worstVal = v; worstRoom = safe(it.RoomName); }
+  }
+  document.getElementById("kpiTotalAlerts").innerText = totalAlerts;
+  document.getElementById("kpiRoomsWithAlert").innerText = roomsWithAlert;
+  document.getElementById("kpiAvgLoss").innerText = count ? fmtPct(sum / count) : "0%";
+  document.getElementById("kpiWorstLoss").innerText = worstVal >= 0 ? fmtPct(worstVal) : "0%";
+  document.getElementById("kpiWorstRoom").innerText = `● ${worstRoom}`;
+  document.getElementById("kpiThreshold").innerText = mostFrequentThreshold(latestItems);
+  document.getElementById("kpiTrendAlerts").innerText = "● deduplicado (sala/tempo)";
+  document.getElementById("kpiTrendRooms").innerText = "● baseado no threshold real";
+  document.getElementById("kpiTrendAvg").innerText = "● média das últimas leituras por sala";
+  document.getElementById("kpiTrendThreshold").innerText = "● valor mais comum";
+}
+function renderBar(latestItems){
+  const labels = latestItems.map(i => safe(i.RoomName));
+  const values = latestItems.map(i => toNumber(i.MetricValue));
+  const thresholds = latestItems.map(i => toNumber(i.Threshold));
+  const bg = latestItems.map(i => dotColor(sevBucket(toNumber(i.MetricValue), toNumber(i.Threshold))));
+  barChart.data.labels = labels;
+  barChart.data.datasets[0].data = values;
+  barChart.data.datasets[0].backgroundColor = bg;
+  barChart.data.datasets[1].data = thresholds;
+  barChart.update();
+}
+function renderLine(dedupItems){
+  const maxPoints = 30;
+  const slice = dedupItems.slice(0, maxPoints).reverse();
+  const labels = slice.map(i => fmtDateTimeISOorLocal(i.AlertTime));
+  const values = slice.map(i => toNumber(i.MetricValue));
+  const thresholds = slice.map(i => toNumber(i.Threshold));
+  const points = slice.map(i => dotColor(sevBucket(toNumber(i.MetricValue), toNumber(i.Threshold))));
+  lineChart.data.labels = labels;
+  lineChart.data.datasets[0].data = values;
+  lineChart.data.datasets[0].pointBackgroundColor = points;
+  lineChart.data.datasets[1].data = thresholds;
+  lineChart.update();
+  if(slice.length){
+    const first = fmtDateTimeISOorLocal(slice[0].AlertTime);
+    const last = fmtDateTimeISOorLocal(slice[slice.length-1].AlertTime);
+    document.getElementById("rangeBadge").innerText = `${first} → ${last}`;
+  } else {
+    document.getElementById("rangeBadge").innerText = "—";
+  }
+}
+function renderDonut(latestItems){
+  let crit=0, high=0, med=0, ok=0;
+  for(const it of latestItems){
+    const b = sevBucket(toNumber(it.MetricValue), toNumber(it.Threshold));
+    if(b==="critical") crit++;
+    else if(b==="high") high++;
+    else if(b==="medium") med++;
+    else ok++;
+  }
+  donutChart.data.datasets[0].data = [crit, high, med, ok];
+  donutChart.update();
+  document.getElementById("sevCritCount").innerText = crit;
+  document.getElementById("sevHighCount").innerText = high;
+  document.getElementById("sevMedCount").innerText = med;
+  document.getElementById("sevOkCount").innerText = ok;
+}
+function renderHbar(dedupItems){
+  const count = new Map();
+  for(const it of dedupItems){
+    const room = safe(it.RoomName);
+    count.set(room, (count.get(room)||0)+1);
+  }
+  const sorted = Array.from(count.entries()).sort((a,b)=> b[1]-a[1]).slice(0, 10);
+  const labels = sorted.map(x=>x[0]);
+  const values = sorted.map(x=>x[1]);
+  const bg = labels.map((_,idx)=> idx===0 ? colors.critical : colors.accent);
+  hbarChart.data.labels = labels;
+  hbarChart.data.datasets[0].data = values;
+  hbarChart.data.datasets[0].backgroundColor = bg;
+  hbarChart.update();
+}
+function renderTable(dedupItems){
+  const tbody = document.getElementById("alertTbody");
+  tbody.innerHTML = "";
+  const maxRows = 50;
+  const rows = dedupItems.slice(0, maxRows);
+  rows.forEach((it, idx) => {
+    const room = safe(it.RoomName);
+    const alias = safe(it.Alias);
+    const metricName = safe(it.MetricName);
+    const ruleName = safe(it.RuleName);
+    const v = toNumber(it.MetricValue);
+    const t = toNumber(it.Threshold);
+    const delta = (!isNaN(v) && !isNaN(t)) ? (v - t) : NaN;
+    const bucket = sevBucket(v,t);
+    const badge = sevBadgeClass(bucket);
+    tbody.innerHTML += `
+      <tr>
+        <td style="color:#666">${idx+1}</td>
+        <td style="font-weight:600;color:#d0d0ff">${room}</td>
+        <td style="color:#888">${alias}</td>
+        <td>${metricName}</td>
+        <td>
+          <span style="font-weight:700;color:${dotColor(bucket)}">${fmtPct(v)}</span>
+          <span class="progress-bar-wrap"><span class="progress-bar-fill" style="width:${Math.min(Math.max(v,0),100)}%;background:${dotColor(bucket)}"></span></span>
+        </td>
+        <td style="color:${colors.ok}">${fmtPct(t)}</td>
+        <td style="color:${dotColor(bucket)}">${isNaN(delta) ? "-" : (delta>0?`+${Math.round(delta*100)/100}%`:`${Math.round(delta*100)/100}%`)}</td>
+        <td style="color:#888;font-size:11px">${fmtDateTimeISOorLocal(it.AlertTime)}</td>
+        <td style="font-size:10px;color:#888">${ruleName}</td>
+        <td><span class="severity-badge ${badge}">${sevLabel(bucket)}</span></td>
+      </tr>`;
+  });
+  document.getElementById("tableBadge").innerText = `${rows.length} registros (top)`;
+}
+function renderTimeline(dedupItems){
+  const el = document.getElementById("timeline");
+  el.innerHTML = "";
+  const max = 10;
+  const slice = dedupItems.slice(0, max);
+  for(const it of slice){
+    const room = safe(it.RoomName);
+    const v = toNumber(it.MetricValue);
+    const t = toNumber(it.Threshold);
+    const bucket = sevBucket(v,t);
+    const color = dotColor(bucket);
+    const delta = (!isNaN(v) && !isNaN(t)) ? (v - t) : NaN;
+    el.innerHTML += `
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:${color}"></div>
+        <div class="timeline-content">
+          <div class="timeline-title">${room} — Packet Loss ${fmtPct(v)}</div>
+          <div class="timeline-meta">${fmtDateTimeISOorLocal(it.AlertTime)} · ${sevLabel(bucket)} · ${isNaN(delta) ? "-" : `+${Math.round(delta*100)/100}% acima do threshold`}</div>
+        </div>
+      </div>`;
+  }
+}
+
+/* ============================
+  MAIN LOOP
+============================ */
+async function refresh(){
+  try{
+    let raw = await loadData();
+    // ordena desc por AlertTime (garante)
+    raw.sort((a,b)=> (parseDate(b.AlertTime)?.getTime()||0) - (parseDate(a.AlertTime)?.getTime()||0));
+
+    const dedupItems = dedupByRoomAndWindow(raw);
+    const latestItems = latestPerRoom(raw);
+
+    // ordena latest por severidade/valor
+    latestItems.sort((a,b)=>{
+      const va = toNumber(a.MetricValue), ta = toNumber(a.Threshold);
+      const vb = toNumber(b.MetricValue), tb = toNumber(b.Threshold);
+      const sa = sevBucket(va,ta), sb = sevBucket(vb,tb);
+      const score = s => s==="critical"?3:s==="high"?2:s==="medium"?1:0;
+      const da = score(sa), db = score(sb);
+      if(db!==da) return db-da;
+      return (vb||0)-(va||0);
+    });
+
+    renderKPIs(dedupItems, latestItems);
+    renderRoomStatus(latestItems);
+    renderBar(latestItems.slice(0,12));
+    renderLine(dedupItems);
+    renderDonut(latestItems);
+    renderHbar(dedupItems);
+    renderTable(dedupItems);
+    renderTimeline(dedupItems);
+
+    document.getElementById("badgeDate").innerText = nowLocalStamp().split(" ")[0];
+    document.getElementById("footer").innerText =
+      `Dashboard Alert Teams · Dados: SharePoint List "${LIST_TITLE}" · Última atualização: ${nowLocalStamp()}`;
+
+  } catch(e){
+    console.error("ERRO:", e);
+    document.getElementById("footer").innerText = `ERRO ao carregar SharePoint List "${LIST_TITLE}" · ${String(e)}`;
+  }
+}
+
+/* ============================
+  INIT
+============================ */
+initCharts();
+refresh();
+setInterval(refresh, REFRESH_MS);
+</script>
+
 </body>
 </html>
