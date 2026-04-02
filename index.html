@@ -1,345 +1,349 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Assistente WhatsApp + IA | Relatório Executivo</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: linear-gradient(145deg, #f0f4f8 0%, #d9e2ec 100%);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      padding: 20px 16px 40px;
-    }
-    .container { max-width: 600px; margin: 0 auto; }
-    .card {
-      background: rgba(255,255,255,0.95);
-      border-radius: 28px;
-      padding: 1.2rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-    }
-    h1 {
-      font-size: 1.8rem;
-      background: linear-gradient(135deg, #075e54, #25d366);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    h3 {
-      color: #0f3b2c;
-      margin-bottom: 0.6rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    textarea {
-      width: 100%;
-      border-radius: 24px;
-      border: 1px solid #cbd5e1;
-      padding: 14px 18px;
-      font-family: inherit;
-      resize: vertical;
-    }
-    .api-key-section {
-      background: #ffffffcc;
-      border-radius: 44px;
-      padding: 12px 16px;
-      margin-bottom: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .api-key-section input {
-      flex: 1;
-      padding: 12px 16px;
-      border-radius: 60px;
-      border: 1px solid #cbd5e1;
-    }
-    button {
-      background: #075e54;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 40px;
-      font-weight: 600;
-      color: white;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-    .btn-primary {
-      background: #075e54;
-      width: 100%;
-      justify-content: center;
-      padding: 14px;
-    }
-    .btn-test {
-      background: #4b6e8a;
-    }
-    .executive-box {
-      background: #fefce8;
-      border-left: 4px solid #eab308;
-      padding: 12px 14px;
-      border-radius: 18px;
-      white-space: pre-wrap;
-    }
-    .task-item {
-      background: white;
-      border-radius: 20px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .task-actions button {
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      background: #f1f5f9;
-      color: #1e2a3e;
-    }
-    .loading {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid white;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    hr { margin: 12px 0; }
-    .error-msg { color: #b91c1c; background: #fee2e2; padding: 8px; border-radius: 20px; margin-top: 8px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Assistente WhatsApp + IA (Gemini-Pro)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #e9f0f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 20px 16px 40px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #075e54;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+        h3 {
+            color: #0f3b2c;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+        }
+        textarea {
+            width: 100%;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            padding: 12px 16px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+        .api-area {
+            background: #f8fafc;
+            border-radius: 44px;
+            padding: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .api-area input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 60px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.85rem;
+        }
+        button {
+            background: #075e54;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn-primary {
+            background: #075e54;
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        .btn-test {
+            background: #4b6e8a;
+        }
+        .exec-box {
+            background: #fef9e3;
+            border-left: 4px solid #eab308;
+            padding: 12px;
+            border-radius: 16px;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+        }
+        .task-list {
+            list-style: none;
+        }
+        .task-item {
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .task-actions button {
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+        }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        hr {
+            margin: 12px 0;
+        }
+        .error-msg {
+            color: #b91c1c;
+            background: #fee2e2;
+            padding: 8px;
+            border-radius: 20px;
+            margin-top: 8px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-  <h1><i class="fab fa-whatsapp"></i> Assistente IA</h1>
+    <h1>📱 Assistente WhatsApp + IA</h1>
 
-  <div class="api-key-section">
-    <i class="fas fa-key"></i>
-    <input type="password" id="geminiApiKey" placeholder="Chave API Google Gemini">
-    <button id="saveApiKeyBtn" style="background:#25d366; color:#075e54;">Salvar</button>
-    <button id="testApiKeyBtn" class="btn-test">Testar chave</button>
-  </div>
+    <div class="api-area">
+        🔑 <input type="password" id="apiKey" placeholder="Sua chave do Google Gemini (AI Studio)">
+        <button id="saveKeyBtn" style="background:#25d366; color:#075e54;">Salvar</button>
+        <button id="testKeyBtn" class="btn-test">Testar</button>
+    </div>
 
-  <div class="card">
-    <h3><i class="fab fa-whatsapp"></i> Mensagens copiadas</h3>
-    <textarea id="whatsappMessages" rows="4" placeholder="Cole aqui a conversa do WhatsApp..."></textarea>
-    <button id="generateBtn" class="btn-primary" style="margin-top: 1rem;"><i class="fas fa-magic"></i> Gerar com IA</button>
-  </div>
+    <div class="card">
+        <h3>💬 Mensagens copiadas</h3>
+        <textarea id="messages" rows="4" placeholder="Cole aqui a conversa do WhatsApp..."></textarea>
+        <button id="generateBtn" class="btn-primary">✨ Gerar com IA</button>
+    </div>
 
-  <div class="card">
-    <h3><i class="fas fa-file-alt"></i> Resumo inteligente</h3>
-    <p id="summaryDisplay">—</p>
-    <hr>
-    <h3><i class="fas fa-chart-line"></i> Relatório Executivo</h3>
-    <div id="executiveDisplay" class="executive-box">—</div>
-    <hr>
-    <h3><i class="fas fa-comment-dots"></i> Sugestão de resposta</h3>
-    <p id="suggestionDisplay">—</p>
-  </div>
+    <div class="card">
+        <h3>📄 Resumo inteligente</h3>
+        <p id="summary">—</p>
+        <hr>
+        <h3>📊 Relatório Executivo</h3>
+        <div id="executive" class="exec-box">—</div>
+        <hr>
+        <h3>💡 Sugestão de resposta</h3>
+        <p id="suggestion">—</p>
+    </div>
 
-  <div class="card">
-    <h3><i class="fas fa-tasks"></i> Minhas Tarefas</h3>
-    <ul id="tasksListContainer" style="list-style: none;"></ul>
-    <button id="clearCompletedTasksBtn" style="background:#e2e8f0; color:#334155;">Limpar concluídas</button>
-  </div>
+    <div class="card">
+        <h3>✅ Minhas Tarefas</h3>
+        <ul id="taskList" class="task-list"></ul>
+        <button id="clearCompletedBtn" style="background:#cbd5e1; color:#1e293b;">Limpar concluídas</button>
+    </div>
 </div>
 
 <script>
-  let tasks = [];
-  let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
+    // ---------- CONFIG ----------
+    let tasks = [];
+    let apiKey = localStorage.getItem('gemini_key') || '';
 
-  const apiKeyInput = document.getElementById('geminiApiKey');
-  const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
-  const testApiKeyBtn = document.getElementById('testApiKeyBtn');
-  const generateBtn = document.getElementById('generateBtn');
-  const messagesTextarea = document.getElementById('whatsappMessages');
-  const summaryDisplay = document.getElementById('summaryDisplay');
-  const executiveDisplay = document.getElementById('executiveDisplay');
-  const suggestionDisplay = document.getElementById('suggestionDisplay');
-  const tasksContainer = document.getElementById('tasksListContainer');
-  const clearCompletedBtn = document.getElementById('clearCompletedTasksBtn');
+    const apiInput = document.getElementById('apiKey');
+    const saveBtn = document.getElementById('saveKeyBtn');
+    const testBtn = document.getElementById('testKeyBtn');
+    const generateBtn = document.getElementById('generateBtn');
+    const messagesArea = document.getElementById('messages');
+    const summaryDiv = document.getElementById('summary');
+    const executiveDiv = document.getElementById('executive');
+    const suggestionDiv = document.getElementById('suggestion');
+    const taskListUl = document.getElementById('taskList');
+    const clearCompletedBtn = document.getElementById('clearCompletedBtn');
 
-  if (geminiApiKey) apiKeyInput.value = geminiApiKey;
+    if (apiKey) apiInput.value = apiKey;
 
-  // ---------- Tarefas ----------
-  function loadTasks() {
-    const stored = localStorage.getItem('whatsapp_tasks');
-    tasks = stored ? JSON.parse(stored) : [];
-    renderTasks();
-  }
-  function saveTasks() { localStorage.setItem('whatsapp_tasks', JSON.stringify(tasks)); }
-  function addTask(title) {
-    if (!title?.trim()) return;
-    tasks.unshift({ id: Date.now(), title: title.trim(), completed: false });
-    saveTasks();
-    renderTasks();
-  }
-  function renderTasks() {
-    if (!tasksContainer) return;
-    if (tasks.length === 0) {
-      tasksContainer.innerHTML = '<li style="text-align:center; color:#6c7e97;">Nenhuma tarefa</li>';
-      return;
+    // ---------- Tarefas ----------
+    function loadTasks() {
+        let stored = localStorage.getItem('wa_tasks');
+        tasks = stored ? JSON.parse(stored) : [];
+        renderTasks();
     }
-    tasksContainer.innerHTML = tasks.map(task => `
-      <li class="task-item" style="${task.completed ? 'opacity:0.7; text-decoration:line-through;' : ''}">
-        <span>${escapeHtml(task.title)}</span>
-        <div class="task-actions">
-          <button onclick="toggleTask(${task.id})"><i class="fas ${task.completed ? 'fa-undo' : 'fa-check'}"></i></button>
-          <button onclick="alertTask('${escapeHtml(task.title)}')"><i class="fas fa-bell"></i></button>
-          <button onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button>
-        </div>
-      </li>
-    `).join('');
-  }
-  window.toggleTask = (id) => {
-    const task = tasks.find(t => t.id === id);
-    if (task) { task.completed = !task.completed; saveTasks(); renderTasks(); }
-  };
-  window.deleteTask = (id) => {
-    tasks = tasks.filter(t => t.id !== id);
-    saveTasks();
-    renderTasks();
-  };
-  window.alertTask = (title) => {
-    if (!("Notification" in window)) return alert("Notificação não suportada");
-    if (Notification.permission === "granted") {
-      let mins = prompt("Alertar em quantos minutos?", "5");
-      if (mins) setTimeout(() => new Notification("Lembrete", { body: title }), parseInt(mins)*60*1000);
-    } else Notification.requestPermission();
-  };
-  function escapeHtml(str) { return str.replace(/[&<>]/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-
-  // ---------- API Gemini corrigida (v1beta) ----------
-  async function callGeminiAPI(messagesText, apiKey, model = "gemini-1.5-flash") {
-    // Endpoint CORRETO: v1beta (não v1)
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-    const prompt = `Você é um assistente executivo. Analise as mensagens do WhatsApp abaixo.
-    Retorne APENAS UM JSON válido e completo com os seguintes campos:
-    - "resumo": resumo curto e claro do essencial (máx 2 frases).
-    - "relatorio_executivo": um relatório executivo profissional, curto e direto, com formatação clara (use bullets ou tópicos se necessário). Deve conter: contexto, ponto crítico, impacto e recomendação imediata.
-    - "sugestao": sugestão de resposta ou ação prática para o usuário.
-    - "tarefa": uma tarefa clara, acionável e prioritária (no infinitivo).
-
-    Formato JSON obrigatório:
-    {"resumo": "...", "relatorio_executivo": "...", "sugestao": "...", "tarefa": "..."}
-
-    Mensagens:
-    """${messagesText}"""
-    `;
-    const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.3, maxOutputTokens: 600 }
+    function saveTasks() { localStorage.setItem('wa_tasks', JSON.stringify(tasks)); }
+    function addTask(title) {
+        if (!title || !title.trim()) return;
+        tasks.unshift({ id: Date.now(), title: title.trim(), completed: false });
+        saveTasks();
+        renderTasks();
+    }
+    function renderTasks() {
+        if (tasks.length === 0) {
+            taskListUl.innerHTML = '<li style="text-align:center; color:#6c7e97;">Nenhuma tarefa</li>';
+            return;
+        }
+        taskListUl.innerHTML = tasks.map(task => `
+            <li class="task-item" style="${task.completed ? 'opacity:0.6; text-decoration:line-through;' : ''}">
+                <span>${escapeHtml(task.title)}</span>
+                <div class="task-actions">
+                    <button onclick="toggleTask(${task.id})">${task.completed ? '↩️' : '✅'}</button>
+                    <button onclick="alertTask('${escapeHtml(task.title)}')">🔔</button>
+                    <button onclick="deleteTask(${task.id})">🗑️</button>
+                </div>
+            </li>
+        `).join('');
+    }
+    window.toggleTask = (id) => {
+        let task = tasks.find(t => t.id === id);
+        if (task) { task.completed = !task.completed; saveTasks(); renderTasks(); }
     };
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(`HTTP ${response.status}: ${JSON.stringify(errorData)}`);
+    window.deleteTask = (id) => {
+        tasks = tasks.filter(t => t.id !== id);
+        saveTasks();
+        renderTasks();
+    };
+    window.alertTask = (title) => {
+        if (!("Notification" in window)) return alert("Notificação não suportada");
+        if (Notification.permission === "granted") {
+            let mins = prompt("Alertar em quantos minutos?", "5");
+            if (mins) setTimeout(() => new Notification("Lembrete", { body: title }), parseInt(mins) * 60 * 1000);
+        } else {
+            Notification.requestPermission();
+        }
+    };
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
     }
-    const data = await response.json();
-    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!textResponse) throw new Error("Resposta vazia da IA");
-    // Extrai JSON puro
-    let jsonString = textResponse.trim();
-    const jsonMatch = jsonString.match(/```json\s*([\s\S]*?)\s*```/);
-    if (jsonMatch) jsonString = jsonMatch[1];
-    const braceMatch = jsonString.match(/\{[\s\S]*\}/);
-    if (braceMatch) jsonString = braceMatch[0];
-    const parsed = JSON.parse(jsonString);
-    if (!parsed.resumo || !parsed.relatorio_executivo || !parsed.sugestao || !parsed.tarefa) {
-      throw new Error("Campos incompletos na resposta");
+
+    // ---------- API GEMINI (modelo gemini-pro, endpoint v1) ----------
+    async function callGemini(messagesText, key) {
+        // Usando modelo "gemini-pro" (mais estável e amplamente suportado)
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${key}`;
+        const prompt = `Você é um assistente executivo. Analise as mensagens do WhatsApp abaixo e retorne SOMENTE um JSON válido com os campos:
+        "resumo", "relatorio_executivo", "sugestao", "tarefa".
+        O relatório executivo deve ser curto, direto, com contexto e recomendação.
+        Mensagens: """${messagesText}"""`;
+
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.3, maxOutputTokens: 500 }
+        };
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!resp.ok) {
+            const errText = await resp.text();
+            throw new Error(`HTTP ${resp.status}: ${errText.substring(0, 200)}`);
+        }
+        const data = await resp.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error("Resposta vazia");
+        // Extrai JSON
+        let jsonStr = text.match(/\{[\s\S]*\}/)?.[0] || text;
+        return JSON.parse(jsonStr);
     }
-    return parsed;
-  }
 
-  // Teste simples da chave (chama listModels)
-  async function testApiKey(apiKey) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`Chave inválida ou sem acesso (HTTP ${resp.status})`);
-    const data = await resp.json();
-    return data.models?.some(m => m.name.includes("gemini-1.5-flash")) || false;
-  }
-
-  // Ação principal
-  async function handleGenerate() {
-    const msg = messagesTextarea.value.trim();
-    if (!msg) return alert("Cole as mensagens do WhatsApp.");
-    let key = geminiApiKey || apiKeyInput.value.trim();
-    if (!key) return alert("Insira sua chave da API Gemini (obter em aistudio.google.com).");
-    geminiApiKey = key;
-    localStorage.setItem('gemini_api_key', key);
-
-    generateBtn.innerHTML = '<span class="loading"></span> Analisando...';
-    generateBtn.disabled = true;
-    try {
-      let result;
-      try {
-        result = await callGeminiAPI(msg, key, "gemini-1.5-flash");
-      } catch (err) {
-        console.warn("Flash falhou, tentando Pro", err);
-        result = await callGeminiAPI(msg, key, "gemini-1.5-pro");
-      }
-      summaryDisplay.innerText = result.resumo || "—";
-      executiveDisplay.innerText = result.relatorio_executivo || "—";
-      suggestionDisplay.innerText = result.sugestao || "—";
-      if (result.tarefa) addTask(result.tarefa);
-    } catch (err) {
-      console.error(err);
-      let userMsg = "Erro na IA. ";
-      if (err.message.includes("404")) userMsg += "Modelo não encontrado. Verifique sua chave e tente novamente.";
-      else if (err.message.includes("403")) userMsg += "Chave API sem permissão ou quota excedida.";
-      else userMsg += err.message;
-      alert(userMsg);
-      summaryDisplay.innerText = "Erro";
-      executiveDisplay.innerText = "Falha na geração";
-      suggestionDisplay.innerText = "Tente novamente";
-    } finally {
-      generateBtn.innerHTML = '<i class="fas fa-magic"></i> Gerar com IA';
-      generateBtn.disabled = false;
+    async function testApiKey(key) {
+        const url = `https://generativelanguage.googleapis.com/v1/models?key=${key}`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        return data.models?.some(m => m.name.includes("gemini-pro")) || false;
     }
-  }
 
-  // Eventos
-  saveApiKeyBtn.onclick = () => {
-    const newKey = apiKeyInput.value.trim();
-    if (newKey) { localStorage.setItem('gemini_api_key', newKey); geminiApiKey = newKey; alert("Chave salva!"); }
-  };
-  testApiKeyBtn.onclick = async () => {
-    let key = geminiApiKey || apiKeyInput.value.trim();
-    if (!key) return alert("Digite ou salve uma chave primeiro.");
-    testApiKeyBtn.innerHTML = '<span class="loading"></span> Testando...';
-    testApiKeyBtn.disabled = true;
-    try {
-      const ok = await testApiKey(key);
-      if (ok) alert("✅ Chave válida! O modelo gemini-1.5-flash está disponível.");
-      else alert("⚠️ Chave parece válida, mas modelo flash não listado. Tente gerar mesmo assim.");
-    } catch (err) {
-      alert("❌ Chave inválida ou erro: " + err.message);
-    } finally {
-      testApiKeyBtn.innerHTML = '<i class="fas fa-vial"></i> Testar chave';
-      testApiKeyBtn.disabled = false;
+    async function handleGenerate() {
+        const msg = messagesArea.value.trim();
+        if (!msg) return alert("Cole as mensagens do WhatsApp.");
+        let key = apiKey || apiInput.value.trim();
+        if (!key) return alert("Informe sua chave da API Gemini (obtenha em aistudio.google.com)");
+        apiKey = key;
+        localStorage.setItem('gemini_key', key);
+
+        generateBtn.innerHTML = '<span class="loading"></span> Gerando...';
+        generateBtn.disabled = true;
+        try {
+            const result = await callGemini(msg, key);
+            summaryDiv.innerText = result.resumo || "—";
+            executiveDiv.innerText = result.relatorio_executivo || "—";
+            suggestionDiv.innerText = result.sugestao || "—";
+            if (result.tarefa) addTask(result.tarefa);
+        } catch (err) {
+            console.error(err);
+            let errorMsg = "Erro: " + err.message;
+            if (err.message.includes("404")) errorMsg = "Erro 404: modelo não encontrado. Tente usar outra chave ou aguarde.";
+            else if (err.message.includes("400")) errorMsg = "Erro 400: chave inválida ou sem permissão. Verifique sua chave no Google AI Studio.";
+            alert(errorMsg);
+            summaryDiv.innerText = "Erro";
+            executiveDiv.innerText = "Falha na geração";
+            suggestionDiv.innerText = "Tente novamente";
+        } finally {
+            generateBtn.innerHTML = '✨ Gerar com IA';
+            generateBtn.disabled = false;
+        }
     }
-  };
-  generateBtn.onclick = handleGenerate;
-  clearCompletedBtn.onclick = () => {
-    tasks = tasks.filter(t => !t.completed);
-    saveTasks();
-    renderTasks();
-  };
-  loadTasks();
+
+    // Eventos
+    saveBtn.onclick = () => {
+        let newKey = apiInput.value.trim();
+        if (newKey) {
+            localStorage.setItem('gemini_key', newKey);
+            apiKey = newKey;
+            alert("Chave salva!");
+        } else alert("Digite uma chave válida.");
+    };
+    testBtn.onclick = async () => {
+        let key = apiKey || apiInput.value.trim();
+        if (!key) return alert("Digite ou salve uma chave primeiro.");
+        testBtn.innerHTML = '<span class="loading"></span>';
+        testBtn.disabled = true;
+        try {
+            const ok = await testApiKey(key);
+            alert(ok ? "✅ Chave válida! Modelo gemini-pro disponível." : "⚠️ Chave válida, mas modelo não listado. Tente gerar.");
+        } catch (err) {
+            alert("❌ Chave inválida ou erro: " + err.message);
+        } finally {
+            testBtn.innerHTML = 'Testar';
+            testBtn.disabled = false;
+        }
+    };
+    generateBtn.onclick = handleGenerate;
+    clearCompletedBtn.onclick = () => {
+        tasks = tasks.filter(t => !t.completed);
+        saveTasks();
+        renderTasks();
+    };
+    loadTasks();
 </script>
 </body>
 </html>
