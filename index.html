@@ -1,767 +1,667 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Alert Teams – Dashboard (SharePoint)</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>Assistente WhatsApp + IA</title>
+  <!-- Font Awesome 6 (ícones modernos) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: #1a1a2e; color: #e0e0e0; min-height: 100vh; }
-    /* TOP BAR */
-    .topbar {
-      background: linear-gradient(90deg, #0a0a1a 0%, #1a1a3e 60%, #2d0050 100%);
-      padding: 12px 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 2px solid #6a0dad;
-      box-shadow: 0 2px 12px rgba(106,13,173,0.4);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
-    .topbar-left { display: flex; align-items: center; gap: 14px; }
-    .logo { width: 36px; height: 36px; background: linear-gradient(135deg,#7b2ff7,#f72fff); border-radius: 8px;
-      display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: #fff; }
-    .title { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
-    .subtitle { font-size: 12px; color: #aaa; margin-top: 2px; }
-    .topbar-right { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #bbb; }
-    .badge { background: #6a0dad; padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 11px; }
-    .live-dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* FILTER BAR */
-    .filterbar {
-      background: #12122a; padding: 10px 24px; display: flex; gap: 12px; align-items: center;
-      border-bottom: 1px solid #2a2a4a; flex-wrap: wrap;
+    body {
+      background: linear-gradient(145deg, #f0f4f8 0%, #d9e2ec 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+      padding: 20px 16px 40px;
+      min-height: 100vh;
     }
-    .filter-label { font-size: 12px; color: #888; margin-right: 4px; }
-    .filter-chip {
-      background: #1e1e3f; border: 1px solid #3a3a6a; border-radius: 6px;
-      padding: 5px 12px; font-size: 12px; color: #ccc; cursor: pointer; transition: all .2s;
+
+    /* container principal */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
     }
-    .filter-chip:hover { background: #6a0dad; border-color: #6a0dad; color: #fff; }
-    .filter-chip.active { background: #6a0dad; border-color: #9b59b6; color: #fff; }
 
-    /* MAIN */
-    .main { padding: 20px 24px; }
-
-    /* KPI CARDS */
-    .kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 20px; }
-    .kpi-card {
-      background: linear-gradient(135deg, #1e1e3f 0%, #16213e 100%);
-      border-radius: 12px; padding: 16px 18px;
-      border-left: 4px solid var(--accent);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      transition: transform .2s;
-    }
-    .kpi-card:hover { transform: translateY(-3px); }
-    .kpi-icon { font-size: 22px; margin-bottom: 6px; }
-    .kpi-value { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; }
-    .kpi-label { font-size: 11px; color: #999; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .kpi-trend { font-size: 11px; margin-top: 6px; }
-    .trend-up { color: #ff4757; } .trend-down { color: #2ed573; }
-
-    /* GRIDS */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
-    .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
-    .grid-full { margin-bottom: 18px; }
-
-    /* CARD */
+    /* cards e elementos modernos */
     .card {
-      background: linear-gradient(135deg, #1e1e3f 0%, #16213e 100%);
-      border-radius: 12px; padding: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      border: 1px solid #2a2a4a;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(2px);
+      border-radius: 28px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.02);
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.1s ease;
+      border: 1px solid rgba(255, 255, 255, 0.5);
     }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .card-title { font-size: 14px; font-weight: 600; color: #d0d0f0; }
-    .card-badge { background: #2a2a5a; padding: 3px 8px; border-radius: 4px; font-size: 10px; color: #9090c0; }
 
-    /* TABLE */
-    .alert-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .alert-table th {
-      background: #0d0d25; color: #8888cc; padding: 8px 10px;
-      text-align: left; font-weight: 600; text-transform: uppercase;
-      font-size: 10px; letter-spacing: 0.5px; border-bottom: 1px solid #2a2a4a;
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #075e54, #25d366);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0.75rem;
     }
-    .alert-table td { padding: 9px 10px; border-bottom: 1px solid #1a1a35; }
-    .alert-table tr:hover td { background: rgba(106,13,173,0.15); }
-    .severity-badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
-    .sev-critical { background: rgba(255,71,87,0.2); color: #ff4757; border: 1px solid #ff4757; }
-    .sev-high { background: rgba(255,165,2,0.2); color: #ffa502; border: 1px solid #ffa502; }
-    .sev-medium { background: rgba(255,206,84,0.2); color: #ffce54; border: 1px solid #ffce54; }
-    .sev-ok { background: rgba(46,213,115,0.18); color: #2ed573; border: 1px solid #2ed573; }
-    .progress-bar-wrap { width: 80px; height: 6px; background: #2a2a4a; border-radius: 3px; display: inline-block; vertical-align: middle; margin-left: 6px; }
-    .progress-bar-fill { height: 100%; border-radius: 3px; }
 
-    /* ROOM STATUS */
-    .room-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .room-card {
-      background: #12122a; border-radius: 8px; padding: 12px;
-      border: 1px solid #2a2a4a; position: relative; overflow: hidden;
+    h1 i {
+      background: none;
+      color: #25d366;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+      font-size: 1.9rem;
     }
-    .room-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: var(--rc);
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #1e2a3e;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 4px solid #25d366;
+      padding-left: 12px;
     }
-    .room-name { font-size: 11px; font-weight: 600; color: #d0d0f0; margin-bottom: 6px; }
-    .room-metric { font-size: 22px; font-weight: 800; }
-    .room-label { font-size: 10px; color: #888; }
-    .room-status { font-size: 10px; margin-top: 4px; }
 
-    /* TIMELINE */
-    .timeline-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1a1a35; }
-    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
-    .timeline-content { flex: 1; }
-    .timeline-title { font-size: 12px; color: #d0d0f0; font-weight: 500; }
-    .timeline-meta { font-size: 10px; color: #888; margin-top: 2px; }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #0f3b2c;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    /* CHART containers */
-    .chart-wrap { position: relative; height: 200px; }
-    .chart-wrap-sm { position: relative; height: 160px; }
-    .chart-wrap-md { position: relative; height: 220px; }
+    /* inputs e textarea */
+    textarea {
+      width: 100%;
+      border-radius: 24px;
+      border: 1px solid #cbd5e1;
+      background: white;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      transition: all 0.2s;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
 
-    /* FOOTER */
-    .footer { text-align: center; padding: 14px; color: #555; font-size: 11px; border-top: 1px solid #1a1a35; margin-top: 6px; }
+    textarea:focus {
+      outline: none;
+      border-color: #25d366;
+      box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+    }
+
+    .api-key-section {
+      background: #ffffffcc;
+      backdrop-filter: blur(4px);
+      border-radius: 44px;
+      padding: 12px 16px;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(37, 211, 102, 0.3);
+    }
+
+    .api-key-section input {
+      flex: 1;
+      min-width: 150px;
+      padding: 12px 16px;
+      border-radius: 60px;
+      border: 1px solid #cbd5e1;
+      background: white;
+      font-size: 0.85rem;
+    }
+
+    button {
+      background: #075e54;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    button i {
+      font-size: 1rem;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: #075e54;
+      width: 100%;
+      justify-content: center;
+      padding: 14px;
+      font-size: 1rem;
+    }
+
+    .btn-primary:active {
+      background: #054a41;
+    }
+
+    .secondary {
+      background: #4b6e8a;
+      box-shadow: none;
+    }
+
+    .danger {
+      background: #c73e2d;
+    }
+
+    .tasks-list {
+      list-style: none;
+      margin-top: 0.5rem;
+    }
+
+    .task-item {
+      background: white;
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      transition: all 0.2s;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .task-text {
+      flex: 2;
+      font-size: 0.95rem;
+      font-weight: 500;
+      word-break: break-word;
+      color: #1e293b;
+    }
+
+    .task-completed .task-text {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .task-actions button {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      background: #f1f5f9;
+      color: #1e2a3e;
+      box-shadow: none;
+    }
+
+    .task-actions button i {
+      font-size: 0.75rem;
+    }
+
+    .task-actions .alert-btn {
+      background: #fef9c3;
+      color: #854d0e;
+    }
+
+    .task-actions .complete-btn {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .task-actions .delete-btn {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .info-text {
+      background: #e9f5ef;
+      border-radius: 20px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      color: #2c5a48;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid white;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #4a627a;
+      margin-top: 1rem;
+    }
+
+    hr {
+      margin: 12px 0;
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, #cbd5e1, transparent);
+    }
   </style>
 </head>
-
 <body>
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="logo">⚡</div>
-      <div>
-        <div class="title">Alert Teams – Monitor de Qualidade de Áudio</div>
-        <div class="subtitle">Microsoft Teams Rooms · SharePoint Live Feed</div>
-      </div>
-    </div>
-    <div class="topbar-right">
-      <div class="live-dot"></div>
-      <span>Ao vivo</span>
-      <span class="badge" id="badgeDate">—</span>
-      <span class="badge">Qualidade de Áudio</span>
-    </div>
+
+<div class="container">
+  <h1>
+    <i class="fab fa-whatsapp"></i> 
+    Assistente IA
+  </h1>
+
+  <!-- Chave API Gemini -->
+  <div class="api-key-section">
+    <i class="fas fa-key" style="color:#075e54;"></i>
+    <input type="password" id="geminiApiKey" placeholder="Chave da API Google Gemini" autocomplete="off">
+    <button id="saveApiKeyBtn" style="background:#25d366; color:#075e54;">Salvar</button>
+  </div>
+  <div class="info-text">
+    <i class="fas fa-info-circle"></i> Use sua chave gratuita do <strong>Google AI Studio</strong> (<a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#075e54;">obter aqui</a>). A chave fica salva no seu navegador.
   </div>
 
-  <!-- FILTER BAR (mantida) -->
-  <div class="filterbar">
-    <span class="filter-label">Filtrar por Sala:</span>
-    <div class="filter-chip active" data-room="ALL">Todas</div>
-    <div style="margin-left:auto; display:flex; gap:8px;">
-      <span class="filter-label">Métrica:</span>
-      <div class="filter-chip active" data-metric="ALL">Todas</div>
-    </div>
+  <!-- Campo para colar as mensagens do WhatsApp -->
+  <div class="card">
+    <h3><i class="fab fa-whatsapp"></i> Mensagens copiadas</h3>
+    <textarea id="whatsappMessages" rows="4" placeholder="Cole aqui a conversa do WhatsApp...&#10;Exemplo:&#10;João: Vamos precisar do relatório amanhã&#10;Maria: OK, vou fazer ainda hoje"></textarea>
+    <button id="generateBtn" class="btn-primary" style="margin-top: 1rem;">
+      <i class="fas fa-magic"></i> Gerar com IA
+    </button>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
-
-    <!-- KPI CARDS -->
-    <div class="kpi-row">
-      <div class="kpi-card" style="--accent:#ff4757">
-        <div class="kpi-icon">🚨</div>
-        <div class="kpi-value" id="kpiTotalAlerts">0</div>
-        <div class="kpi-label">Total de Alertas</div>
-        <div class="kpi-trend" id="kpiTrendAlerts">—</div>
-      </div>
-      <div class="kpi-card" style="--accent:#ff6b35">
-        <div class="kpi-icon">📡</div>
-        <div class="kpi-value" id="kpiRoomsWithAlert">0</div>
-        <div class="kpi-label">Salas com Alerta</div>
-        <div class="kpi-trend" id="kpiTrendRooms">—</div>
-      </div>
-      <div class="kpi-card" style="--accent:#ffa502">
-        <div class="kpi-icon">📊</div>
-        <div class="kpi-value" id="kpiAvgLoss">0%</div>
-        <div class="kpi-label">Packet Loss Médio</div>
-        <div class="kpi-trend" id="kpiTrendAvg">—</div>
-      </div>
-      <div class="kpi-card" style="--accent:#ff4757">
-        <div class="kpi-icon">⚠️</div>
-        <div class="kpi-value" id="kpiWorstLoss">0%</div>
-        <div class="kpi-label">Pior Packet Loss</div>
-        <div class="kpi-trend" id="kpiWorstRoom">—</div>
-      </div>
-      <div class="kpi-card" style="--accent:#2ed573">
-        <div class="kpi-icon">✅</div>
-        <div class="kpi-value" id="kpiThreshold">—</div>
-        <div class="kpi-label">Threshold Configurado</div>
-        <div class="kpi-trend trend-down" id="kpiTrendThreshold">—</div>
-      </div>
-    </div>
-
-    <!-- ROW 1: Bar Chart + Room Status -->
-    <div class="grid-3">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📊 Packet Loss (%) por Sala — Comparativo</div>
-          <div class="card-badge">Inbound</div>
-        </div>
-        <div class="chart-wrap-md">
-          <canvas id="barChart"></canvas>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🏢 Status das Salas</div>
-          <div class="card-badge">Tempo Real</div>
-        </div>
-        <div class="room-grid" id="roomGrid"></div>
-      </div>
-    </div>
-
-    <!-- ROW 2: Line + Donut -->
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📈 Evolução Temporal do Packet Loss</div>
-          <div class="card-badge" id="rangeBadge">—</div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="lineChart"></canvas>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🍩 Distribuição por Severidade</div>
-          <div class="card-badge">Alertas (dedup)</div>
-        </div>
-        <div style="display:flex; align-items:center; gap:20px;">
-          <div class="chart-wrap-sm" style="flex:1">
-            <canvas id="donutChart"></canvas>
-          </div>
-          <div style="font-size:12px; line-height:2;">
-            <div><span style="color:#ff4757">●</span> Crítico (>70%) — <span id="sevCritCount">0</span></div>
-            <div><span style="color:#ffa502">●</span> Alto (50–70%) — <span id="sevHighCount">0</span></div>
-            <div><span style="color:#ffce54">●</span> Médio (30–50%) — <span id="sevMedCount">0</span></div>
-            <div><span style="color:#2ed573">●</span> OK (<= threshold) — <span id="sevOkCount">0</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ROW 3: Table -->
-    <div class="grid-full">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📋 Tabela Detalhada de Alertas — Alert_teams</div>
-          <div class="card-badge" id="tableBadge">—</div>
-        </div>
-        <table class="alert-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>RoomName</th>
-              <th>Alias</th>
-              <th>MetricName</th>
-              <th>MetricValue</th>
-              <th>Threshold</th>
-              <th>Δ Acima</th>
-              <th>AlertTime</th>
-              <th>RuleName</th>
-              <th>Severidade</th>
-            </tr>
-          </thead>
-          <tbody id="alertTbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ROW 4: Timeline + Hbar -->
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🕐 Linha do Tempo dos Alertas</div>
-          <div class="card-badge">Recentes</div>
-        </div>
-        <div id="timeline"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📊 Alertas por Sala (Contagem)</div>
-          <div class="card-badge">Dedup</div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="hbarChart"></canvas>
-        </div>
-      </div>
-    </div>
-
+  <!-- Resumo e Sugestão -->
+  <div class="card">
+    <h3><i class="fas fa-file-alt"></i> Resumo inteligente</h3>
+    <p id="summaryDisplay" style="line-height: 1.4; color: #2d3e50;">—</p>
+    <hr>
+    <h3><i class="fas fa-comment-dots"></i> Sugestão de resposta / ação</h3>
+    <p id="suggestionDisplay" style="line-height: 1.4; color: #2d3e50;">—</p>
   </div>
 
-  <!-- FOOTER -->
-  <div class="footer" id="footer">
-    Dashboard Alert Teams · Dados: SharePoint List "Alert_teams" · Última atualização: —
+  <!-- Lista de Tarefas -->
+  <div class="card">
+    <h2><i class="fas fa-check-circle"></i> Minhas Tarefas</h2>
+    <ul id="tasksListContainer" class="tasks-list">
+      <li style="text-align: center; color: #6c7e97;">Nenhuma tarefa ainda. Gere uma com IA!</li>
+    </ul>
+    <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+      <button id="clearCompletedTasksBtn" class="secondary" style="background:#e2e8f0; color:#334155;">
+        <i class="fas fa-trash-alt"></i> Limpar concluídas
+      </button>
+    </div>
   </div>
+  <footer>
+    <i class="fas fa-mobile-alt"></i> Cole mensagens → IA cria tarefa + resumo + sugestão. Toque em "Alertar" para lembrete (notificação).
+  </footer>
+</div>
 
 <script>
-/* ============================
-  CONFIG (ALTERADO: SHAREPOINT LIST)
-  - Antes: JSON_FILE = "alert_teams.json"
-  - Agora: LIST_TITLE = "Alert_teams"
-============================ */
-const LIST_TITLE = "Alert_teams";  // <-- AJUSTE SE O NOME REAL DA SUA LISTA FOR DIFERENTE
-const REFRESH_MS = 30000;
-const DEDUP_MINUTES = 10;
+  // ---------- VARIÁVEIS GLOBAIS ----------
+  let tasks = [];         // { id, title, completed, createdAt }
+  let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
 
-/* ============================
-  HELPERS
-============================ */
-const colors = {
-  critical: '#ff4757',
-  high: '#ffa502',
-  medium: '#ffce54',
-  ok: '#2ed573',
-  accent: '#7b2ff7',
-  grid: 'rgba(255,255,255,0.05)',
-  text: '#aaaacc'
-};
-const defaultFont = { family: 'Segoe UI', size: 11 };
+  // Elementos DOM
+  const apiKeyInput = document.getElementById('geminiApiKey');
+  const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+  const generateBtn = document.getElementById('generateBtn');
+  const messagesTextarea = document.getElementById('whatsappMessages');
+  const summaryDisplay = document.getElementById('summaryDisplay');
+  const suggestionDisplay = document.getElementById('suggestionDisplay');
+  const tasksContainer = document.getElementById('tasksListContainer');
+  const clearCompletedBtn = document.getElementById('clearCompletedTasksBtn');
 
-function toNumber(v){
-  if (v === null || v === undefined) return NaN;
-  return parseFloat(String(v).replace("%","").replace(",",".")); 
-}
-function fmtPct(v){
-  if (isNaN(v)) return "-";
-  return `${Math.round(v*100)/100}%`;
-}
-function safe(v){ return (v===null || v===undefined || v==="") ? "-" : String(v); }
+  // Carregar tasks do localStorage
+  function loadTasks() {
+    const stored = localStorage.getItem('whatsapp_tasks');
+    if (stored) {
+      try {
+        tasks = JSON.parse(stored);
+      } catch(e) { tasks = []; }
+    } else {
+      tasks = [];
+    }
+    renderTasks();
+  }
 
-function sevBucket(v, t){
-  if (isNaN(v) || isNaN(t) || v <= t) return "ok";
-  const d = v - t;
-  if (d > 50) return "critical";
-  if (d > 20) return "high";
-  return "medium";
-}
-function sevLabel(bucket){
-  return bucket === "critical" ? "CRÍTICO" : bucket === "high" ? "ALTO" : bucket === "medium" ? "MÉDIO" : "OK";
-}
-function sevBadgeClass(bucket){
-  return bucket === "critical" ? "sev-critical" : bucket === "high" ? "sev-high" : bucket === "medium" ? "sev-medium" : "sev-ok";
-}
-function dotColor(bucket){
-  return bucket === "critical" ? colors.critical : bucket === "high" ? colors.high : bucket === "medium" ? colors.medium : colors.ok;
-}
-function parseDate(d){
-  const x = new Date(d);
-  return isNaN(x.getTime()) ? null : x;
-}
-function pad(n){ return String(n).padStart(2,"0"); }
-function fmtDateTimeISOorLocal(d){
-  const dt = parseDate(d);
-  if(!dt) return safe(d);
-  return `${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
-}
-function nowLocalStamp(){
-  const d = new Date();
-  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
+  // Salvar tasks no localStorage
+  function saveTasks() {
+    localStorage.setItem('whatsapp_tasks', JSON.stringify(tasks));
+  }
 
-/* Dedup por Sala + Janela de tempo */
-function dedupByRoomAndWindow(items){
-  const winMs = DEDUP_MINUTES * 60 * 1000;
-  const map = new Map();
-  // assume items desc por AlertTime (se não vier, a gente ordena antes no refresh)
-  for(const it of items){
-    const room = safe(it.RoomName);
-    const dt = parseDate(it.AlertTime);
-    if(!dt) continue;
-    const bucket = Math.floor(dt.getTime() / winMs);
-    const key = `${room}|${bucket}`;
-    if(!map.has(key)){
-      map.set(key, it);
+  // Adicionar nova tarefa
+  function addTask(title) {
+    if (!title || title.trim() === '') return;
+    const newTask = {
+      id: Date.now() + Math.random() * 1000,
+      title: title.trim(),
+      completed: false,
+      createdAt: new Date().toISOString()
+    };
+    tasks.unshift(newTask);  // mais recente no topo
+    saveTasks();
+    renderTasks();
+    return newTask;
+  }
+
+  // Marcar tarefa como concluída / reabrir
+  function toggleCompleteTask(taskId) {
+    const task = tasks.find(t => t.id == taskId);
+    if (task) {
+      task.completed = !task.completed;
+      saveTasks();
+      renderTasks();
     }
   }
-  return Array.from(map.values()).sort((a,b)=> (parseDate(b.AlertTime)?.getTime()||0) - (parseDate(a.AlertTime)?.getTime()||0));
-}
-function latestPerRoom(items){
-  const map = new Map();
-  for(const it of items){
-    const room = safe(it.RoomName);
-    const dt = parseDate(it.AlertTime);
-    if(!dt) continue;
-    if(!map.has(room)) map.set(room, it); // items já desc => primeiro é o mais recente
+
+  // Excluir tarefa permanentemente
+  function deleteTask(taskId) {
+    tasks = tasks.filter(t => t.id != taskId);
+    saveTasks();
+    renderTasks();
   }
-  return Array.from(map.values());
-}
-function mostFrequentThreshold(latestItems){
-  const freq = new Map();
-  for(const it of latestItems){
-    const t = toNumber(it.Threshold);
-    if(isNaN(t)) continue;
-    const key = String(Math.round(t*100)/100);
-    freq.set(key, (freq.get(key)||0)+1);
-  }
-  let best = null, bestCount = 0;
-  for(const [k,c] of freq.entries()){
-    if(c > bestCount){ best=k; bestCount=c; }
-  }
-  return best ? `${best}%` : "—";
-}
 
-/* ============================
-  DATA LOAD (ALTERADO: SHAREPOINT LIST)
-  - Antes: fetch(JSON_FILE)
-  - Agora: fetch('/_api/web/lists/getbytitle(...)')
-============================ */
-function normalizeItem(x){
-  // aceita variações de nome de campo sem quebrar
-  const RoomName = x.RoomName ?? x.roomName ?? x.Sala ?? x.sala ?? x.Room ?? x.room;
-  const Alias = x.Alias ?? x.alias;
-  const MetricName = x.MetricName ?? x.Metric ?? x.metricName ?? x.metric;
-  const MetricValue= x.MetricValue ?? x.Metricvalue ?? x.metricValue ?? x.PacketLoss ?? x.packetLoss;
-  const Threshold = x.Threshold ?? x.threshold ?? x.Limite ?? x.limite;
-  const AlertTime = x.AlertTime ?? x.alertTime ?? x.Horario ?? x.horario ?? x.Time ?? x.time;
-  const RuleName = x.RuleName ?? x.ruleName ?? x.Rule ?? x.rule;
-  return {
-    RoomName: RoomName,
-    Alias: Alias,
-    MetricName: MetricName,
-    MetricValue: MetricValue,
-    Threshold: Threshold,
-    AlertTime: AlertTime,
-    RuleName: RuleName
-  };
-}
-
-async function loadData(){
-  // IMPORTANTE: isso funciona quando o HTML está hospedado no SharePoint (mesma origem)
-  const url =
-    `/_api/web/lists/getbytitle('${LIST_TITLE}')/items` +
-    `?$top=5000` +
-    `&$select=RoomName,Alias,MetricName,MetricValue,Threshold,AlertTime,RuleName`;
-
-  const res = await fetch(url, {
-    method: "GET",
-    headers: { "Accept": "application/json;odata=nometadata" },
-    cache: "no-store",
-    credentials: "same-origin"
-  });
-
-  if(!res.ok) throw new Error(`Erro ao carregar SharePoint List "${LIST_TITLE}" (HTTP ${res.status})`);
-  const data = await res.json();
-  const arr = data?.value || [];
-  return arr.map(normalizeItem);
-}
-
-/* ============================
-  CHARTS (cria uma vez)
-============================ */
-let barChart, lineChart, donutChart, hbarChart;
-function initCharts(){
-  barChart = new Chart(document.getElementById('barChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: [],
-      datasets: [
-        { label: 'MetricValue (%)', data: [], backgroundColor: [], borderRadius: 5, borderSkipped: false },
-        { label: 'Threshold (%)', data: [], type: 'line', borderColor: colors.ok, borderWidth: 2, borderDash: [6,3], pointRadius: 0, fill: false }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: colors.text, font: defaultFont, boxWidth: 14 } },
-        tooltip: { backgroundColor: '#1a1a3f', titleColor: '#fff', bodyColor: '#ccc' }
-      },
-      scales: {
-        x: { ticks: { color: colors.text, font: {size:10} }, grid: { color: colors.grid } },
-        y: { min: 0, max: 110, ticks: { color: colors.text, font: defaultFont, callback: v => v + '%' }, grid: { color: colors.grid } }
-      }
+  // Função para pedir permissão de notificação e criar alerta (lembrete com atraso em minutos)
+  function createAlertForTask(taskTitle) {
+    if (!("Notification" in window)) {
+      alert("Seu navegador não suporta notificações desktop/mobile.");
+      return;
     }
-  });
-
-  lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: 'Packet Loss (%)',
-          data: [],
-          borderColor: colors.accent,
-          backgroundColor: 'rgba(123,47,247,0.15)',
-          fill: true,
-          tension: 0.4,
-          pointBackgroundColor: [],
-          pointRadius: 6,
-          pointHoverRadius: 8
-        },
-        {
-          label: 'Threshold (%)',
-          data: [],
-          borderColor: colors.ok,
-          borderDash: [6,3],
-          borderWidth: 1.5,
-          pointRadius: 0,
-          fill: false
+    if (Notification.permission === "granted") {
+      askMinutesAndNotify(taskTitle);
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          askMinutesAndNotify(taskTitle);
+        } else {
+          alert("Permissão de notificação negada. Ative nas configurações do navegador para receber alertas.");
         }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: colors.text, font: defaultFont, boxWidth: 14 } },
-        tooltip: { backgroundColor: '#1a1a3f', titleColor: '#fff', bodyColor: '#ccc' }
-      },
-      scales: {
-        x: { ticks: { color: colors.text, font: {size:9}, maxRotation: 30 }, grid: { color: colors.grid } },
-        y: { min: 0, max: 110, ticks: { color: colors.text, font: defaultFont, callback: v => v + '%' }, grid: { color: colors.grid } }
+      });
+    } else {
+      alert("Permissão de notificação bloqueada. Por favor, altere nas configurações do navegador para usar alertas.");
+    }
+  }
+
+  function askMinutesAndNotify(taskTitle) {
+    let minutes = prompt(`⏰ Lembrete para "${taskTitle.substring(0, 40)}"\nDigite em quantos minutos deseja ser alertado:`, "5");
+    if (minutes === null) return;
+    let mins = parseInt(minutes, 10);
+    if (isNaN(mins) || mins <= 0) {
+      alert("Número inválido. Alerta não agendado.");
+      return;
+    }
+    const delayMs = mins * 60 * 1000;
+    const alertTime = new Date(Date.now() + delayMs);
+    alert(`✅ Alerta agendado para ${alertTime.toLocaleTimeString()} (em ${mins} minuto(s)) sobre a tarefa.`);
+    setTimeout(() => {
+      // Verifica se a página ainda está aberta e a notificação é permitida
+      if (Notification.permission === "granted") {
+        new Notification("📢 Lembrete do Assistente WhatsApp", {
+          body: `Tarefa: ${taskTitle}`,
+          icon: "https://cdn-icons-png.flaticon.com/512/124/124034.png",
+          vibrate: [200, 100, 200]
+        });
+      } else {
+        console.warn("Notificação não pode ser exibida.");
       }
+    }, delayMs);
+  }
+
+  // Renderizar a lista de tarefas (com suporte mobile e botões)
+  function renderTasks() {
+    if (!tasksContainer) return;
+    if (tasks.length === 0) {
+      tasksContainer.innerHTML = '<li style="text-align: center; color: #6c7e97; padding: 12px;"><i class="fas fa-inbox"></i> Nenhuma tarefa. Gere uma nova!</li>';
+      return;
     }
-  });
-
-  donutChart = new Chart(document.getElementById('donutChart').getContext('2d'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Crítico (>70%)','Alto (50-70%)','Médio (30-50%)','OK (<= threshold)'],
-      datasets: [{
-        data: [0,0,0,0],
-        backgroundColor: [colors.critical, colors.high, colors.medium, colors.ok],
-        borderColor: '#1e1e3f',
-        borderWidth: 3,
-        hoverOffset: 8
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '65%',
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a3f', titleColor: '#fff', bodyColor: '#ccc' } }
-    }
-  });
-
-  hbarChart = new Chart(document.getElementById('hbarChart').getContext('2d'), {
-    type: 'bar',
-    data: { labels: [], datasets: [{ label: 'Qtd. Alertas', data: [], backgroundColor: [], borderRadius: 5 }] },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a3f', titleColor: '#fff', bodyColor: '#ccc' } },
-      scales: {
-        x: { ticks: { color: colors.text, font: defaultFont, stepSize: 1 }, grid: { color: colors.grid } },
-        y: { ticks: { color: colors.text, font: {size:11} }, grid: { display: false } }
-      }
-    }
-  });
-}
-
-/* ============================
-  RENDER
-============================ */
-function renderRoomStatus(latestItems){
-  const grid = document.getElementById("roomGrid");
-  grid.innerHTML = "";
-  const top = latestItems.slice(0,6);
-  for(const it of top){
-    const room = safe(it.RoomName);
-    const v = toNumber(it.MetricValue);
-    const t = toNumber(it.Threshold);
-    const bucket = sevBucket(v,t);
-    const color = dotColor(bucket);
-    grid.innerHTML += `
-      <div class="room-card" style="--rc:${color}">
-        <div class="room-name">${room}</div>
-        <div class="room-metric" style="color:${color}">${fmtPct(v)}</div>
-        <div class="room-label">${safe(it.MetricName || 'Packet Loss')}</div>
-        <div class="room-status" style="color:${color}">● ${sevLabel(bucket)}</div>
-      </div>`;
-  }
-}
-function renderKPIs(dedupItems, latestItems){
-  const totalAlerts = dedupItems.length;
-  let roomsWithAlert = 0;
-  let sum = 0, count = 0;
-  let worstVal = -1, worstRoom = "-";
-  for(const it of latestItems){
-    const v = toNumber(it.MetricValue);
-    const t = toNumber(it.Threshold);
-    const bucket = sevBucket(v,t);
-    if(bucket !== "ok") roomsWithAlert++;
-    if(!isNaN(v)){ sum += v; count++; }
-    if(!isNaN(v) && v > worstVal){ worstVal = v; worstRoom = safe(it.RoomName); }
-  }
-  document.getElementById("kpiTotalAlerts").innerText = totalAlerts;
-  document.getElementById("kpiRoomsWithAlert").innerText = roomsWithAlert;
-  document.getElementById("kpiAvgLoss").innerText = count ? fmtPct(sum / count) : "0%";
-  document.getElementById("kpiWorstLoss").innerText = worstVal >= 0 ? fmtPct(worstVal) : "0%";
-  document.getElementById("kpiWorstRoom").innerText = `● ${worstRoom}`;
-  document.getElementById("kpiThreshold").innerText = mostFrequentThreshold(latestItems);
-  document.getElementById("kpiTrendAlerts").innerText = "● deduplicado (sala/tempo)";
-  document.getElementById("kpiTrendRooms").innerText = "● baseado no threshold real";
-  document.getElementById("kpiTrendAvg").innerText = "● média das últimas leituras por sala";
-  document.getElementById("kpiTrendThreshold").innerText = "● valor mais comum";
-}
-function renderBar(latestItems){
-  const labels = latestItems.map(i => safe(i.RoomName));
-  const values = latestItems.map(i => toNumber(i.MetricValue));
-  const thresholds = latestItems.map(i => toNumber(i.Threshold));
-  const bg = latestItems.map(i => dotColor(sevBucket(toNumber(i.MetricValue), toNumber(i.Threshold))));
-  barChart.data.labels = labels;
-  barChart.data.datasets[0].data = values;
-  barChart.data.datasets[0].backgroundColor = bg;
-  barChart.data.datasets[1].data = thresholds;
-  barChart.update();
-}
-function renderLine(dedupItems){
-  const maxPoints = 30;
-  const slice = dedupItems.slice(0, maxPoints).reverse();
-  const labels = slice.map(i => fmtDateTimeISOorLocal(i.AlertTime));
-  const values = slice.map(i => toNumber(i.MetricValue));
-  const thresholds = slice.map(i => toNumber(i.Threshold));
-  const points = slice.map(i => dotColor(sevBucket(toNumber(i.MetricValue), toNumber(i.Threshold))));
-  lineChart.data.labels = labels;
-  lineChart.data.datasets[0].data = values;
-  lineChart.data.datasets[0].pointBackgroundColor = points;
-  lineChart.data.datasets[1].data = thresholds;
-  lineChart.update();
-  if(slice.length){
-    const first = fmtDateTimeISOorLocal(slice[0].AlertTime);
-    const last = fmtDateTimeISOorLocal(slice[slice.length-1].AlertTime);
-    document.getElementById("rangeBadge").innerText = `${first} → ${last}`;
-  } else {
-    document.getElementById("rangeBadge").innerText = "—";
-  }
-}
-function renderDonut(latestItems){
-  let crit=0, high=0, med=0, ok=0;
-  for(const it of latestItems){
-    const b = sevBucket(toNumber(it.MetricValue), toNumber(it.Threshold));
-    if(b==="critical") crit++;
-    else if(b==="high") high++;
-    else if(b==="medium") med++;
-    else ok++;
-  }
-  donutChart.data.datasets[0].data = [crit, high, med, ok];
-  donutChart.update();
-  document.getElementById("sevCritCount").innerText = crit;
-  document.getElementById("sevHighCount").innerText = high;
-  document.getElementById("sevMedCount").innerText = med;
-  document.getElementById("sevOkCount").innerText = ok;
-}
-function renderHbar(dedupItems){
-  const count = new Map();
-  for(const it of dedupItems){
-    const room = safe(it.RoomName);
-    count.set(room, (count.get(room)||0)+1);
-  }
-  const sorted = Array.from(count.entries()).sort((a,b)=> b[1]-a[1]).slice(0, 10);
-  const labels = sorted.map(x=>x[0]);
-  const values = sorted.map(x=>x[1]);
-  const bg = labels.map((_,idx)=> idx===0 ? colors.critical : colors.accent);
-  hbarChart.data.labels = labels;
-  hbarChart.data.datasets[0].data = values;
-  hbarChart.data.datasets[0].backgroundColor = bg;
-  hbarChart.update();
-}
-function renderTable(dedupItems){
-  const tbody = document.getElementById("alertTbody");
-  tbody.innerHTML = "";
-  const maxRows = 50;
-  const rows = dedupItems.slice(0, maxRows);
-  rows.forEach((it, idx) => {
-    const room = safe(it.RoomName);
-    const alias = safe(it.Alias);
-    const metricName = safe(it.MetricName);
-    const ruleName = safe(it.RuleName);
-    const v = toNumber(it.MetricValue);
-    const t = toNumber(it.Threshold);
-    const delta = (!isNaN(v) && !isNaN(t)) ? (v - t) : NaN;
-    const bucket = sevBucket(v,t);
-    const badge = sevBadgeClass(bucket);
-    tbody.innerHTML += `
-      <tr>
-        <td style="color:#666">${idx+1}</td>
-        <td style="font-weight:600;color:#d0d0ff">${room}</td>
-        <td style="color:#888">${alias}</td>
-        <td>${metricName}</td>
-        <td>
-          <span style="font-weight:700;color:${dotColor(bucket)}">${fmtPct(v)}</span>
-          <span class="progress-bar-wrap"><span class="progress-bar-fill" style="width:${Math.min(Math.max(v,0),100)}%;background:${dotColor(bucket)}"></span></span>
-        </td>
-        <td style="color:${colors.ok}">${fmtPct(t)}</td>
-        <td style="color:${dotColor(bucket)}">${isNaN(delta) ? "-" : (delta>0?`+${Math.round(delta*100)/100}%`:`${Math.round(delta*100)/100}%`)}</td>
-        <td style="color:#888;font-size:11px">${fmtDateTimeISOorLocal(it.AlertTime)}</td>
-        <td style="font-size:10px;color:#888">${ruleName}</td>
-        <td><span class="severity-badge ${badge}">${sevLabel(bucket)}</span></td>
-      </tr>`;
-  });
-  document.getElementById("tableBadge").innerText = `${rows.length} registros (top)`;
-}
-function renderTimeline(dedupItems){
-  const el = document.getElementById("timeline");
-  el.innerHTML = "";
-  const max = 10;
-  const slice = dedupItems.slice(0, max);
-  for(const it of slice){
-    const room = safe(it.RoomName);
-    const v = toNumber(it.MetricValue);
-    const t = toNumber(it.Threshold);
-    const bucket = sevBucket(v,t);
-    const color = dotColor(bucket);
-    const delta = (!isNaN(v) && !isNaN(t)) ? (v - t) : NaN;
-    el.innerHTML += `
-      <div class="timeline-item">
-        <div class="timeline-dot" style="background:${color}"></div>
-        <div class="timeline-content">
-          <div class="timeline-title">${room} — Packet Loss ${fmtPct(v)}</div>
-          <div class="timeline-meta">${fmtDateTimeISOorLocal(it.AlertTime)} · ${sevLabel(bucket)} · ${isNaN(delta) ? "-" : `+${Math.round(delta*100)/100}% acima do threshold`}</div>
-        </div>
-      </div>`;
-  }
-}
-
-/* ============================
-  MAIN LOOP
-============================ */
-async function refresh(){
-  try{
-    let raw = await loadData();
-    // ordena desc por AlertTime (garante)
-    raw.sort((a,b)=> (parseDate(b.AlertTime)?.getTime()||0) - (parseDate(a.AlertTime)?.getTime()||0));
-
-    const dedupItems = dedupByRoomAndWindow(raw);
-    const latestItems = latestPerRoom(raw);
-
-    // ordena latest por severidade/valor
-    latestItems.sort((a,b)=>{
-      const va = toNumber(a.MetricValue), ta = toNumber(a.Threshold);
-      const vb = toNumber(b.MetricValue), tb = toNumber(b.Threshold);
-      const sa = sevBucket(va,ta), sb = sevBucket(vb,tb);
-      const score = s => s==="critical"?3:s==="high"?2:s==="medium"?1:0;
-      const da = score(sa), db = score(sb);
-      if(db!==da) return db-da;
-      return (vb||0)-(va||0);
+    const incompleteTasks = tasks.filter(t => !t.completed);
+    const completedTasks = tasks.filter(t => t.completed);
+    const allOrdered = [...incompleteTasks, ...completedTasks];
+    
+    let html = '';
+    allOrdered.forEach(task => {
+      const completedClass = task.completed ? 'task-completed' : '';
+      html += `
+        <li class="task-item ${completedClass}" data-id="${task.id}">
+          <div class="task-text">${escapeHtml(task.title)}</div>
+          <div class="task-actions">
+            <button class="complete-btn" data-action="complete" data-id="${task.id}" title="${task.completed ? 'Reabrir tarefa' : 'Concluir tarefa'}">
+              <i class="fas ${task.completed ? 'fa-undo-alt' : 'fa-check-circle'}"></i> ${task.completed ? 'Reabrir' : 'Concluir'}
+            </button>
+            <button class="alert-btn" data-action="alert" data-id="${task.id}" title="Criar alerta/lembrete">
+              <i class="fas fa-bell"></i> Alertar
+            </button>
+            <button class="delete-btn" data-action="delete" data-id="${task.id}" title="Excluir tarefa">
+              <i class="fas fa-trash"></i> Excluir
+            </button>
+          </div>
+        </li>
+      `;
     });
-
-    renderKPIs(dedupItems, latestItems);
-    renderRoomStatus(latestItems);
-    renderBar(latestItems.slice(0,12));
-    renderLine(dedupItems);
-    renderDonut(latestItems);
-    renderHbar(dedupItems);
-    renderTable(dedupItems);
-    renderTimeline(dedupItems);
-
-    document.getElementById("badgeDate").innerText = nowLocalStamp().split(" ")[0];
-    document.getElementById("footer").innerText =
-      `Dashboard Alert Teams · Dados: SharePoint List "${LIST_TITLE}" · Última atualização: ${nowLocalStamp()}`;
-
-  } catch(e){
-    console.error("ERRO:", e);
-    document.getElementById("footer").innerText = `ERRO ao carregar SharePoint List "${LIST_TITLE}" · ${String(e)}`;
+    tasksContainer.innerHTML = html;
+    
+    // Adicionar event listeners para os botões dinâmicos
+    document.querySelectorAll('.task-item button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const action = btn.getAttribute('data-action');
+        const taskId = parseFloat(btn.getAttribute('data-id'));
+        if (action === 'complete') {
+          toggleCompleteTask(taskId);
+        } else if (action === 'delete') {
+          if (confirm('Remover esta tarefa permanentemente?')) {
+            deleteTask(taskId);
+          }
+        } else if (action === 'alert') {
+          const task = tasks.find(t => t.id === taskId);
+          if (task) createAlertForTask(task.title);
+          else alert('Tarefa não encontrada');
+        }
+      });
+    });
   }
-}
 
-/* ============================
-  INIT
-============================ */
-initCharts();
-refresh();
-setInterval(refresh, REFRESH_MS);
+  // utilitário para escapar HTML
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
+  }
+
+  // Chamada à API do Google Gemini (model gemini-1.5-flash-latest ou gemini-pro)
+  async function callGeminiAPI(messagesText, apiKey) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const prompt = `Você é um assistente pessoal de produtividade. Analise as mensagens a seguir, extraídas de um grupo ou conversa do WhatsApp.
+    Com base no contexto, realize 3 tarefas:
+    1. Faça um RESUMO conciso (máximo 2 frases) do que é importante.
+    2. Extraia uma TAREFA CLARA e ACIONÁVEL que precisa ser feita (use infinitivo, ex: "Comprar mantimentos", "Responder a Maria sobre o orçamento", "Agendar revisão"). Se houver múltiplas ações, escolha a mais urgente/importante.
+    3. Forneça uma SUGESTÃO DE RESPOSTA ou AÇÃO PRÁTICA que o usuário possa executar (algo para responder no WhatsApp ou atitude imediata).
+    
+    Retorne APENAS UM JSON válido (sem texto extra, sem markdown) no seguinte formato exato:
+    {"resumo": "...", "tarefa": "...", "sugestao": "..."}
+    
+    Mensagens:
+    """${messagesText}"""
+    `;
+    
+    const payload = {
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.3,
+        maxOutputTokens: 400,
+      }
+    };
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(`Erro na API: ${response.status} - ${JSON.stringify(errData)}`);
+    }
+    
+    const data = await response.json();
+    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    if (!textResponse) throw new Error("Resposta vazia da IA.");
+    
+    // Extrair JSON puro (caso venha com blocos de código)
+    let jsonString = textResponse.trim();
+    const jsonMatch = jsonString.match(/```json\s*([\s\S]*?)\s*```/);
+    if (jsonMatch) jsonString = jsonMatch[1];
+    const braceMatch = jsonString.match(/\{[\s\S]*\}/);
+    if (braceMatch) jsonString = braceMatch[0];
+    
+    const parsed = JSON.parse(jsonString);
+    if (!parsed.resumo || !parsed.tarefa || !parsed.sugestao) {
+      throw new Error("Resposta da IA não contém os campos esperados.");
+    }
+    return parsed;
+  }
+
+  // ação principal do botão GERAR
+  async function handleGenerate() {
+    const userMessages = messagesTextarea.value.trim();
+    if (!userMessages) {
+      alert("Por favor, cole as mensagens do WhatsApp no campo acima.");
+      return;
+    }
+    let apiKey = geminiApiKey;
+    if (!apiKey) {
+      const inputKey = apiKeyInput.value.trim();
+      if (!inputKey) {
+        alert("🔑 É necessário informar sua chave da API Google Gemini. Salve-a no campo acima ou cole agora.");
+        return;
+      } else {
+        apiKey = inputKey;
+        geminiApiKey = inputKey;
+        localStorage.setItem('gemini_api_key', apiKey);
+      }
+    }
+    
+    // Loading UI
+    const originalBtnText = generateBtn.innerHTML;
+    generateBtn.innerHTML = '<span class="loading"></span> Processando IA...';
+    generateBtn.disabled = true;
+    
+    try {
+      const result = await callGeminiAPI(userMessages, apiKey);
+      // Exibir resumo e sugestão
+      summaryDisplay.innerHTML = escapeHtml(result.resumo) || '—';
+      suggestionDisplay.innerHTML = escapeHtml(result.sugestao) || '—';
+      
+      // Adicionar nova tarefa baseada no campo "tarefa"
+      if (result.tarefa && result.tarefa.trim().length > 0) {
+        addTask(result.tarefa);
+        // feedback visual suave
+      } else {
+        // se não houver tarefa explícita, tentar usar o resumo como tarefa genérica?
+        console.log("Nenhuma tarefa retornada");
+      }
+      
+      // Opcional: limpar campo de mensagens? Deixamos a critério, mas não limpa para referência.
+    } catch (error) {
+      console.error(error);
+      let errorMsg = error.message;
+      if (errorMsg.includes("API key")) errorMsg = "Chave API inválida ou sem permissão. Verifique sua chave do Google Gemini.";
+      else if (errorMsg.includes("fetch")) errorMsg = "Erro de rede. Verifique sua conexão.";
+      alert(`❌ Erro na IA: ${errorMsg}`);
+      summaryDisplay.innerHTML = "Erro ao processar. Verifique a chave ou tente novamente.";
+      suggestionDisplay.innerHTML = "—";
+    } finally {
+      generateBtn.innerHTML = originalBtnText;
+      generateBtn.disabled = false;
+    }
+  }
+  
+  // Salvar chave manualmente
+  function saveApiKey() {
+    const newKey = apiKeyInput.value.trim();
+    if (newKey) {
+      geminiApiKey = newKey;
+      localStorage.setItem('gemini_api_key', newKey);
+      alert("✅ Chave API salva com sucesso (localmente).");
+    } else {
+      alert("Digite uma chave válida.");
+    }
+  }
+  
+  // Limpar tarefas concluídas
+  function clearCompletedTasks() {
+    const hasCompleted = tasks.some(t => t.completed);
+    if (!hasCompleted) {
+      alert("Não há tarefas concluídas para remover.");
+      return;
+    }
+    if (confirm("Remover permanentemente TODAS as tarefas já concluídas?")) {
+      tasks = tasks.filter(t => !t.completed);
+      saveTasks();
+      renderTasks();
+    }
+  }
+  
+  // Inicializar, carregar chave salva no input
+  function init() {
+    if (geminiApiKey) {
+      apiKeyInput.value = geminiApiKey;
+    }
+    loadTasks();
+    // Event listeners
+    saveApiKeyBtn.addEventListener('click', saveApiKey);
+    generateBtn.addEventListener('click', handleGenerate);
+    clearCompletedBtn.addEventListener('click', clearCompletedTasks);
+    
+    // Se o usuário já deu permissão de notificação no passado, tudo bem, senão pedimos silenciosamente quando clicar em alertar.
+    // Opcional: pré-pedir permissão ao carregar a página de forma amigável (sem spam)
+    setTimeout(() => {
+      if (Notification && Notification.permission === "default") {
+        // apenas uma dica suave, não força popup agora
+        console.log("Toque em 'Alertar' para ativar notificações.");
+      }
+    }, 1000);
+  }
+  
+  init();
 </script>
-
 </body>
 </html>
