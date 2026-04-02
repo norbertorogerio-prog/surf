@@ -78,6 +78,9 @@
       justify-content: center;
       padding: 14px;
     }
+    .btn-test {
+      background: #4b6e8a;
+    }
     .executive-box {
       background: #fefce8;
       border-left: 4px solid #eab308;
@@ -123,6 +126,7 @@
     <i class="fas fa-key"></i>
     <input type="password" id="geminiApiKey" placeholder="Chave API Google Gemini">
     <button id="saveApiKeyBtn" style="background:#25d366; color:#075e54;">Salvar</button>
+    <button id="testApiKeyBtn" class="btn-test">Testar chave</button>
   </div>
 
   <div class="card">
@@ -155,6 +159,7 @@
 
   const apiKeyInput = document.getElementById('geminiApiKey');
   const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+  const testApiKeyBtn = document.getElementById('testApiKeyBtn');
   const generateBtn = document.getElementById('generateBtn');
   const messagesTextarea = document.getElementById('whatsappMessages');
   const summaryDisplay = document.getElementById('summaryDisplay');
@@ -165,6 +170,7 @@
 
   if (geminiApiKey) apiKeyInput.value = geminiApiKey;
 
+  // ---------- Tarefas ----------
   function loadTasks() {
     const stored = localStorage.getItem('whatsapp_tasks');
     tasks = stored ? JSON.parse(stored) : [];
@@ -212,46 +218,80 @@
   };
   function escapeHtml(str) { return str.replace(/[&<>]/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
-  async function callGeminiAPI(messagesText, apiKey) {
-    // Endpoint correto e testado (v1, modelo flash)
-    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    const prompt = `Analise as mensagens do WhatsApp abaixo e retorne APENAS UM JSON válido com os campos:
-    "resumo", "relatorio_executivo", "sugestao", "tarefa".
-    O relatório executivo deve ser curto, direto, com contexto, impacto e recomendação.
-    Mensagens: """${messagesText}"""`;
+  // ---------- API Gemini corrigida (v1beta) ----------
+  async function callGeminiAPI(messagesText, apiKey, model = "gemini-1.5-flash") {
+    // Endpoint CORRETO: v1beta (não v1)
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const prompt = `Você é um assistente executivo. Analise as mensagens do WhatsApp abaixo.
+    Retorne APENAS UM JSON válido e completo com os seguintes campos:
+    - "resumo": resumo curto e claro do essencial (máx 2 frases).
+    - "relatorio_executivo": um relatório executivo profissional, curto e direto, com formatação clara (use bullets ou tópicos se necessário). Deve conter: contexto, ponto crítico, impacto e recomendação imediata.
+    - "sugestao": sugestão de resposta ou ação prática para o usuário.
+    - "tarefa": uma tarefa clara, acionável e prioritária (no infinitivo).
 
+    Formato JSON obrigatório:
+    {"resumo": "...", "relatorio_executivo": "...", "sugestao": "...", "tarefa": "..."}
+
+    Mensagens:
+    """${messagesText}"""
+    `;
     const payload = {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: { temperature: 0.3, maxOutputTokens: 600 }
     };
-    const resp = await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    if (!resp.ok) {
-      const errText = await resp.text();
-      throw new Error(`HTTP ${resp.status}: ${errText.substring(0, 200)}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(`HTTP ${response.status}: ${JSON.stringify(errorData)}`);
     }
-    const data = await resp.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new Error("Resposta vazia da IA");
-    let jsonStr = text.match(/\{[\s\S]*\}/)?.[0] || text;
-    return JSON.parse(jsonStr);
+    const data = await response.json();
+    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!textResponse) throw new Error("Resposta vazia da IA");
+    // Extrai JSON puro
+    let jsonString = textResponse.trim();
+    const jsonMatch = jsonString.match(/```json\s*([\s\S]*?)\s*```/);
+    if (jsonMatch) jsonString = jsonMatch[1];
+    const braceMatch = jsonString.match(/\{[\s\S]*\}/);
+    if (braceMatch) jsonString = braceMatch[0];
+    const parsed = JSON.parse(jsonString);
+    if (!parsed.resumo || !parsed.relatorio_executivo || !parsed.sugestao || !parsed.tarefa) {
+      throw new Error("Campos incompletos na resposta");
+    }
+    return parsed;
   }
 
+  // Teste simples da chave (chama listModels)
+  async function testApiKey(apiKey) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`Chave inválida ou sem acesso (HTTP ${resp.status})`);
+    const data = await resp.json();
+    return data.models?.some(m => m.name.includes("gemini-1.5-flash")) || false;
+  }
+
+  // Ação principal
   async function handleGenerate() {
     const msg = messagesTextarea.value.trim();
     if (!msg) return alert("Cole as mensagens do WhatsApp.");
     let key = geminiApiKey || apiKeyInput.value.trim();
-    if (!key) return alert("Insira sua chave da API Gemini.");
+    if (!key) return alert("Insira sua chave da API Gemini (obter em aistudio.google.com).");
     geminiApiKey = key;
     localStorage.setItem('gemini_api_key', key);
 
     generateBtn.innerHTML = '<span class="loading"></span> Analisando...';
     generateBtn.disabled = true;
     try {
-      const result = await callGeminiAPI(msg, key);
+      let result;
+      try {
+        result = await callGeminiAPI(msg, key, "gemini-1.5-flash");
+      } catch (err) {
+        console.warn("Flash falhou, tentando Pro", err);
+        result = await callGeminiAPI(msg, key, "gemini-1.5-pro");
+      }
       summaryDisplay.innerText = result.resumo || "—";
       executiveDisplay.innerText = result.relatorio_executivo || "—";
       suggestionDisplay.innerText = result.sugestao || "—";
@@ -259,7 +299,7 @@
     } catch (err) {
       console.error(err);
       let userMsg = "Erro na IA. ";
-      if (err.message.includes("400")) userMsg += "Requisição inválida. Verifique se a chave está correta e se o modelo gemini-1.5-flash está disponível na sua região.";
+      if (err.message.includes("404")) userMsg += "Modelo não encontrado. Verifique sua chave e tente novamente.";
       else if (err.message.includes("403")) userMsg += "Chave API sem permissão ou quota excedida.";
       else userMsg += err.message;
       alert(userMsg);
@@ -272,9 +312,26 @@
     }
   }
 
+  // Eventos
   saveApiKeyBtn.onclick = () => {
     const newKey = apiKeyInput.value.trim();
     if (newKey) { localStorage.setItem('gemini_api_key', newKey); geminiApiKey = newKey; alert("Chave salva!"); }
+  };
+  testApiKeyBtn.onclick = async () => {
+    let key = geminiApiKey || apiKeyInput.value.trim();
+    if (!key) return alert("Digite ou salve uma chave primeiro.");
+    testApiKeyBtn.innerHTML = '<span class="loading"></span> Testando...';
+    testApiKeyBtn.disabled = true;
+    try {
+      const ok = await testApiKey(key);
+      if (ok) alert("✅ Chave válida! O modelo gemini-1.5-flash está disponível.");
+      else alert("⚠️ Chave parece válida, mas modelo flash não listado. Tente gerar mesmo assim.");
+    } catch (err) {
+      alert("❌ Chave inválida ou erro: " + err.message);
+    } finally {
+      testApiKeyBtn.innerHTML = '<i class="fas fa-vial"></i> Testar chave';
+      testApiKeyBtn.disabled = false;
+    }
   };
   generateBtn.onclick = handleGenerate;
   clearCompletedBtn.onclick = () => {
