@@ -3,15 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Assistente WhatsApp + IA (Modo Híbrido)</title>
+    <title>Assistente IA Local</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: #e9f0f5;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 20px 16px 40px;
         }
-        .container { max-width: 600px; margin: 0 auto; }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
         .card {
             background: white;
             border-radius: 28px;
@@ -19,6 +29,7 @@
             margin-bottom: 1.5rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
+
         h1 {
             font-size: 1.8rem;
             color: #075e54;
@@ -27,6 +38,7 @@
             gap: 8px;
             margin-bottom: 1rem;
         }
+
         h3 {
             color: #0f3b2c;
             margin-bottom: 0.5rem;
@@ -35,6 +47,7 @@
             gap: 8px;
             font-size: 1.2rem;
         }
+
         textarea {
             width: 100%;
             border-radius: 20px;
@@ -44,23 +57,7 @@
             font-size: 0.95rem;
             resize: vertical;
         }
-        .api-area {
-            background: #f8fafc;
-            border-radius: 44px;
-            padding: 12px;
-            margin-bottom: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-        .api-area input {
-            flex: 1;
-            padding: 10px 14px;
-            border-radius: 60px;
-            border: 1px solid #cbd5e1;
-            font-size: 0.85rem;
-        }
+
         button {
             background: #075e54;
             border: none;
@@ -74,6 +71,7 @@
             cursor: pointer;
             font-size: 0.9rem;
         }
+
         .btn-primary {
             background: #075e54;
             width: 100%;
@@ -81,7 +79,7 @@
             padding: 12px;
             margin-top: 12px;
         }
-        .btn-test { background: #4b6e8a; }
+
         .exec-box {
             background: #fef9e3;
             border-left: 4px solid #eab308;
@@ -90,7 +88,11 @@
             white-space: pre-wrap;
             font-size: 0.9rem;
         }
-        .task-list { list-style: none; }
+
+        .task-list {
+            list-style: none;
+        }
+
         .task-item {
             background: #f1f5f9;
             border-radius: 20px;
@@ -102,12 +104,14 @@
             flex-wrap: wrap;
             gap: 8px;
         }
+
         .task-actions button {
             background: #e2e8f0;
             color: #1e293b;
             padding: 4px 10px;
             font-size: 0.7rem;
         }
+
         .loading {
             display: inline-block;
             width: 16px;
@@ -117,36 +121,52 @@
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        hr { margin: 12px 0; }
-        .demo-badge {
-            background: #eab308;
-            color: #1e293b;
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        hr {
+            margin: 12px 0;
+        }
+        
+        .status {
+            background: #e2e8f0;
             border-radius: 60px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            display: inline-block;
-            margin-bottom: 10px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .status.loading-status {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status.ready-status {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status.error-status {
+            background: #fee2e2;
+            color: #991b1b;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>📱 Assistente WhatsApp + IA</h1>
-
-    <div class="api-area">
-        🔑 <input type="password" id="apiKey" placeholder="Sua chave do Google Gemini (opcional)">
-        <button id="saveKeyBtn" style="background:#25d366; color:#075e54;">Salvar</button>
-        <button id="testKeyBtn" class="btn-test">Testar</button>
-    </div>
-    <div style="font-size:0.75rem; text-align:center; margin-bottom:12px;">
-        ⚡ <strong>Modo híbrido:</strong> Se a chave falhar, usamos respostas simuladas (demo). Você não precisa de chave para testar!
+    <h1>🤖 Assistente IA Local</h1>
+    
+    <div id="statusMessage" class="status loading-status">
+        🔄 Inicializando IA... Aguarde o carregamento inicial (pode demorar um pouco).
     </div>
 
     <div class="card">
         <h3>💬 Mensagens copiadas</h3>
         <textarea id="messages" rows="4" placeholder="Cole aqui a conversa do WhatsApp..."></textarea>
-        <button id="generateBtn" class="btn-primary">✨ Gerar com IA</button>
+        <button id="generateBtn" class="btn-primary">✨ Analisar com IA</button>
     </div>
 
     <div class="card">
@@ -165,43 +185,41 @@
         <ul id="taskList" class="task-list"></ul>
         <button id="clearCompletedBtn" style="background:#cbd5e1; color:#1e293b;">Limpar concluídas</button>
     </div>
-    <div style="font-size:0.7rem; text-align:center; margin-top:8px;">
-        🔔 Clique em 🔔 para criar alerta com notificação.
-    </div>
 </div>
 
-<script>
+<script type="importmap">
+    {
+        "imports": {
+            "@huggingface/transformers": "https://unpkg.com/@huggingface/transformers@3.4.0/dist/transformers.js"
+        }
+    }
+</script>
+
+<script type="module">
+    import { pipeline } from '@huggingface/transformers';
+    
     // ---------- Tarefas ----------
     let tasks = [];
-    let apiKey = localStorage.getItem('gemini_key') || '';
-    let isDemoMode = false;  // indica se está usando simulação
-
-    const apiInput = document.getElementById('apiKey');
-    const saveBtn = document.getElementById('saveKeyBtn');
-    const testBtn = document.getElementById('testKeyBtn');
-    const generateBtn = document.getElementById('generateBtn');
-    const messagesArea = document.getElementById('messages');
-    const summaryDiv = document.getElementById('summary');
-    const executiveDiv = document.getElementById('executive');
-    const suggestionDiv = document.getElementById('suggestion');
-    const taskListUl = document.getElementById('taskList');
-    const clearCompletedBtn = document.getElementById('clearCompletedBtn');
-
-    if (apiKey) apiInput.value = apiKey;
-
+    
     function loadTasks() {
         let stored = localStorage.getItem('wa_tasks');
         tasks = stored ? JSON.parse(stored) : [];
         renderTasks();
     }
-    function saveTasks() { localStorage.setItem('wa_tasks', JSON.stringify(tasks)); }
+    
+    function saveTasks() { 
+        localStorage.setItem('wa_tasks', JSON.stringify(tasks)); 
+    }
+    
     function addTask(title) {
         if (!title || !title.trim()) return;
         tasks.unshift({ id: Date.now(), title: title.trim(), completed: false });
         saveTasks();
         renderTasks();
     }
+    
     function renderTasks() {
+        const taskListUl = document.getElementById('taskList');
         if (tasks.length === 0) {
             taskListUl.innerHTML = '<li style="text-align:center; color:#6c7e97;">Nenhuma tarefa</li>';
             return;
@@ -210,22 +228,25 @@
             <li class="task-item" style="${task.completed ? 'opacity:0.6; text-decoration:line-through;' : ''}">
                 <span>${escapeHtml(task.title)}</span>
                 <div class="task-actions">
-                    <button onclick="toggleTask(${task.id})">${task.completed ? '↩️' : '✅'}</button>
-                    <button onclick="alertTask('${escapeHtml(task.title)}')">🔔</button>
-                    <button onclick="deleteTask(${task.id})">🗑️</button>
+                    <button onclick="window.toggleTask(${task.id})">${task.completed ? '↩️' : '✅'}</button>
+                    <button onclick="window.alertTask('${escapeHtml(task.title)}')">🔔</button>
+                    <button onclick="window.deleteTask(${task.id})">🗑️</button>
                 </div>
             </li>
         `).join('');
     }
+    
     window.toggleTask = (id) => {
         let task = tasks.find(t => t.id === id);
         if (task) { task.completed = !task.completed; saveTasks(); renderTasks(); }
     };
+    
     window.deleteTask = (id) => {
         tasks = tasks.filter(t => t.id !== id);
         saveTasks();
         renderTasks();
     };
+    
     window.alertTask = (title) => {
         if (!("Notification" in window)) return alert("Notificação não suportada");
         if (Notification.permission === "granted") {
@@ -235,142 +256,186 @@
             Notification.requestPermission();
         }
     };
+    
     function escapeHtml(str) {
         return str.replace(/[&<>]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
     }
-
-    // ---------- IA: simulação local (fallback) ----------
-    function simulateResponse(messagesText) {
-        const firstLine = messagesText.split('\n')[0] || "";
-        return {
-            resumo: `📌 Resumo simulado: "${firstLine.substring(0, 60)}..." - A IA está em modo demonstração porque a chave API não foi configurada ou falhou.`,
-            relatorio_executivo: `**Contexto:** Análise baseada nas mensagens fornecidas.\n**Ponto crítico:** Necessidade de acompanhamento da conversa.\n**Recomendação:** Utilize uma chave Gemini válida para obter análises reais ou continue testando o layout.\n🔧 Modo demonstração ativo.`,
-            sugestao: "✅ Esta é uma sugestão simulada. Para respostas reais, configure uma chave API no campo acima.",
-            tarefa: "🔁 Testar integração com API real"
-        };
+    
+    // ---------- IA Local com Transformers.js ----------
+    let summarizer = null;
+    let generator = null;
+    let isModelLoading = true;
+    
+    const statusDiv = document.getElementById('statusMessage');
+    const generateBtn = document.getElementById('generateBtn');
+    const messagesArea = document.getElementById('messages');
+    const summaryDiv = document.getElementById('summary');
+    const executiveDiv = document.getElementById('executive');
+    const suggestionDiv = document.getElementById('suggestion');
+    
+    // Função para atualizar o status
+    function updateStatus(message, type = 'loading') {
+        statusDiv.innerHTML = message;
+        statusDiv.className = `status ${type}-status`;
     }
-
-    // ---------- API Gemini real (tentativa com v1beta e gemini-1.0-pro) ----------
-    async function callGeminiReal(messagesText, key) {
-        // Tentativa com modelo mais antigo e estável: gemini-1.0-pro
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${key}`;
-        const prompt = `Você é um assistente executivo. Analise as mensagens do WhatsApp abaixo e retorne SOMENTE um JSON válido com os campos:
-        "resumo", "relatorio_executivo", "sugestao", "tarefa".
-        O relatório executivo deve ser curto, direto, com contexto e recomendação.
-        Mensagens: """${messagesText}"""`;
-
-        const payload = {
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.3, maxOutputTokens: 500 }
-        };
-        const resp = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if (!resp.ok) {
-            const errText = await resp.text();
-            throw new Error(`HTTP ${resp.status}: ${errText.substring(0, 150)}`);
-        }
-        const data = await resp.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) throw new Error("Resposta vazia");
-        let jsonStr = text.match(/\{[\s\S]*\}/)?.[0] || text;
-        return JSON.parse(jsonStr);
-    }
-
-    // ---------- Função principal (tenta real, se falhar usa simulação) ----------
-    async function handleGenerate() {
-        const msg = messagesArea.value.trim();
-        if (!msg) return alert("Cole as mensagens do WhatsApp.");
-
-        let key = apiKey || apiInput.value.trim();
-        let useReal = (key && key.length > 10); // se tem chave, tenta real
-
-        generateBtn.innerHTML = '<span class="loading"></span> Processando...';
-        generateBtn.disabled = true;
-
+    
+    // Função para gerar resposta mais elaborada usando o modelo de texto
+    async function generateSmartResponse(context, prompt) {
+        if (!generator) return null;
+        
         try {
-            let result;
-            if (useReal) {
-                try {
-                    result = await callGeminiReal(msg, key);
-                    isDemoMode = false;
-                } catch (err) {
-                    console.warn("API real falhou, usando simulação:", err);
-                    result = simulateResponse(msg);
-                    isDemoMode = true;
-                    alert("⚠️ A chave API não funcionou (erro: " + err.message + "). Usando modo demonstração com respostas simuladas.\n\nPara usar IA real, verifique sua chave e ative a API no Google Cloud.");
-                }
-            } else {
-                result = simulateResponse(msg);
-                isDemoMode = true;
-                if (!key) alert("ℹ️ Nenhuma chave informada. Usando modo demonstração (respostas simuladas).");
-                else alert("ℹ️ Chave inválida ou incompleta. Usando modo demonstração.");
+            const fullPrompt = `Contexto: ${context}\n\nTarefa: ${prompt}\n\nResposta:`;
+            const result = await generator(fullPrompt, {
+                max_new_tokens: 150,
+                temperature: 0.7,
+                do_sample: true
+            });
+            return result[0]?.generated_text?.replace(fullPrompt, '').trim() || null;
+        } catch (e) {
+            console.warn("Erro na geração avançada:", e);
+            return null;
+        }
+    }
+    
+    // Função principal de análise
+    async function analyzeMessages(messages) {
+        if (!summarizer) {
+            throw new Error("Modelo de IA ainda não carregou. Aguarde um momento.");
+        }
+        
+        // 1. Gerar resumo
+        const summaryResult = await summarizer(messages, {
+            max_length: 100,
+            min_length: 30,
+            clean_up_tokenization_spaces: true
+        });
+        const resumo = summaryResult[0]?.summary_text || "Não foi possível gerar resumo.";
+        
+        // 2. Extrair palavras-chave para o relatório executivo
+        const palavrasChave = await extractKeywords(messages);
+        
+        // 3. Gerar relatório executivo baseado no resumo e palavras-chave
+        let relatorio = `**Contexto:** ${resumo.substring(0, 150)}...\n`;
+        relatorio += `**Pontos-chave:** ${palavrasChave.join(', ')}\n`;
+        relatorio += `**Recomendação:** Priorizar ações relacionadas aos pontos identificados.`;
+        
+        // 4. Gerar sugestão de resposta
+        let sugestao = await generateSmartResponse(messages, "Sugira uma resposta profissional e educada para esta mensagem");
+        if (!sugestao) {
+            sugestao = "Com base na conversa, sugiro confirmar o entendimento e alinhar próximos passos com os envolvidos.";
+        }
+        
+        // 5. Extrair tarefa (usando palavras-chave)
+        let tarefa = extrairTarefa(messages, palavrasChave);
+        
+        return {
+            resumo: resumo,
+            relatorio: relatorio,
+            sugestao: sugestao,
+            tarefa: tarefa
+        };
+    }
+    
+    // Função para extrair palavras-chave (simplificada)
+    async function extractKeywords(text) {
+        // Palavras comuns em conversas de trabalho
+        const commonKeywords = ['prazo', 'urgente', 'reunião', 'relatório', 'aprovação', 
+                                'feedback', 'decisão', 'cliente', 'projeto', 'entregar'];
+        const found = commonKeywords.filter(keyword => 
+            text.toLowerCase().includes(keyword.toLowerCase())
+        );
+        return found.length > 0 ? found : ['análise', 'acompanhamento', 'ação'];
+    }
+    
+    // Função para extrair tarefa
+    function extrairTarefa(text, keywords) {
+        const lowerText = text.toLowerCase();
+        
+        if (lowerText.includes('prazo') || lowerText.includes('urgente')) {
+            return "✅ Verificar prazos e prioridades urgentes";
+        } else if (lowerText.includes('reunião') || lowerText.includes('encontro')) {
+            return "📅 Agendar ou confirmar reunião discutida";
+        } else if (lowerText.includes('relatório') || lowerText.includes('documento')) {
+            return "📄 Preparar relatório ou documentação solicitada";
+        } else if (lowerText.includes('cliente')) {
+            return "🤝 Entrar em contato com cliente mencionado";
+        } else {
+            return "📌 Acompanhar os pontos discutidos na conversa";
+        }
+    }
+    
+    // Inicializar modelos
+    async function initializeModels() {
+        try {
+            updateStatus("📥 Baixando modelo de IA... (primeira vez pode demorar alguns minutos)", "loading");
+            
+            // Carregar modelo de sumarização
+            summarizer = await pipeline('summarization', 'Xenova/distilbart-cnn-6-6');
+            
+            updateStatus("✅ IA carregada com sucesso! Pronta para usar.", "ready");
+            generateBtn.disabled = false;
+            isModelLoading = false;
+            
+            // Tentar carregar modelo de geração opcional (mais leve)
+            try {
+                generator = await pipeline('text-generation', 'Xenova/tiny-llama-1.1b');
+            } catch (e) {
+                console.log("Modelo de geração opcional não carregado, usando fallback");
             }
-
-            summaryDiv.innerText = result.resumo || "—";
-            executiveDiv.innerText = result.relatorio_executivo || "—";
-            suggestionDiv.innerText = result.sugestao || "—";
-            if (result.tarefa) addTask(result.tarefa);
-
-            if (isDemoMode) {
-                const badge = document.createElement('div');
-                badge.className = 'demo-badge';
-                badge.innerText = '🧪 Modo demonstração ativo';
-                // exibe de forma suave
-            }
-        } catch (err) {
-            console.error(err);
-            alert("Erro inesperado: " + err.message);
-            summaryDiv.innerText = "Erro";
-            executiveDiv.innerText = "Falha na geração";
+            
+        } catch (error) {
+            console.error("Erro ao carregar modelo:", error);
+            updateStatus("❌ Erro ao carregar IA. Recarregue a página e tente novamente.", "error");
+            generateBtn.disabled = true;
+        }
+    }
+    
+    // Ação do botão Gerar
+    async function handleGenerate() {
+        if (isModelLoading) {
+            alert("A IA ainda está carregando. Aguarde um momento.");
+            return;
+        }
+        
+        const msg = messagesArea.value.trim();
+        if (!msg) {
+            alert("Cole as mensagens do WhatsApp no campo acima.");
+            return;
+        }
+        
+        generateBtn.innerHTML = '<span class="loading"></span> Analisando...';
+        generateBtn.disabled = true;
+        
+        try {
+            const result = await analyzeMessages(msg);
+            summaryDiv.innerText = result.resumo;
+            executiveDiv.innerText = result.relatorio;
+            suggestionDiv.innerText = result.sugestao;
+            addTask(result.tarefa);
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao processar: " + error.message);
+            summaryDiv.innerText = "Erro na análise";
+            executiveDiv.innerText = "Falha ao processar mensagens";
             suggestionDiv.innerText = "Tente novamente";
         } finally {
-            generateBtn.innerHTML = '✨ Gerar com IA';
+            generateBtn.innerHTML = '✨ Analisar com IA';
             generateBtn.disabled = false;
         }
     }
-
-    // ---------- Teste de chave (apenas para informar) ----------
-    async function testApiKey(key) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        return data.models?.some(m => m.name.includes("gemini")) || false;
-    }
-
-    saveBtn.onclick = () => {
-        let newKey = apiInput.value.trim();
-        if (newKey) {
-            localStorage.setItem('gemini_key', newKey);
-            apiKey = newKey;
-            alert("Chave salva! Agora tente 'Gerar' – se falhar, entrará em modo demo.");
-        } else alert("Digite uma chave ou deixe em branco para usar modo demonstração.");
-    };
-    testBtn.onclick = async () => {
-        let key = apiKey || apiInput.value.trim();
-        if (!key) return alert("Nenhuma chave informada. O modo demonstração será usado automaticamente.");
-        testBtn.innerHTML = '<span class="loading"></span>';
-        testBtn.disabled = true;
-        try {
-            const ok = await testApiKey(key);
-            alert(ok ? "✅ Chave válida! O modelo gemini-1.0-pro está disponível." : "⚠️ Chave válida, mas modelo não listado. Tente gerar (entrará em demo).");
-        } catch (err) {
-            alert("❌ Chave inválida ou erro: " + err.message + "\n\nO app usará modo demonstração.");
-        } finally {
-            testBtn.innerHTML = 'Testar';
-            testBtn.disabled = false;
-        }
-    };
-    generateBtn.onclick = handleGenerate;
-    clearCompletedBtn.onclick = () => {
+    
+    // Eventos
+    document.getElementById('clearCompletedBtn').onclick = () => {
         tasks = tasks.filter(t => !t.completed);
         saveTasks();
         renderTasks();
     };
+    
+    generateBtn.onclick = handleGenerate;
+    
+    // Carregar tarefas e inicializar IA
     loadTasks();
+    initializeModels();
 </script>
 </body>
 </html>
