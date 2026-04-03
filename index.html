@@ -27,6 +27,7 @@ textarea {
   border-radius:10px;
   border:none;
   padding:10px;
+  font-size:14px;
 }
 
 .buttons {
@@ -43,6 +44,11 @@ button {
   background:#7b2cff;
   color:#fff;
   font-weight:bold;
+  cursor:pointer;
+}
+
+button:active {
+  opacity:0.8;
 }
 
 .output {
@@ -51,6 +57,7 @@ button {
   padding:15px;
   border-radius:10px;
   white-space:pre-wrap;
+  min-height:120px;
 }
 </style>
 </head>
@@ -74,57 +81,54 @@ button {
 
 <script>
 
-const API_KEY = "const API_KEY = "sk-xxxxxxxxxxxxxxxxxxxx";
+const API_KEY = "COLE_SUA_API_KEY_AQUI";
 
 async function runAI(tipo) {
-  const text = document.getElementById("inputText").value;
+  const text = document.getElementById("inputText").value.trim();
 
-  document.getElementById("output").innerText = "Processando...";
+  if (!text) {
+    document.getElementById("output").innerText = "⚠️ Cole algum texto primeiro.";
+    return;
+  }
+
+  document.getElementById("output").innerText = "⏳ Processando...";
 
   let prompt = "";
 
   if (tipo === "resumo") {
-    prompt = `Resuma o texto abaixo de forma clara, objetiva e natural, como um gestor experiente explicaria:
-
-${text}`;
+    prompt = `Resuma o texto abaixo de forma clara, objetiva e natural, como um gestor experiente:\n\n${text}`;
   }
 
   if (tipo === "resposta") {
-    prompt = `Gere uma resposta de WhatsApp, humana, direta e profissional, baseada no texto:
-
-${text}`;
+    prompt = `Gere uma resposta de WhatsApp, humana, direta e profissional, baseada no texto:\n\n${text}`;
   }
 
   if (tipo === "executivo") {
-    prompt = `Crie um resumo executivo curto, com:
-- contexto
-- status
-- impacto
-- próximos passos
+    prompt = `Crie um resumo executivo curto com:
+- Contexto
+- Status
+- Impacto
+- Próximos passos
 
-Baseado no texto:
-
-${text}`;
+Texto:\n\n${text}`;
   }
 
   if (tipo === "tarefa") {
-    prompt = `Transforme o texto abaixo em uma tarefa clara:
-- título
-- descrição
-- prioridade
-- próximo passo
+    prompt = `Transforme o texto abaixo em uma tarefa clara com:
+- Título
+- Descrição
+- Prioridade
+- Próximo passo
 
-Texto:
-
-${text}`;
+Texto:\n\n${text}`;
   }
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://api.allorigins.win/raw?url=https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + API_KEY,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + API_KEY
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
@@ -143,12 +147,20 @@ ${text}`;
     });
 
     const data = await response.json();
+
+    if (data.error) {
+      document.getElementById("output").innerText =
+        "❌ Erro da API: " + data.error.message;
+      return;
+    }
+
     const result = data.choices[0].message.content;
 
     document.getElementById("output").innerText = result;
 
   } catch (error) {
-    document.getElementById("output").innerText = "Erro ao chamar IA.";
+    document.getElementById("output").innerText =
+      "❌ Erro de conexão. Pode ser bloqueio do navegador ou rede.";
   }
 }
 
