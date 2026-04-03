@@ -1,354 +1,171 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Assistente IA + WhatsApp (Versão Final)</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #e9f0f5;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding: 20px 16px 40px;
-        }
-        .container { max-width: 600px; margin: 0 auto; }
-        .card {
-            background: white;
-            border-radius: 28px;
-            padding: 1.2rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        h1 {
-            font-size: 1.8rem;
-            color: #075e54;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 1rem;
-        }
-        h3 {
-            color: #0f3b2c;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.2rem;
-        }
-        textarea {
-            width: 100%;
-            border-radius: 20px;
-            border: 1px solid #cbd5e1;
-            padding: 12px 16px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            resize: vertical;
-            background: white;
-        }
-        button {
-            background: #075e54;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            color: white;
-            font-size: 1rem;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .exec-box {
-            background: #fef9e3;
-            border-left: 4px solid #eab308;
-            padding: 12px;
-            border-radius: 16px;
-            white-space: pre-wrap;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-        .task-list { list-style: none; }
-        .task-item {
-            background: #f1f5f9;
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .task-actions button {
-            background: #e2e8f0;
-            color: #1e293b;
-            padding: 6px 12px;
-            font-size: 0.7rem;
-            width: auto;
-            margin: 0;
-        }
-        .loading {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid white;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        hr { margin: 12px 0; }
-        .badge {
-            background: #25d366;
-            color: #075e54;
-            border-radius: 60px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            display: inline-block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exec Copilot MVP</title>
+
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#0b0b10;
+  color:#fff;
+}
+
+.container {
+  padding:20px;
+}
+
+h1 {
+  font-size:20px;
+  margin-bottom:10px;
+}
+
+textarea {
+  width:100%;
+  height:150px;
+  border-radius:10px;
+  border:none;
+  padding:10px;
+  font-size:14px;
+}
+
+.buttons {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:15px;
+}
+
+button {
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#7b2cff;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover {
+  opacity:0.9;
+}
+
+.output {
+  margin-top:20px;
+  background:#1b1b2a;
+  padding:15px;
+  border-radius:10px;
+  white-space:pre-wrap;
+}
+</style>
 </head>
+
 <body>
+
 <div class="container">
-    <h1>🤖 Assistente IA + WhatsApp</h1>
-    <div class="badge">✅ IA local avançada | Sem API | Sem erros | Respostas completas</div>
+  <h1>⚡ Exec Copilot</h1>
 
-    <div class="card">
-        <h3>💬 Cole as mensagens</h3>
-        <textarea id="mensagens" rows="5" placeholder="Cole aqui a conversa do WhatsApp..."></textarea>
-        <button id="gerarBtn">✨ Analisar com IA</button>
-    </div>
+  <textarea id="inputText" placeholder="Cole aqui conversa do WhatsApp, incidente, texto..."></textarea>
 
-    <div class="card">
-        <h3>📄 Resumo inteligente</h3>
-        <p id="resumo" style="line-height:1.4;">—</p>
-        <hr>
-        <h3>📊 Relatório Executivo</h3>
-        <div id="relatorio" class="exec-box">—</div>
-        <hr>
-        <h3>💡 Sugestão de resposta</h3>
-        <p id="sugestao" style="line-height:1.4;">—</p>
-    </div>
+  <div class="buttons">
+    <button onclick="gerarResumo()">Resumo</button>
+    <button onclick="gerarResposta()">Resposta</button>
+    <button onclick="gerarExecutivo()">Executivo</button>
+    <button onclick="gerarTarefa()">Tarefa</button>
+  </div>
 
-    <div class="card">
-        <h3>✅ Tarefas</h3>
-        <ul id="listaTarefas" class="task-list"></ul>
-        <button id="limparConcluidas" style="background:#cbd5e1; color:#1e293b;">Limpar concluídas</button>
-    </div>
+  <div class="output" id="output">Resultado aparecerá aqui...</div>
 </div>
 
 <script>
-    // ----- Gerenciamento de tarefas -----
-    let tarefas = [];
-    function carregarTarefas() {
-        const salvo = localStorage.getItem('tarefas_final');
-        tarefas = salvo ? JSON.parse(salvo) : [];
-        renderizarTarefas();
-    }
-    function salvarTarefas() { localStorage.setItem('tarefas_final', JSON.stringify(tarefas)); }
-    function adicionarTarefa(titulo) {
-        if (!titulo || !titulo.trim()) return;
-        tarefas.unshift({ id: Date.now(), titulo: titulo.trim(), concluida: false });
-        salvarTarefas();
-        renderizarTarefas();
-    }
-    function renderizarTarefas() {
-        const container = document.getElementById('listaTarefas');
-        if (tarefas.length === 0) {
-            container.innerHTML = '<li style="text-align:center; color:#6c7e97;">Nenhuma tarefa</li>';
-            return;
-        }
-        container.innerHTML = tarefas.map(t => `
-            <li class="task-item" style="${t.concluida ? 'opacity:0.6; text-decoration:line-through;' : ''}">
-                <span>${escaparHtml(t.titulo)}</span>
-                <div class="task-actions">
-                    <button onclick="alternarTarefa(${t.id})">${t.concluida ? '↩️' : '✅'}</button>
-                    <button onclick="alertarTarefa('${escaparHtml(t.titulo)}')">🔔</button>
-                    <button onclick="excluirTarefa(${t.id})">🗑️</button>
-                </div>
-            </li>
-        `).join('');
-    }
-    window.alternarTarefa = (id) => {
-        const tarefa = tarefas.find(t => t.id === id);
-        if (tarefa) { tarefa.concluida = !tarefa.concluida; salvarTarefas(); renderizarTarefas(); }
-    };
-    window.excluirTarefa = (id) => {
-        tarefas = tarefas.filter(t => t.id !== id);
-        salvarTarefas();
-        renderizarTarefas();
-    };
-    window.alertarTarefa = (titulo) => {
-        if (!("Notification" in window)) return alert("Notificação não suportada");
-        if (Notification.permission === "granted") {
-            let minutos = prompt("Alertar em quantos minutos?", "5");
-            if (minutos && !isNaN(parseInt(minutos))) {
-                setTimeout(() => new Notification("📢 Lembrete", { body: titulo }), parseInt(minutos) * 60 * 1000);
-                alert(`Alerta para "${titulo}" em ${minutos} min.`);
-            }
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(perm => { if (perm === "granted") alertarTarefa(titulo); });
-        } else alert("Permissão negada.");
-    };
-    function escaparHtml(str) { return str.replace(/[&<>]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
-    // ----- IA AVANÇADA (sem API, sem cortes, sem "...") -----
-    function analisarMensagens(texto) {
-        // Divide em linhas e extrai nomes e mensagens
-        const linhas = texto.split(/\r?\n/).filter(l => l.trim().length > 0);
-        let participantes = [];
-        let ultimoNome = "";
-        let conteudo = "";
-        
-        for (let linha of linhas) {
-            const match = linha.match(/^([^:：]+)[:：]\s*(.*)/);
-            if (match) {
-                const nome = match[1].trim();
-                const msg = match[2].trim();
-                if (!participantes.includes(nome)) participantes.push(nome);
-                ultimoNome = nome;
-                conteudo += msg + " ";
-            } else {
-                conteudo += linha + " ";
-            }
-        }
-        
-        if (participantes.length === 0) participantes.push("Participante");
-        
-        const textoCompleto = texto.toLowerCase();
-        const primeirasPalavras = texto.split(/\s+/).slice(0, 15).join(" ");
-        
-        // Palavras-chave para contexto
-        const temPrazo = /prazo|urgente|asap|hoje|amanhã|data limite|deadline/i.test(textoCompleto);
-        const temRelatorio = /relatório|relatorio|documento|planilha|arquivo|pdf|doc|planilha/i.test(textoCompleto);
-        const temReuniao = /reunião|reuniao|encontro|call|briefing|alinhamento/i.test(textoCompleto);
-        const temCliente = /cliente|client|consumidor|usuário/i.test(textoCompleto);
-        const temAprovacao = /aprovar|aprovação|review|validação|ok/i.test(textoCompleto);
-        const temProblema = /problema|erro|bug|falha|corrupção|propagação|monitorando|maas/i.test(textoCompleto);
-        
-        // ---- Resumo completo (sem cortes) ----
-        let resumo = "";
-        if (temProblema) {
-            resumo = `A conversa trata do monitoramento da adoção via MaaS para garantir a propagação de correções. O participante informa que segue acompanhando e promete novidades em breve. O contexto sugere uma ação contínua de supervisão técnica.`;
-        } else if (temPrazo) {
-            resumo = `Há uma demanda com prazo urgente mencionada na conversa. Os participantes discutem prazos e entregas. Recomenda-se priorizar essa atividade para evitar atrasos.`;
-        } else if (temRelatorio) {
-            resumo = `Foi solicitada a elaboração de um relatório ou documento importante. A conversa indica necessidade de organização de informações e possível envio para aprovação.`;
-        } else if (temReuniao) {
-            resumo = `Os participantes alinham sobre uma reunião ou call para tratar de um assunto pendente. A conversa sugere que um encontro presencial ou virtual é necessário para resolver os pontos levantados.`;
-        } else if (temCliente) {
-            resumo = `O assunto envolve um cliente ou atendimento externo. Há menção a necessidades do cliente e possíveis ações para melhorar o relacionamento.`;
-        } else {
-            resumo = `A conversa aborda tópicos gerais de trabalho. Os participantes trocam informações sobre "${primeirasPalavras}...". É importante acompanhar os próximos passos.`;
-        }
-        
-        // ---- Relatório Executivo (detalhado, sem "...") ----
-        let relatorio = `**Contexto operacional**\n`;
-        relatorio += `Participantes envolvidos: ${participantes.join(", ")}.\n`;
-        relatorio += `Último a falar: ${ultimoNome || "não identificado"}.\n\n`;
-        
-        relatorio += `**Pontos críticos extraídos**\n`;
-        if (temProblema) {
-            relatorio += `• Monitoramento contínuo de adoção de MaaS para correção de propagação.\n`;
-            relatorio += `• Necessidade de garantir que a correção seja aplicada corretamente.\n`;
-        }
-        if (temPrazo) relatorio += `• Prazo urgente mencionado – risco de atraso na entrega.\n`;
-        if (temRelatorio) relatorio += `• Elaboração de relatório/documento pendente.\n`;
-        if (temReuniao) relatorio += `• Reunião de alinhamento necessária.\n`;
-        if (temCliente) relatorio += `• Envolvimento de cliente – impacto na satisfação.\n`;
-        if (!temProblema && !temPrazo && !temRelatorio && !temReuniao && !temCliente) {
-            relatorio += `• Informações gerais – acompanhamento necessário.\n`;
-        }
-        
-        relatorio += `\n**Impacto**\n`;
-        if (temProblema) relatorio += `A falha na propagação da correção pode comprometer a estabilidade do sistema. O monitoramento precisa ser intensificado.\n`;
-        else if (temPrazo) relatorio += `O não cumprimento do prazo pode gerar insatisfação e retrabalho.\n`;
-        else relatorio += `O andamento das atividades depende de comunicação clara e definição de responsáveis.\n`;
-        
-        relatorio += `\n**Recomendação**\n`;
-        if (temProblema) {
-            relatorio += `Estabelecer um plano de ação com checkpoints diários para verificar a propagação da correção. Designar um responsável pelo reporte de novidades.`;
-        } else if (temPrazo) {
-            relatorio += `Priorizar a tarefa urgente e comunicar o prazo estimado de conclusão aos envolvidos.`;
-        } else if (temRelatorio) {
-            relatorio += `Iniciar imediatamente a coleta de dados para o relatório e solicitar prazo ao solicitante.`;
-        } else if (temReuniao) {
-            relatorio += `Agendar uma reunião com os participantes nos próximos 2 dias úteis.`;
-        } else {
-            relatorio += `Responder confirmando recebimento e sugerir um próximo contato para alinhar expectativas.`;
-        }
-        
-        // ---- Sugestão de resposta personalizada ----
-        let sugestao = "";
-        if (temProblema) {
-            sugestao = `Olá ${ultimoNome || "pessoal"}, obrigado pelo acompanhamento. Fico no aguardo das novidades sobre a propagação da correção via MaaS. Caso precise de mais informações ou suporte, estou à disposição. Vamos manter o monitoramento ativo.`;
-        } else if (temPrazo) {
-            sugestao = `Olá ${ultimoNome || "todos"}, entendi a urgência. Vou priorizar essa demanda e retorno ainda hoje com o prazo estimado. Obrigado pelo aviso.`;
-        } else if (temRelatorio) {
-            sugestao = `Olá ${ultimoNome || "pessoal"}, vou preparar o relatório solicitado. Podem me informar o formato preferido e a data de entrega esperada? Obrigado.`;
-        } else if (temReuniao) {
-            sugestao = `Olá ${ultimoNome || "equipe"}, sugiro agendarmos uma reunião rápida para alinhar os próximos passos. Proponho [dia/horário]. O que acham?`;
-        } else if (temCliente) {
-            sugestao = `Olá ${ultimoNome || "pessoal"}, vou entrar em contato com o cliente e já trago um retorno. Qualquer novidade, compartilho no grupo.`;
-        } else {
-            sugestao = `Olá ${ultimoNome || "pessoal"}, recebi as informações. Vou analisar e retorno em breve. Agradeço pelo contato.`;
-        }
-        
-        // ---- Tarefa específica ----
-        let tarefa = "";
-        if (temProblema) {
-            tarefa = "🔍 Revisar o status do monitoramento MaaS e documentar os resultados da propagação da correção.";
-        } else if (temPrazo) {
-            tarefa = "⏰ Reunir com a equipe para redefinir prioridades e cumprir o prazo urgente.";
-        } else if (temRelatorio) {
-            tarefa = "📄 Coletar dados e elaborar o relatório conforme solicitado na conversa.";
-        } else if (temReuniao) {
-            tarefa = "📅 Propor e agendar uma reunião de alinhamento com os participantes.";
-        } else if (temCliente) {
-            tarefa = "🤝 Entrar em contato com o cliente para esclarecer os pontos levantados.";
-        } else {
-            tarefa = "📌 Responder a mensagem e definir um próximo passo concreto com os envolvidos.";
-        }
-        
-        return { resumo, relatorio, sugestao, tarefa };
-    }
-    
-    // ----- Ação do botão -----
-    document.getElementById('gerarBtn').addEventListener('click', () => {
-        const mensagens = document.getElementById('mensagens').value.trim();
-        if (!mensagens) {
-            alert("Cole as mensagens do WhatsApp antes de analisar.");
-            return;
-        }
-        
-        const btn = document.getElementById('gerarBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<span class="loading"></span> Analisando...';
-        btn.disabled = true;
-        
-        setTimeout(() => {
-            const resultado = analisarMensagens(mensagens);
-            document.getElementById('resumo').innerText = resultado.resumo;
-            document.getElementById('relatorio').innerHTML = resultado.relatorio.replace(/\n/g, '<br>');
-            document.getElementById('sugestao').innerText = resultado.sugestao;
-            adicionarTarefa(resultado.tarefa);
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }, 200);
-    });
-    
-    document.getElementById('limparConcluidas').addEventListener('click', () => {
-        tarefas = tarefas.filter(t => !t.concluida);
-        salvarTarefas();
-        renderizarTarefas();
-    });
-    
-    carregarTarefas();
+function getText() {
+  return document.getElementById("inputText").value;
+}
+
+function setOutput(text) {
+  document.getElementById("output").innerText = text;
+}
+
+// 🔹 RESUMO
+function gerarResumo() {
+  let text = getText();
+
+  let resumo = `
+📌 RESUMO:
+
+• Contexto: ${text.substring(0, 80)}...
+• Possível problema identificado
+• Ações sendo discutidas
+• Necessidade de acompanhamento
+
+👉 Sugestão: validar responsáveis e prazos
+  `;
+
+  setOutput(resumo);
+}
+
+// 🔹 RESPOSTA WHATSAPP
+function gerarResposta() {
+  let resposta = `
+Pessoal, fazendo um resumo rápido:
+
+Identificamos o cenário e já estamos atuando.
+
+Vou acompanhar de perto e qualquer atualização aviso aqui.
+
+Se alguém tiver algo adicional, pode mandar 👍
+  `;
+
+  setOutput(resposta);
+}
+
+// 🔹 EXECUTIVO
+function gerarExecutivo() {
+  let text = getText();
+
+  let executivo = `
+📊 RELATÓRIO EXECUTIVO
+
+• Contexto:
+${text.substring(0, 100)}...
+
+• Status atual:
+Em análise / acompanhamento
+
+• Impacto:
+Potencial impacto operacional
+
+• Próximos passos:
+- Validar causa raiz
+- Definir responsáveis
+- Acompanhar evolução
+  `;
+
+  setOutput(executivo);
+}
+
+// 🔹 TAREFA
+function gerarTarefa() {
+  let tarefa = `
+✅ TAREFA GERADA
+
+• Título: Analisar situação reportada
+• Responsável: A definir
+• Prazo: Hoje
+
+• Descrição:
+Investigar cenário identificado, validar impacto e retornar com plano de ação.
+
+• Prioridade: Alta
+  `;
+
+  setOutput(tarefa);
+}
+
 </script>
+
 </body>
 </html>
