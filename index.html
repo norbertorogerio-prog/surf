@@ -1,170 +1,492 @@
-<!DOCTYPE html>
+<!--
+  RAÍZES STORE - Vitrine Web Simples (HTML único)
+  Instruções rápidas:
+  1. Salve este arquivo como "index.html" e envie para seu servidor.
+  2. Substitua "logo.png" pelo arquivo do símbolo do Raízes (mesmo diretório).
+  3. Atualize a variável PHONE_WHATSAPP no script com o número do WhatsApp no formato internacional (ex: +5511999999999).
+  4. A senha do administrador é: raizes50anos
+  5. O administrador pode adicionar imagens via upload (serão salvas no navegador como base64 em localStorage).
+  6. Para limpar tudo: abra o console do navegador e execute localStorage.clear()
+  7. Este é um site estático; para backup/export, copie o conteúdo de localStorage (produtos e avisos).
+-->
+
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exec Copilot AI</title>
-
-<style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#0b0b10;
-  color:#fff;
-}
-
-.container {
-  padding:20px;
-}
-
-h1 {
-  font-size:20px;
-}
-
-textarea {
-  width:100%;
-  height:150px;
-  border-radius:10px;
-  border:none;
-  padding:10px;
-  font-size:14px;
-}
-
-.buttons {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:15px;
-}
-
-button {
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#7b2cff;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-button:active {
-  opacity:0.8;
-}
-
-.output {
-  margin-top:20px;
-  background:#1b1b2a;
-  padding:15px;
-  border-radius:10px;
-  white-space:pre-wrap;
-  min-height:120px;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RAÍZES STORE</title>
+  <style>
+    :root{
+      --red:#c8102e;
+      --black:#0b0b0b;
+      --white:#ffffff;
+      --muted:#f5f5f5;
+      --max-width:1100px;
+    }
+    *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    body{margin:0;background:linear-gradient(180deg,var(--white),#fff);color:var(--black);-webkit-font-smoothing:antialiased;}
+    header{background:var(--black);color:var(--white);padding:14px 16px;position:sticky;top:0;z-index:10;}
+    .container{max-width:var(--max-width);margin:0 auto;padding:16px;}
+    .brand{display:flex;align-items:center;gap:12px;}
+    .brand img{width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--white);padding:6px;}
+    .brand h1{font-size:20px;margin:0;letter-spacing:1px;}
+    .tagline{font-size:12px;color:#eee;margin-top:2px;}
+    main{padding:16px;}
+    .hero{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
+    .hero .purpose{flex:1;min-width:220px;background:linear-gradient(90deg,rgba(200,16,46,0.06),rgba(0,0,0,0.02));padding:14px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);}
+    .hero .purpose h2{margin:0 0 8px 0;color:var(--red);}
+    .hero .purpose p{margin:0;color:#222;line-height:1.4;}
+    .controls{display:flex;gap:8px;align-items:center;}
+    .btn{background:var(--red);color:var(--white);padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600;}
+    .btn.secondary{background:var(--black);color:var(--white);}
+    .search{flex:1;display:flex;gap:8px;align-items:center;}
+    .search input{flex:1;padding:10px;border-radius:8px;border:1px solid #ddd;}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+    @media(min-width:800px){ .grid{grid-template-columns:repeat(3,1fr);} .brand h1{font-size:24px;} }
+    .card{background:var(--white);border-radius:10px;padding:10px;border:1px solid #eee;display:flex;flex-direction:column;gap:8px;}
+    .card img{width:100%;height:160px;object-fit:cover;border-radius:8px;background:var(--muted);}
+    .card .title{font-weight:700;color:var(--black);font-size:16px;}
+    .card .desc{font-size:13px;color:#444;min-height:36px;}
+    .price{font-weight:800;color:var(--red);font-size:16px;}
+    .order-row{display:flex;gap:8px;align-items:center;justify-content:space-between;}
+    footer{padding:18px 0;text-align:center;color:#666;font-size:13px;}
+    /* Admin modal */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:16px;}
+    .modal .panel{background:var(--white);padding:16px;border-radius:10px;max-width:720px;width:100%;max-height:90vh;overflow:auto;}
+    .form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+    .form-row input[type="text"], .form-row input[type="number"], .form-row textarea{flex:1;padding:8px;border-radius:8px;border:1px solid #ddd;}
+    label{font-size:13px;color:#333;}
+    .small{font-size:12px;color:#666;}
+    .announce{background:#fff6f6;border-left:4px solid var(--red);padding:10px;border-radius:8px;margin-bottom:12px;}
+    .admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+    .note{font-size:13px;color:#444;}
+    .topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center;}
+    .empty{padding:18px;border-radius:8px;border:1px dashed #eee;text-align:center;color:#999;}
+    .badge{display:inline-block;background:var(--red);color:#fff;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;}
+    /* announcement area */
+    .announcements{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+    .announce img{max-width:100%;border-radius:8px;}
+    /* product actions */
+    .product-actions{display:flex;gap:6px;}
+    .icon-btn{background:#111;color:#fff;padding:6px 8px;border-radius:8px;border:0;cursor:pointer;font-size:13px;}
+  </style>
 </head>
-
 <body>
+  <header>
+    <div class="container" style="display:flex;align-items:center;">
+      <div class="brand">
+        <!-- Substitua "logo.png" pelo símbolo do Raízes (arquivo no mesmo diretório) -->
+        <img id="logo" src="logo.png" alt="Raízes logo" onerror="this.style.display='none'">
+        <div>
+          <h1>RAÍZES STORE</h1>
+          <div class="tagline">Produtos oficiais • Apoie o Projeto Raízes</div>
+        </div>
+      </div>
 
-<div class="container">
-  <h1>⚡ Exec Copilot AI</h1>
+      <div class="topbar-right" style="margin-left:auto;">
+        <button class="btn secondary" id="adminBtn">Área do Administrador</button>
+      </div>
+    </div>
+  </header>
 
-  <textarea id="inputText" placeholder="Cole aqui conversa, incidente, texto..."></textarea>
+  <main class="container">
+    <!-- Propósito / discurso engajador -->
+    <section class="hero">
+      <div class="purpose">
+        <h2><strong>Nosso Propósito</strong></h2>
+        <p><strong>Formamos atletas para o jogo e para a vida.</strong> No Projeto Raízes acreditamos que o esporte é uma escola de cidadania: aqui cultivamos disciplina, respeito, união e autoestima. Mais do que treinar futebol, educamos jovens para serem seres humanos íntegros, responsáveis e conectados com sua comunidade.</p>
+        <p style="margin-top:8px;"><strong>O Projeto Raízes</strong> atende mais de <strong>100 crianças e adolescentes</strong> de 8 a 17 anos, oferecendo treino, acompanhamento e oportunidades. Ao comprar na RAÍZES STORE você fortalece essa rede de inclusão e transformação social.</p>
+      </div>
 
-  <div class="buttons">
-    <button onclick="runAI('resumo')">Resumo</button>
-    <button onclick="runAI('resposta')">Resposta</button>
-    <button onclick="runAI('executivo')">Executivo</button>
-    <button onclick="runAI('tarefa')">Tarefa</button>
+      <div style="min-width:220px;">
+        <div class="announce">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div><strong>Comunicados</strong></div>
+            <div class="small">Área para avisos, eventos e resultados</div>
+          </div>
+          <div id="announcePreview" class="small" style="margin-top:8px;color:#222;">Nenhum comunicado por enquanto. Use a Área do Administrador para publicar imagens ou textos.</div>
+        </div>
+
+        <div style="display:flex;gap:8px;">
+          <input id="searchInput" placeholder="Buscar produtos..." style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd;">
+          <button class="btn" id="searchBtn">Buscar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Produtos -->
+    <section>
+      <h3 style="margin:8px 0 12px 0;"><span class="badge">RAÍZES</span> Produtos</h3>
+      <div id="productsGrid" class="grid"></div>
+      <div id="emptyMsg" class="empty" style="display:none;margin-top:12px;">Nenhum produto cadastrado. Entre na Área do Administrador para adicionar produtos.</div>
+    </section>
+
+    <hr style="margin:18px 0;border:none;border-top:1px solid #eee;">
+
+    <!-- Espaço para recados / eventos -->
+    <section>
+      <h3>Recados, Eventos e Resultados</h3>
+      <div id="announcements" class="announcements"></div>
+      <div class="small note">Use este espaço para publicar convites, resultados de jogos, fotos de treinos e comunicados rápidos.</div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;">
+        <div>© <strong>Projeto Raízes</strong> — Futebol e Samba</div>
+        <div style="color:#999;">Apoie a formação de atletas e cidadãos</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Admin -->
+  <div id="adminModal" class="modal" role="dialog" aria-hidden="true">
+    <div class="panel">
+      <h3>Área do Administrador</h3>
+      <div id="adminLogin">
+        <p class="small">Digite a senha para acessar o painel administrativo.</p>
+        <div class="form-row">
+          <input id="adminPassword" type="password" placeholder="Senha do administrador">
+          <button class="btn" id="loginBtn">Entrar</button>
+          <button class="btn secondary" id="closeAdmin">Fechar</button>
+        </div>
+        <div class="small" style="margin-top:6px;color:#666;">Senha padrão: <strong>raizes50anos</strong></div>
+      </div>
+
+      <div id="adminPanel" style="display:none;">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:260px;">
+            <h4>Adicionar / Editar Produto</h4>
+            <div class="form-row">
+              <label>Nome</label>
+              <input id="prodName" type="text" placeholder="Ex: Camisa Oficial">
+            </div>
+            <div class="form-row">
+              <label>Descrição</label>
+              <textarea id="prodDesc" rows="3" placeholder="Descrição curta"></textarea>
+            </div>
+            <div class="form-row">
+              <label>Preço (R$)</label>
+              <input id="prodPrice" type="number" step="0.01" placeholder="Ex: 79.90">
+            </div>
+            <div class="form-row">
+              <label>Imagem (upload)</label>
+              <input id="prodImage" type="file" accept="image/*">
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="btn" id="saveProduct">Salvar Produto</button>
+              <button class="btn secondary" id="clearForm">Limpar</button>
+            </div>
+            <div class="small" style="margin-top:8px;color:#666;">Dica: imagens grandes podem aumentar o tamanho do localStorage. Use imagens otimizadas.</div>
+          </div>
+
+          <div style="flex:1;min-width:260px;">
+            <h4>Área de Recados / Eventos</h4>
+            <div class="form-row">
+              <label>Título do Recado</label>
+              <input id="announceTitle" type="text" placeholder="Ex: Jogo amistoso sábado">
+            </div>
+            <div class="form-row">
+              <label>Texto do Recado</label>
+              <textarea id="announceText" rows="3" placeholder="Detalhes do evento, resultados, convites..."></textarea>
+            </div>
+            <div class="form-row">
+              <label>Imagem do Recado (opcional)</label>
+              <input id="announceImage" type="file" accept="image/*">
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="btn" id="saveAnnounce">Publicar Recado</button>
+              <button class="btn secondary" id="clearAnnounce">Limpar</button>
+            </div>
+
+            <h4 style="margin-top:12px;">Gerenciar Loja</h4>
+            <div class="admin-actions">
+              <button class="btn" id="exportData">Exportar Dados (console)</button>
+              <button class="btn secondary" id="importData">Importar Dados (JSON)</button>
+              <button class="btn secondary" id="clearAll">Limpar Tudo</button>
+            </div>
+            <div class="small" style="margin-top:8px;color:#666;">Exporta os dados para o console do navegador. Para backup, copie o JSON exibido.</div>
+          </div>
+        </div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #eee;">
+        <h4>Produtos Cadastrados</h4>
+        <div id="adminProductsList" style="display:grid;gap:8px;"></div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+          <button class="btn secondary" id="logoutBtn">Sair</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="output" id="output">Resultado aparecerá aqui...</div>
-</div>
+  <script>
+    /***********************
+     * Configurações
+     ***********************/
+    const ADMIN_PASSWORD = 'raizes50anos'; // senha fixa conforme solicitado
+    const PHONE_WHATSAPP = '+5511999999999'; // <-- Substitua pelo número do WhatsApp (formato internacional)
+    const STORAGE_KEY = 'raizes_store_data_v1';
 
-<script>
+    /***********************
+     * Estado e utilitários
+     ***********************/
+    let state = { products: [], announcements: [] };
+    function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    function loadState(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){ try{ state = JSON.parse(raw); }catch(e){ state = {products:[],announcements:[]}; } }
+    }
+    function formatPrice(v){ return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+    function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 
-const API_KEY = "COLE_SUA_API_KEY_AQUI";
+    /***********************
+     * Inicialização
+     ***********************/
+    loadState();
+    const productsGrid = document.getElementById('productsGrid');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const announcePreview = document.getElementById('announcePreview');
+    const announcementsEl = document.getElementById('announcements');
 
-async function runAI(tipo) {
-  const text = document.getElementById("inputText").value.trim();
+    function renderProducts(filter=''){
+      productsGrid.innerHTML = '';
+      const list = state.products.filter(p => (p.name + ' ' + p.desc).toLowerCase().includes(filter.toLowerCase()));
+      if(list.length === 0){ emptyMsg.style.display = 'block'; } else { emptyMsg.style.display = 'none'; }
+      list.forEach(p => {
+        const card = document.createElement('div'); card.className='card';
+        const img = document.createElement('img'); img.src = p.image || '';
+        img.alt = p.name;
+        const title = document.createElement('div'); title.className='title'; title.textContent = p.name;
+        const desc = document.createElement('div'); desc.className='desc'; desc.textContent = p.desc;
+        const price = document.createElement('div'); price.className='price'; price.textContent = formatPrice(p.price);
+        const orderRow = document.createElement('div'); orderRow.className='order-row';
+        const orderBtn = document.createElement('button'); orderBtn.className='btn'; orderBtn.textContent='Pedir via WhatsApp';
+        orderBtn.onclick = () => {
+          const text = encodeURIComponent(`Olá! Gostaria de pedir: ${p.name} - ${formatPrice(p.price)}. Detalhes: ${p.desc}`);
+          const phone = PHONE_WHATSAPP.replace(/\D/g,'');
+          window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+        };
+        const actions = document.createElement('div'); actions.className='product-actions';
+        const editBtn = document.createElement('button'); editBtn.className='icon-btn'; editBtn.textContent='Editar';
+        editBtn.onclick = () => openAdminAndEditProduct(p.id);
+        const delBtn = document.createElement('button'); delBtn.className='icon-btn'; delBtn.textContent='Excluir';
+        delBtn.onclick = () => { if(confirm('Excluir este produto?')){ state.products = state.products.filter(x=>x.id!==p.id); saveState(); renderProducts(document.getElementById('searchInput').value); renderAdminProducts(); } };
+        actions.appendChild(editBtn); actions.appendChild(delBtn);
 
-  if (!text) {
-    document.getElementById("output").innerText = "⚠️ Cole algum texto primeiro.";
-    return;
-  }
+        orderRow.appendChild(price);
+        orderRow.appendChild(orderBtn);
 
-  document.getElementById("output").innerText = "⏳ Processando...";
+        card.appendChild(img);
+        card.appendChild(title);
+        card.appendChild(desc);
+        card.appendChild(orderRow);
+        card.appendChild(actions);
 
-  let prompt = "";
-
-  if (tipo === "resumo") {
-    prompt = `Resuma o texto abaixo de forma clara, objetiva e natural, como um gestor experiente:\n\n${text}`;
-  }
-
-  if (tipo === "resposta") {
-    prompt = `Gere uma resposta de WhatsApp, humana, direta e profissional, baseada no texto:\n\n${text}`;
-  }
-
-  if (tipo === "executivo") {
-    prompt = `Crie um resumo executivo curto com:
-- Contexto
-- Status
-- Impacto
-- Próximos passos
-
-Texto:\n\n${text}`;
-  }
-
-  if (tipo === "tarefa") {
-    prompt = `Transforme o texto abaixo em uma tarefa clara com:
-- Título
-- Descrição
-- Prioridade
-- Próximo passo
-
-Texto:\n\n${text}`;
-  }
-
-  try {
-    const response = await fetch("https://api.allorigins.win/raw?url=https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + API_KEY
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: "Você é um gestor experiente, direto, humano e objetivo. Evite linguagem robótica."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        temperature: 0.7
-      })
-    });
-
-    const data = await response.json();
-
-    if (data.error) {
-      document.getElementById("output").innerText =
-        "❌ Erro da API: " + data.error.message;
-      return;
+        productsGrid.appendChild(card);
+      });
     }
 
-    const result = data.choices[0].message.content;
+    function renderAnnouncements(){
+      announcementsEl.innerHTML = '';
+      if(state.announcements.length === 0){
+        announcePreview.textContent = 'Nenhum comunicado por enquanto. Use a Área do Administrador para publicar imagens ou textos.';
+      } else {
+        announcePreview.textContent = state.announcements[0].title ? state.announcements[0].title + ' — ' + (state.announcements[0].text || '') : (state.announcements[0].text || '');
+        state.announcements.slice().reverse().forEach(a => {
+          const box = document.createElement('div'); box.className='announce';
+          if(a.image) {
+            const img = document.createElement('img'); img.src = a.image; box.appendChild(img);
+          }
+          if(a.title) {
+            const t = document.createElement('div'); t.style.fontWeight='700'; t.textContent = a.title; box.appendChild(t);
+          }
+          if(a.text) {
+            const p = document.createElement('div'); p.className='small'; p.style.marginTop='6px'; p.textContent = a.text; box.appendChild(p);
+          }
+          announcementsEl.appendChild(box);
+        });
+      }
+    }
 
-    document.getElementById("output").innerText = result;
+    // Admin list
+    function renderAdminProducts(){
+      const list = document.getElementById('adminProductsList');
+      list.innerHTML = '';
+      if(state.products.length === 0){ list.innerHTML = '<div class="small">Nenhum produto cadastrado.</div>'; return; }
+      state.products.slice().reverse().forEach(p => {
+        const row = document.createElement('div'); row.style.display='flex';row.style.alignItems='center';row.style.justifyContent='space-between';
+        const left = document.createElement('div'); left.innerHTML = `<strong>${p.name}</strong> — ${formatPrice(p.price)} <div class="small">${p.desc}</div>`;
+        const right = document.createElement('div');
+        const edit = document.createElement('button'); edit.className='icon-btn'; edit.textContent='Editar';
+        edit.onclick = () => openAdminAndEditProduct(p.id);
+        const del = document.createElement('button'); del.className='icon-btn'; del.textContent='Excluir';
+        del.onclick = () => { if(confirm('Excluir este produto?')){ state.products = state.products.filter(x=>x.id!==p.id); saveState(); renderProducts(); renderAdminProducts(); } };
+        right.appendChild(edit); right.appendChild(del);
+        row.appendChild(left); row.appendChild(right);
+        list.appendChild(row);
+      });
+    }
 
-  } catch (error) {
-    document.getElementById("output").innerText =
-      "❌ Erro de conexão. Pode ser bloqueio do navegador ou rede.";
-  }
-}
+    // Open admin modal and optionally populate form for editing
+    function openAdminAndEditProduct(id){
+      document.getElementById('adminModal').style.display='flex';
+      document.getElementById('adminLogin').style.display='none';
+      document.getElementById('adminPanel').style.display='block';
+      const prod = state.products.find(p=>p.id===id);
+      if(prod){
+        document.getElementById('prodName').value = prod.name;
+        document.getElementById('prodDesc').value = prod.desc;
+        document.getElementById('prodPrice').value = prod.price;
+        document.getElementById('saveProduct').dataset.editId = prod.id;
+      }
+    }
 
-</script>
+    // Event handlers
+    document.getElementById('searchBtn').addEventListener('click', ()=> {
+      const q = document.getElementById('searchInput').value;
+      renderProducts(q);
+    });
+    document.getElementById('searchInput').addEventListener('keyup', (e)=> {
+      if(e.key === 'Enter') renderProducts(e.target.value);
+    });
 
+    // Admin modal controls
+    document.getElementById('adminBtn').addEventListener('click', ()=> {
+      document.getElementById('adminModal').style.display='flex';
+      document.getElementById('adminLogin').style.display='block';
+      document.getElementById('adminPanel').style.display='none';
+    });
+    document.getElementById('closeAdmin').addEventListener('click', ()=> { document.getElementById('adminModal').style.display='none'; });
+    document.getElementById('loginBtn').addEventListener('click', ()=> {
+      const pass = document.getElementById('adminPassword').value;
+      if(pass === ADMIN_PASSWORD){
+        document.getElementById('adminLogin').style.display='none';
+        document.getElementById('adminPanel').style.display='block';
+        renderAdminProducts();
+      } else { alert('Senha incorreta'); }
+    });
+    document.getElementById('logoutBtn').addEventListener('click', ()=> {
+      document.getElementById('adminModal').style.display='none';
+      document.getElementById('adminLogin').style.display='block';
+      document.getElementById('adminPanel').style.display='none';
+      document.getElementById('adminPassword').value = '';
+    });
+
+    // Save product
+    document.getElementById('saveProduct').addEventListener('click', async function(){
+      const name = document.getElementById('prodName').value.trim();
+      const desc = document.getElementById('prodDesc').value.trim();
+      const price = parseFloat(document.getElementById('prodPrice').value || 0);
+      const file = document.getElementById('prodImage').files[0];
+      if(!name || !desc || !price){ alert('Preencha nome, descrição e preço.'); return; }
+
+      let imageData = '';
+      if(file){
+        imageData = await fileToBase64(file);
+      } else {
+        // If editing and no new image provided, keep existing
+        const editId = this.dataset.editId;
+        if(editId){
+          const existing = state.products.find(p=>p.id===editId);
+          imageData = existing ? existing.image : '';
+        }
+      }
+
+      const editId = this.dataset.editId;
+      if(editId){
+        // editar
+        state.products = state.products.map(p => p.id === editId ? {...p, name, desc, price, image: imageData} : p);
+        delete this.dataset.editId;
+      } else {
+        // novo
+        state.products.push({ id: uid(), name, desc, price, image: imageData });
+      }
+      saveState();
+      renderProducts(document.getElementById('searchInput').value);
+      renderAdminProducts();
+      clearProductForm();
+      alert('Produto salvo.');
+    });
+
+    function clearProductForm(){
+      document.getElementById('prodName').value='';
+      document.getElementById('prodDesc').value='';
+      document.getElementById('prodPrice').value='';
+      document.getElementById('prodImage').value='';
+      delete document.getElementById('saveProduct').dataset.editId;
+    }
+    document.getElementById('clearForm').addEventListener('click', clearProductForm);
+
+    // Announcements
+    document.getElementById('saveAnnounce').addEventListener('click', async ()=>{
+      const title = document.getElementById('announceTitle').value.trim();
+      const text = document.getElementById('announceText').value.trim();
+      const file = document.getElementById('announceImage').files[0];
+      if(!title && !text && !file){ alert('Adicione título, texto ou imagem para publicar.'); return; }
+      let imageData = '';
+      if(file) imageData = await fileToBase64(file);
+      state.announcements.push({ id: uid(), title, text, image: imageData, createdAt: new Date().toISOString() });
+      saveState();
+      renderAnnouncements();
+      document.getElementById('announceTitle').value=''; document.getElementById('announceText').value=''; document.getElementById('announceImage').value='';
+      alert('Recado publicado.');
+    });
+    document.getElementById('clearAnnounce').addEventListener('click', ()=>{ document.getElementById('announceTitle').value=''; document.getElementById('announceText').value=''; document.getElementById('announceImage').value=''; });
+
+    // Export / Import / Clear
+    document.getElementById('exportData').addEventListener('click', ()=> {
+      console.log('RAIZES STORE DATA EXPORT:', JSON.stringify(state, null, 2));
+      alert('Dados exportados para o console do navegador. Abra o console (F12) e copie o JSON.');
+    });
+    document.getElementById('importData').addEventListener('click', ()=> {
+      const json = prompt('Cole aqui o JSON de importação (substitui os dados atuais):');
+      if(!json) return;
+      try{
+        const parsed = JSON.parse(json);
+        if(parsed.products && parsed.announcements){
+          state = parsed;
+          saveState();
+          renderProducts();
+          renderAnnouncements();
+          renderAdminProducts();
+          alert('Importação concluída.');
+        } else alert('JSON inválido.');
+      } catch(e){ alert('Erro ao importar JSON.'); }
+    });
+    document.getElementById('clearAll').addEventListener('click', ()=> {
+      if(confirm('Apagar todos os produtos e recados? Esta ação não pode ser desfeita.')){
+        state = { products: [], announcements: [] };
+        saveState();
+        renderProducts();
+        renderAnnouncements();
+        renderAdminProducts();
+        alert('Dados apagados.');
+      }
+    });
+
+    // Helpers
+    function fileToBase64(file){
+      return new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.onerror = () => rej('Erro ao ler arquivo');
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Preload render
+    renderProducts();
+    renderAnnouncements();
+
+    // Close modal when clicking outside panel
+    document.getElementById('adminModal').addEventListener('click', (e)=> {
+      if(e.target === document.getElementById('adminModal')) document.getElementById('adminModal').style.display='none';
+    });
+
+    // Optional: allow quick order from product list by long-press on mobile (not implemented here)
+  </script>
 </body>
 </html>
